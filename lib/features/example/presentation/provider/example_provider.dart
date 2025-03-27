@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/core/base_response.dart';
 import 'package:hotel_app/core/base_state.dart';
 
 import '../../../../models/example_model.dart';
@@ -17,15 +18,14 @@ class ExampleNotifier extends AutoDisposeNotifier<BaseState<List<ExampleModel>>>
     state = BaseState.loading();
     try {
       final response = await ref.read(exampleRepository).getExample();
-      response.fold(
-            (l) => state = BaseState.error(l),
-            (r) {
-          final List<ExampleModel> data = (r.data as List)
-              .map((json) => ExampleModel.fromJson(json))
-              .toList().sublist(0, 10);
-          state = BaseState.success(data);
-        },
-      );
+
+      if(response.isSuccessful){
+        final List<ExampleModel> data = response.sucessfulData!;
+        state = BaseState.success(data);
+      }
+      else{
+        state = BaseState.error(response.errorMessage ?? "");
+      }
     } catch (e) {
       state = BaseState.error(e.toString());
     }
