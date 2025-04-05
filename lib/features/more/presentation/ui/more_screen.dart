@@ -103,7 +103,7 @@ class MoreContentWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 80),
-              const FilledButton(
+              const CustomFilledButton(
                 title: "Đăng xuất",
                 iconPath: "assets/icons/icon_logout.svg",
                 backgroundColor: Color(0xFFB3261E),
@@ -232,14 +232,14 @@ class RemainingMoreItem extends StatelessWidget {
   }
 }
 
-class FilledButton extends StatelessWidget {
+class CustomFilledButton extends StatelessWidget {
   final String title;
   final String? iconPath;
   final Color? textColor;
   final Function()? onTap;
   final Color backgroundColor;
 
-  const FilledButton({
+  const CustomFilledButton({
     super.key,
     required this.title,
     this.iconPath,
@@ -267,7 +267,7 @@ class FilledButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 10,
             children: [
-              SvgPicture.asset(iconPath ?? ""),
+              iconPath != null ? SvgPicture.asset(iconPath!) : const SizedBox.shrink(),
               Text(
                 title,
                 style: TextStyle(

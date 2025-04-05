@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/admin/model/chart_data.dart';
+import 'package:hotel_app/features/admin/presentation/ui/room_manager_screen.dart';
 
 import '../../../../constants/app_colors.dart';
 
@@ -10,39 +11,48 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: ColorsLib.greyBGColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const TopAppBar(title: "Quản lý khách sạn"),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 55),
-                    BookingChart(),
-                    const SizedBox(height: 10),
-                    const StatisticWidget(),
-                    const SizedBox(height: 30),
-                    const IntrinsicHeight(
-                      child: Row(
-                        spacing: 15,
-                        children: [
-                          Expanded(child: OptionItem(title: "Quản lý phòng", iconPath: "assets/icons/icon_door.svg", value: 50)),
-                          Expanded(child: OptionItem(title: "Đặt phòng", iconPath: "assets/icons/icon_report.svg", value: 29)),
-                        ],
+    return SafeArea(
+      child: ColoredBox(
+        color: ColorsLib.greyBGColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const TopAppBar(title: "Quản lý khách sạn"),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 55),
+                      BookingChart(),
+                      const SizedBox(height: 10),
+                      const StatisticWidget(),
+                      const SizedBox(height: 30),
+                      IntrinsicHeight(
+                        child: Row(
+                          spacing: 15,
+                          children: [
+                            Expanded(child:
+                              OptionItem(
+                                title: "Quản lý phòng",
+                                iconPath: "assets/icons/icon_door.svg",
+                                value: 50,
+                                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RoomManagerScreen()))
+                              )
+                            ),
+                            const Expanded(child: OptionItem(title: "Đặt phòng", iconPath: "assets/icons/icon_report.svg", value: 29)),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -58,46 +68,44 @@ class TopAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 12),
-      decoration: BoxDecoration(
-        color: ColorsLib.primaryBoldColor,
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(12),
-          bottomRight: Radius.circular(12),
+    return Material(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 12),
+        decoration: BoxDecoration(
+          color: ColorsLib.primaryBoldColor,
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(12),
+            bottomRight: Radius.circular(12),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => Navigator.pop(context),
-                  splashColor: Colors.black.withValues(alpha: 0.2),
-                  child: SvgPicture.asset("assets/icons/icon_back.svg")
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+        child: Stack(
+          children: [
+            SizedBox(
+              child: Center(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
-              )
-            ],
-          ),
-        ],
+              ),
+            ),
+            Positioned(
+              left: -3,
+              top: -3,
+              child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                splashColor: Colors.black.withValues(alpha: 0.2),
+                child: SvgPicture.asset("assets/icons/icon_back.svg")
+              ),
+            ),)
+          ],
+        ),
       ),
     );
   }
@@ -112,41 +120,43 @@ class BookingChart extends StatelessWidget {
     ChartData(label: "Day 5", value: 35),
     ChartData(label: "Day 6", value: 50),
     ChartData(label: "Day 7", value: 45),
-    ChartData(label: "Day 8", value: 60),
   ];
 
   BookingChart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF000000).withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      child: Column(
-        spacing: 20,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Thống kê lượt đặt",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF667085),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF000000).withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 4),
+            )
+          ],
+        ),
+        child: Column(
+          spacing: 20,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Thống kê lượt đặt",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF667085),
+              ),
             ),
-          ),
-          BookingBarChart(bookings: bookings),
-        ],
+            BookingBarChart(bookings: bookings),
+          ],
+        ),
       ),
     );
   }
@@ -258,44 +268,47 @@ class StatisticWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF000000).withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 4),
-          )
-        ],
-      ),
-      child: const Column(
-        spacing: 20,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Đánh giá",
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: Color(0xFF667085),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF000000).withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 4),
+            )
+          ],
+        ),
+        child: const Column(
+          spacing: 20,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Đánh giá",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF667085),
+              ),
             ),
-          ),
-          StatisticItem(
-            title: "Trung bình",
-            value: 4.5,
-            percent: -10,
-          ),
-          StatisticItem(
-            title: "Số lượng",
-            value: 20,
-            percent: 20,
-            borderColor: Color(0xFFC6D7FE),
-          ),
-        ],
+            StatisticItem(
+              title: "Trung bình",
+              value: 4.5,
+              percent: -10,
+            ),
+            StatisticItem(
+              title: "Số lượng",
+              value: 20,
+              percent: 20,
+              borderColor: Color(0xFFC6D7FE),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -392,16 +405,16 @@ class OptionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
         onTap: () => onTap?.call(),
         borderRadius: BorderRadius.circular(12),
         highlightColor: Colors.black.withValues(alpha: 0.2),
-        child: Container(
+        child: Ink(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            // color: Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
