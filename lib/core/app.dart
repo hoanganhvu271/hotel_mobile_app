@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_app/features/example/presentation/ui/example_screen.dart';
+import 'package:hotel_app/features/more/presentation/ui/more_screen.dart';
 
-import 'app_router.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const ExampleScreen(),
+      home: const MoreScreen(),
     );
   }
 }
