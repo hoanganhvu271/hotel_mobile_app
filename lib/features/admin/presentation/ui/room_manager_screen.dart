@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/admin/presentation/ui/admin_screen.dart';
+import 'package:hotel_app/features/admin/presentation/ui/partials/search_box_widget.dart';
+import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/admin/presentation/ui/room_form_screen.dart';
 import '../../../../models/room.dart';
 
@@ -10,19 +12,21 @@ class RoomManagerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Material(
-        child: Column(
-          children: [
-            const TopAppBar(title: "Danh sách phòng"),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
-              child: SearchBoxWidget(),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ListView.separated(
-                  itemBuilder: (_, index) => RoomItemWidget(
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Material(
+          child: Column(
+            children: [
+              const TopAppBar(title: "Danh sách phòng"),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
+                child: SearchBoxWidget(),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ListView.separated(
+                    itemBuilder: (_, index) => RoomItemWidget(
                     room: Room(
                       roomId: 1,
                       hotelId: 1,
@@ -40,96 +44,15 @@ class RoomManagerScreen extends StatelessWidget {
                       timeCreated: DateTime.now(),
                     ),
                   ),
-                  itemCount: 10,
-                  separatorBuilder: (_, index) => const SizedBox(height: 14),
-                ),
-              )
-            ),
-          ],
+                    itemCount: 10,
+                    separatorBuilder: (_, index) => const SizedBox(height: 14),
+                  ),
+                )
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class SearchBoxWidget extends StatefulWidget {
-  const SearchBoxWidget({super.key});
-
-  @override
-  State<SearchBoxWidget> createState() => _SearchBoxWidgetState();
-}
-
-class _SearchBoxWidgetState extends State<SearchBoxWidget> {
-  final _controller = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-  bool _isFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode.addListener(() {
-      setState(() {
-        _isFocused = _focusNode.hasFocus;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    _controller.dispose();
-    super.dispose();
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: _isFocused ? Colors.blue : Colors.transparent,
-          width: 2,
-        ),
-      ),
-      child: TextField(
-        controller: _controller,
-        focusNode: _focusNode,
-        decoration: InputDecoration(
-          hintText: "Tìm kiếm theo tên ...",
-          hintStyle: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFFD9D9D9),
-          ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(10),
-            child: ClipOval(
-              child: SvgPicture.asset(
-                "assets/icons/icon_search.svg",
-                width: 20,
-                height: 20,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-          suffixIcon: GestureDetector(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipOval(
-                child: SvgPicture.asset(
-                  "assets/icons/icon_filter.svg",
-                  width: 20,
-                  height: 20,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-          ),
-        ),
-      )
-      ,
     );
   }
 }

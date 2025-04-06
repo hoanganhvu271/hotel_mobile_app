@@ -30,6 +30,8 @@ dependencies:
   path_provider: ^2.1.5
   fl_chart: ^0.70.2
   image_picker: ^1.1.2
+  dotted_border: ^2.0.0
+  syncfusion_flutter_pdfviewer: ^29.1.35
 
 dev_dependencies:
   flutter_test:
