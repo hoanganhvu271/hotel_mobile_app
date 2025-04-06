@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/more/presentation/ui/more_screen.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-
 import '../../../../constants/app_colors.dart';
 
 class ReportScreen extends StatelessWidget {
@@ -17,19 +16,17 @@ class ReportScreen extends StatelessWidget {
           children: [
             const TopAppBar(title: "Báo cáo 3/2025"),
             const SizedBox(height: 10),
-            const Expanded(
-              child: ReadPDFWidget(),
-            ),
+            const Expanded(child: ReadPDFWidget()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
               child: CustomFilledButton(
                 title: "Tải xuống PDF",
                 backgroundColor: ColorsLib.primaryColor,
-              ),
-            ),
-          ],
-        ),
-      ),
+              )
+            )
+          ]
+        )
+      )
     );
   }
 }
