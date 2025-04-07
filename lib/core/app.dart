@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/common/widgets/keep_alive_component.dart';
+import 'package:hotel_app/features/booking/booking_screen.dart';
 import 'package:hotel_app/features/home/home_screen.dart';
 import 'package:hotel_app/features/main/presentation/provider/tab_provider.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
@@ -46,7 +47,7 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
               MapScreen(),
               OrderScreen(),
               NotiScreen(),
-              MoreScreen()
+              MoreScreen(),
             ],
           ),
           bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
