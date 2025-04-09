@@ -11,7 +11,7 @@ class LabelBrownDark extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (label == null || label!.trim().isEmpty) {
-      return const SizedBox.shrink(); // Không hiển thị gì nếu label rỗng/null
+      return const SizedBox.shrink();
     }
 
     return Padding(

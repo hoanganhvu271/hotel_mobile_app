@@ -315,7 +315,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                     StaticDropdown(
                       label: 'Sắp xếp',
-                      initialValue: 'rating_desc',
+                      initialValue: 'rating_asc',
                       onChanged: (value) => _searchModel.sortBy = value,
                     ),
                     const SizedBox(height: 15),
