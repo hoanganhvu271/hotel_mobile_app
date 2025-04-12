@@ -182,6 +182,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     //     await submitBookingSearch();
                     //   },
                     // ),
+                    // const Center(child: Text('Home Screen')),
                   ],
                 ),
               ),
@@ -189,7 +190,7 @@ class _BookingScreenState extends State<BookingScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
+      // bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
     );
   }
 }

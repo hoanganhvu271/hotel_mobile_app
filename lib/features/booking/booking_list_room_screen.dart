@@ -82,9 +82,9 @@ class BookingListRoomScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const KeepAliveComponent(
-        child: BottomBarNavigation(),
-      ),
+      // bottomNavigationBar: const KeepAliveComponent(
+      //   child: BottomBarNavigation(),
+      // ),
     );
   }
 }

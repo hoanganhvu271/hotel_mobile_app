@@ -10,7 +10,7 @@ class Heading extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 412,
+          width: double.infinity, // Sử dụng double.infinity để container chiếm toàn bộ chiều ngang
           height: 88,
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(),
@@ -20,7 +20,7 @@ class Heading extends StatelessWidget {
                 left: -1,
                 top: 0,
                 child: Container(
-                  width: 413,
+                  width: 412, // Đảm bảo chiều rộng đủ lớn để chứa phần tiêu đề
                   height: 88,
                   decoration: const ShapeDecoration(
                     color: Color(0xFF65462D),
@@ -33,16 +33,20 @@ class Heading extends StatelessWidget {
                   ),
                 ),
               ),
+              // Căn giữa chữ theo chiều ngang
               Positioned(
-                left: 148,
+                left: 0,
+                right: 0, // Căn trái và phải đều 0 để căn giữa
                 top: 32,
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w700,
+                child: Center(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
