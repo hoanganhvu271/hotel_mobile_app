@@ -88,3 +88,12 @@ class BookingListRoomScreen extends StatelessWidget {
     );
   }
 }
+
+
+String formatDateTime(String original) {
+  final inputFormat = DateFormat("HH:mm dd/MM/yyyy");
+  final dateTime = inputFormat.parse(original);
+
+  final outputFormat = DateFormat("yyyy-MM-ddTHH:mm:ss");
+  return outputFormat.format(dateTime);
+}
