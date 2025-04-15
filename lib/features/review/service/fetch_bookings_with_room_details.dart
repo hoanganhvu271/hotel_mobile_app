@@ -5,7 +5,6 @@ import 'package:hotel_app/features/review/model/room_booking_detail.dart';
 import 'package:hotel_app/features/review/model/booking_with_room_info.dart';
 
 Future<List<BookingWithRoomInfo>> fetchBookingsWithRoomDetails(int userId) async {
-  // Thêm header Content-Type để tránh lỗi về font chữ
   final response = await http.get(
     Uri.parse('http://172.28.160.1:8080/api/booking/user/$userId'),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},

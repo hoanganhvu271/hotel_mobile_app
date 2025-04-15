@@ -29,9 +29,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     finalPrice = widget.room.price;
   }
 
-  // Hàm gọi API để tạo booking
   Future<void> _createBooking() async {
-    // Lấy thông tin user
     final user = await fetchUserInfo();
 
     final body = json.encode({
@@ -43,9 +41,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       "billId": null,
     });
 
-
     final response = await http.post(
-      Uri.parse('http://172.28.160.1:8080/api/booking'), // Địa chỉ API
+      Uri.parse('http://172.28.160.1:8080/api/booking'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -184,7 +181,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      _createBooking(); // Gọi hàm tạo booking
+                      _createBooking();
                     },
                     child: const Text('Xác nhận đặt phòng'),
                   ),

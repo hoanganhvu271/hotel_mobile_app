@@ -526,8 +526,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context); // Đóng dialog
-                        Navigator.pop(context); // Quay về màn hình trước
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       child: const Text('OK'),
                     ),

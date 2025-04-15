@@ -8,6 +8,7 @@ class BookingUserResult {
   final int roomId;
   final int billId;
   final String createdAt;
+  final List<int> reviewIdList;
 
   BookingUserResult({
     required this.bookingId,
@@ -19,6 +20,7 @@ class BookingUserResult {
     required this.roomId,
     required this.billId,
     required this.createdAt,
+    required this.reviewIdList,
   });
 
   factory BookingUserResult.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class BookingUserResult {
       roomId: json['roomId'] ?? 0,
       billId: json['billId'] ?? 0,
       createdAt: json['createdAt'] ?? '',
+      reviewIdList: List<int>.from(json['reviewIdList'] ?? []),
     );
   }
 }

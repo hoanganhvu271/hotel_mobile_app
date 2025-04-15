@@ -42,19 +42,35 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final token = data['jwt'];
+        final userId = data['userId'];
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', token);
+        await prefs.setInt('user_id', userId);
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
-      } else {
-        setState(() {
-          _errorMessage = 'Sai tài khoản hoặc mật khẩu';
-        });
       }
+
+
+      // if (response.statusCode == 200) {
+      //   final data = jsonDecode(response.body);
+      //   final token = data['jwt'];
+      //
+      //   final prefs = await SharedPreferences.getInstance();
+      //   await prefs.setString('jwt_token', token);
+      //
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const HomeScreen()),
+      //   );
+      // } else {
+      //   setState(() {
+      //     _errorMessage = 'Sai tài khoản hoặc mật khẩu';
+      //   });
+      // }
     } catch (e) {
       setState(() {
         _errorMessage = 'Lỗi kết nối đến server';
