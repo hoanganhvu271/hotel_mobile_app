@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-
 import '../../constants/api_url.dart';
 import 'interceptors.dart';
 

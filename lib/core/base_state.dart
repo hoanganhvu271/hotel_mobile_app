@@ -4,7 +4,6 @@ enum BaseStatus {
   success,
   error,
   emptyData,
-
 }
 
 extension BaseStatusExtension on BaseStatus {
