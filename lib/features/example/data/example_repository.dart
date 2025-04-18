@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/core/base_response.dart';
 import '../../../models/example_model.dart';
 import 'example_service.dart';
 
@@ -10,7 +11,7 @@ final exampleRepository = Provider<ExampleRepository>(
 );
 
 abstract class ExampleRepository {
-  Future<Either<String, Response>> getExample();
+  Future<BaseResponse<List<ExampleModel>>> getExample();
 }
 
 class ExampleRepositoryImpl implements ExampleRepository {
@@ -19,7 +20,7 @@ class ExampleRepositoryImpl implements ExampleRepository {
   ExampleRepositoryImpl({required this.exampleService});
 
   @override
-  Future<Either<String, Response>> getExample() async {
+  Future<BaseResponse<List<ExampleModel>>> getExample() async {
     return await exampleService.getExample();
   }
 }
