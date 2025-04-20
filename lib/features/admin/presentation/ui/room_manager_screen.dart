@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_app/features/admin/presentation/ui/admin_screen.dart';
+import 'package:hotel_app/features/admin/presentation/ui/hotel_owner_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/search_box_widget.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/admin/presentation/ui/room_form_screen.dart';

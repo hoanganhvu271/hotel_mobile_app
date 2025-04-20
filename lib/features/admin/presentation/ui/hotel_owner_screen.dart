@@ -1,7 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/admin/model/chart_data.dart';
+import 'package:hotel_app/features/admin/presentation/provider/review_stats_provider.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/admin/presentation/ui/report_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/reservation_manager_screen.dart';
@@ -9,8 +11,8 @@ import 'package:hotel_app/features/admin/presentation/ui/room_manager_screen.dar
 
 import '../../../../constants/app_colors.dart';
 
-class AdminScreen extends StatelessWidget {
-  const AdminScreen({super.key});
+class HotelOwnerScreen extends StatelessWidget {
+  const HotelOwnerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -301,11 +303,11 @@ class BookingBarChart extends StatelessWidget {
   }
 }
 
-class StatisticWidget extends StatelessWidget {
+class StatisticWidget extends ConsumerWidget {
   const StatisticWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -322,11 +324,11 @@ class StatisticWidget extends StatelessWidget {
             )
           ],
         ),
-        child: const Column(
+        child: Column(
           spacing: 20,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Đánh giá",
               style: TextStyle(
                 fontSize: 14,
@@ -334,17 +336,37 @@ class StatisticWidget extends StatelessWidget {
                 color: Color(0xFF667085),
               ),
             ),
-            RatingItem(
-              title: "Trung bình",
-              value: 4.5,
-              percent: -10,
-            ),
-            RatingItem(
-              title: "Số lượng",
-              value: 20,
-              percent: 20,
-              borderColor: Color(0xFFC6D7FE),
-            ),
+            ref.watch(reviewStatsViewModel).when(
+              success: (data) {
+                return Column(
+                  spacing: 20,
+                  children: [
+                    RatingItem(
+                      title: "Trung bình",
+                      value: data.averageRating,
+                      percent: data.averageRatingChangePercent,
+                    ),
+                    RatingItem(
+                      title: "Số lượng",
+                      value: data.totalReviews.toDouble(),
+                      percent: data.reviewCountChangePercent,
+                      borderColor: Color(0xFFC6D7FE),
+                    ),
+                  ],
+                );
+              },
+              error: (e) => Center(
+                child: Text(
+                  e.toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF667085),
+                  ),
+                ),
+              ),
+              orElse: () => const SizedBox.shrink(),
+            )
           ],
         ),
       ),
@@ -355,14 +377,14 @@ class StatisticWidget extends StatelessWidget {
 class RatingItem extends StatelessWidget {
   final String title;
   final double value;
-  final int percent;
+  final double percent;
   final Color borderColor;
 
   const RatingItem({
     super.key,
     required this.title,
-    required this.value,
-    required this.percent,
+    this.value = 0,
+    this.percent = 0,
     this.borderColor = const Color(0xFFF570C7),
   });
 
@@ -398,6 +420,7 @@ class RatingItem extends StatelessWidget {
             ),
           ),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
                 "$value",

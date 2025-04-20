@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/map/presentation/ui/map_screen.dart';
 
 import '../../../../constants/app_colors.dart';
-import '../../../admin/presentation/ui/admin_screen.dart';
+import '../../../admin/presentation/ui/hotel_owner_screen.dart';
 
 class MoreScreen extends StatelessWidget {
   const MoreScreen({super.key});
@@ -101,7 +101,7 @@ class MoreContentWidget extends StatelessWidget {
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MapScreen()))
                   ),
                   RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminScreen()))
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
                   ),
                 ],
               ),
