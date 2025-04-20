@@ -9,6 +9,7 @@ import 'package:hotel_app/features/more/more_screen.dart';
 import 'package:hotel_app/features/order/orderscreen.dart';
 import '../features/main/presentation/model/tab_model.dart';
 import '../features/noti/noti_screen.dart';
+import '../features/search_room/presentation/ui/search_room_screen.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -17,7 +18,8 @@ class MyApp extends ConsumerStatefulWidget {
   ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMixin {
+class _MyAppState extends ConsumerState<MyApp>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -28,7 +30,8 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(tabProvider, (pre, next) => _tabController.animateTo(next.index));
+    ref.listen(
+        tabProvider, (pre, next) => _tabController.animateTo(next.index));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -49,7 +52,20 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
               MoreScreen()
             ],
           ),
-          bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
+          bottomNavigationBar:
+              const KeepAliveComponent(child: BottomBarNavigation()),
+          floatingActionButton: Builder(
+            builder: (context) => FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SearchRoomScreen(),
+                  ),
+                );
+              },
+              child: const Icon(Icons.search),
+            ),
+          ),
         ),
       ),
     );
