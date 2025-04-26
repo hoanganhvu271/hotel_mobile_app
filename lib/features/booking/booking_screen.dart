@@ -21,6 +21,8 @@ import 'package:hotel_app/common/widgets/keep_alive_component.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 
 class BookingScreen extends StatefulWidget {
+  static const String routeName = '/booking';
+
   const BookingScreen({super.key});
 
   @override
@@ -41,7 +43,7 @@ class _BookingScreenState extends State<BookingScreen> {
     bedNumber: 1,
     priceFrom: 0,
     priceTo: 30000000,
-    sortBy: 'rating_asc',
+    sortBy: 'rating_desc',
     services: [],
   );
 
@@ -167,7 +169,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                     StaticDropdown(
                       label: 'Sắp xếp',
-                      initialValue: 'rating_asc',
+                      initialValue: 'rating_desc',
                       onChanged: (value) => _searchModel.sortBy = value,
                     ),
                     const SizedBox(height: 15),
@@ -190,7 +192,7 @@ class _BookingScreenState extends State<BookingScreen> {
           ],
         ),
       ),
-      // bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
+      bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
     );
   }
 }

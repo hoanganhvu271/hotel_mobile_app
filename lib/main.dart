@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/app.dart';
 import 'core/observers.dart';
 import 'di/injector.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() => runMain();
 

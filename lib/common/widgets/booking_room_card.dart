@@ -10,7 +10,7 @@ class BookingRoomCard extends StatelessWidget {
   const BookingRoomCard({
     super.key,
     required this.room,
-    this.showBookButton = true, // mặc định là hiển thị nút đặt phòng
+    this.showBookButton = true,
   });
 
   @override
@@ -59,7 +59,7 @@ class BookingRoomCard extends StatelessWidget {
             // Thông tin bên phải
             Positioned(
               left: 200,
-              top: 30,
+              top: showBookButton ? 30 : 8,
               right: 12,
               child: SizedBox(
                 child: Column(
@@ -79,6 +79,15 @@ class BookingRoomCard extends StatelessWidget {
                       style: const TextStyle(
                         color: Color(0xFF65462D),
                         fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Đánh giá: ${room.rating.toStringAsFixed(1)} ⭐',
+                      style: const TextStyle(
+                        color: Color(0xFF65462D),
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

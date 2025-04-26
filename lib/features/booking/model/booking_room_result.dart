@@ -8,6 +8,9 @@
 //   final String checkIn;
 //   final String checkOut;
 //   final String? roomImg;
+//   final int adults;
+//   final int children;
+//   final int bedNumber;
 //
 //   BookingRoomResult({
 //     required this.roomId,
@@ -19,6 +22,9 @@
 //     required this.checkIn,
 //     required this.checkOut,
 //     required this.roomImg,
+//     required this.adults,
+//     required this.children,
+//     required this.bedNumber,
 //   });
 //
 //   factory BookingRoomResult.fromJson(Map<String, dynamic> json) {
@@ -32,6 +38,9 @@
 //       checkIn: json['checkIn'],
 //       checkOut: json['checkOut'],
 //       roomImg: json['roomImg'] ?? "",
+//       adults: json['adults'],
+//       children: json['children'],
+//       bedNumber: json['bedNumber'],
 //     );
 //   }
 // }
@@ -50,6 +59,7 @@ class BookingRoomResult {
   final int adults;
   final int children;
   final int bedNumber;
+  final double rating; // ✅ Thêm dòng này
 
   BookingRoomResult({
     required this.roomId,
@@ -64,6 +74,7 @@ class BookingRoomResult {
     required this.adults,
     required this.children,
     required this.bedNumber,
+    required this.rating,
   });
 
   factory BookingRoomResult.fromJson(Map<String, dynamic> json) {
@@ -80,6 +91,7 @@ class BookingRoomResult {
       adults: json['adults'],
       children: json['children'],
       bedNumber: json['bedNumber'],
+      rating: (json['rating'] as num).toDouble(),
     );
   }
 }

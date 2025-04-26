@@ -8,6 +8,7 @@ import 'package:hotel_app/features/main/presentation/provider/tab_provider.dart'
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
+import 'package:hotel_app/features/more_user/more_user_srceen.dart';
 import 'package:hotel_app/features/order/orderscreen.dart';
 import '../features/main/presentation/model/tab_model.dart';
 import '../features/noti/noti_screen.dart';
@@ -39,16 +40,21 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
+      routes: {
+        BookingScreen.routeName: (context) => const BookingScreen(),
+        // Add other routes here if needed
+      },
       home: SafeArea(
         child: Scaffold(
           body: TabBarView(
             controller: _tabController,
-            children: const [
+            children: [ // xoa const
               HomeScreen(),
               MapScreen(),
               OrderScreen(),
               NotiScreen(),
               MoreScreen(),
+              // MoreUserSrceen(),
             ],
           ),
           bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),

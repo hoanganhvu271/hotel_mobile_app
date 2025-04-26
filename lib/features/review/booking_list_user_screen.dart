@@ -469,7 +469,7 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
                           onPressed: () => Navigator.pop(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
-                            foregroundColor: Colors.white, // Màu chữ trắng
+                            foregroundColor: Colors.white,
                           ),
                           child: const Text('Đóng'),
                         ),
@@ -481,7 +481,7 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF65462D),
-                            foregroundColor: Colors.white, // Màu chữ trắng
+                            foregroundColor: Colors.white,
                           ),
                           child: const Text('Gửi'),
                         ),
@@ -709,10 +709,10 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
                                                               // Icon sao
                                                               Icon(
                                                                 Icons.star,
-                                                                color: Colors.yellow, // Màu vàng cho sao
-                                                                size: 16, // Kích thước sao
+                                                                color: Colors.yellow,
+                                                                size: 16,
                                                               ),
-                                                              SizedBox(width: 4), // Khoảng cách giữa sao và số đánh giá
+                                                              SizedBox(width: 4),
                                                               Text(
                                                                 '${review.rating}',
                                                                 style: const TextStyle(

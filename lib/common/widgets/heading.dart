@@ -17,10 +17,10 @@ class Heading extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                left: -1,
+                left: 0,
                 top: 0,
                 child: Container(
-                  width: 412, // Đảm bảo chiều rộng đủ lớn để chứa phần tiêu đề
+                  width: 412,
                   height: 88,
                   decoration: const ShapeDecoration(
                     color: Color(0xFF65462D),
