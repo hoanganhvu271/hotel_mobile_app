@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../../../common/utils/api_constants.dart';
 import '../model/booking_schedule_models.dart';
 
 class BookingScheduleService {
-  final String _baseUrl = "http://172.28.160.1:8080/api";
+  final String _baseUrl = "${ApiConstants.baseUrl}/api";
 
   Future<List<BookingDetail>> fetchBookingsByOwner(int ownerUserId) async {
     final url = Uri.parse('$_baseUrl/booking/owner/$ownerUserId');

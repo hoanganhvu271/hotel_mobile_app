@@ -5,6 +5,7 @@ import 'package:hotel_app/features/booking/model/booking_create_response.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../common/utils/api_constants.dart';
 import '../../common/widgets/heading.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -88,11 +89,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
             if (priceCourse == widget.booking.price && value.contains(qrContent)) {
               _countdownTimer?.cancel();
               await http.patch(
-                Uri.parse("http://172.28.160.1:8080/api/bill/${widget.booking.billId}/status?paidStatus=true"),
+                Uri.parse("${ApiConstants.baseUrl}/api/bill/${widget.booking.billId}/status?paidStatus=true"),
               );
 
               await http.put(
-                Uri.parse("http://172.28.160.1:8080/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
+                Uri.parse("${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
               );
 
               showDialog(
@@ -131,7 +132,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       _countdownTimer?.cancel();
       await http.delete(
-        Uri.parse("http://172.28.160.1:8080/api/booking/${widget.booking.bookingId}"),
+        Uri.parse("${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}"),
       );
 
       showDialog(
@@ -281,11 +282,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
               onPressed: () async {
                 try {
                   final responseBill = await http.patch(
-                    Uri.parse("http://172.28.160.1:8080/api/bill/${widget.booking.billId}/status?paidStatus=true"),
+                    Uri.parse("${ApiConstants.baseUrl}/api/bill/${widget.booking.billId}/status?paidStatus=true"),
                   );
                   if (responseBill.statusCode == 200) {
                     final responseBooking = await http.put(
-                      Uri.parse("http://172.28.160.1:8080/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
+                      Uri.parse("${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
                     );
                     if (responseBooking.statusCode == 200) {
                       Navigator.push(

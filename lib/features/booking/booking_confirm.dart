@@ -3,6 +3,7 @@ import 'package:hotel_app/features/booking/model/booking_create_response.dart';
 import 'package:hotel_app/features/booking/payment_screen.dart';
 import 'package:hotel_app/features/booking/services/user_service.dart';
 import 'package:intl/intl.dart';
+import '../../common/utils/api_constants.dart';
 import '../../common/widgets/booking_room_card.dart';
 import '../../common/widgets/heading.dart';
 import '../../features/booking/model/booking_room_result.dart';
@@ -42,7 +43,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     });
 
     final response = await http.post(
-      Uri.parse('http://172.28.160.1:8080/api/booking'),
+      Uri.parse('${ApiConstants.baseUrl}/api/booking'),
       headers: {
         'Content-Type': 'application/json',
       },

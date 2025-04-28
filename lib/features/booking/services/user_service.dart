@@ -1,6 +1,7 @@
 import 'package:hotel_app/common/local/shared_prefs/token_manager.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../../common/utils/api_constants.dart';
 import '../model/user_booking.dart';
 
 Future<UserInfo> fetchUserInfo() async {
@@ -9,7 +10,7 @@ Future<UserInfo> fetchUserInfo() async {
     throw Exception('Token không tồn tại');
   }
   final response = await http.get(
-    Uri.parse('http://172.28.160.1:8080/api/user/info'),
+    Uri.parse('${ApiConstants.baseUrl}/api/user/info'),
     headers: {
       'Authorization': 'Bearer $token',
     },

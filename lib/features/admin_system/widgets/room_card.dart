@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_app/common/utils/api_constants.dart';
 import 'package:hotel_app/features/admin_system/admin_room_revenue.dart';
 import 'package:hotel_app/features/admin_system/model/room.dart';
 
@@ -10,7 +11,7 @@ class RoomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrl = (room.roomImg != null && room.roomImg!.isNotEmpty)
-        ? 'http://172.28.160.1:8080/api/files/${room.roomImg}'
+        ? '${ApiConstants.baseUrl}/api/files/${room.roomImg}'
         : 'https://placehold.co/179x112';
 
     return GestureDetector(

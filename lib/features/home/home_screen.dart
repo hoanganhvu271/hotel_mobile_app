@@ -6,6 +6,8 @@ import 'package:hotel_app/common/widgets/home_booking_btn.dart';
 import 'package:hotel_app/common/widgets/top_app_bar_widget.dart';
 import 'package:hotel_app/features/booking/booking_screen.dart';
 
+import '../../common/utils/api_constants.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -24,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchTopRatedRooms() async {
-    final response = await http.get(Uri.parse('http://172.28.160.1:8080/api/room/top-rated'));
+    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/room/top-rated'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: rooms.map((room) {
-                            final imageUrl = 'http://172.28.160.1:8080/api/files/${room['roomImg']}';
+                            final imageUrl = '${ApiConstants.baseUrl}/api/files/${room['roomImg']}';
                             final city = room['hotelDto']['address']['city'];
                             final district = room['hotelDto']['address']['district'];
 

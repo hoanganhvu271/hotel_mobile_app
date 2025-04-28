@@ -1,13 +1,14 @@
 import 'dart:convert';
+import 'package:hotel_app/common/utils/api_constants.dart';
 import 'package:hotel_app/features/admin_system/model/admin_data.dart';
 import 'package:hotel_app/features/admin_system/model/daily_revenue.dart';
 import 'package:http/http.dart' as http;
 
 class AdminService {
-  static const String _baseUrl = 'http://172.28.160.1:8080/api/admin/';
+  static const String _baseUrl = '${ApiConstants.baseUrl}/api/admin/';
 
   Future<List<DailyRevenue>> fetchMonthlyRevenue() async {
-    final response = await http.get(Uri.parse('http://172.28.160.1:8080/api/admin/revenue/monthly'));
+    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/admin/revenue/monthly'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonMap = json.decode(response.body);

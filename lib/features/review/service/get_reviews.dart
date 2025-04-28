@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:hotel_app/features/review/model/review_response_dto.dart';
 import 'package:http/http.dart' as http;
+import '../../../common/utils/api_constants.dart';
 
 Future<List<ReviewResponseDto>> getReviews(List<int> reviewIds) async {
   final response = await http.post(
-    Uri.parse('http://172.28.160.1:8080/api/review/listId'),
+    Uri.parse('${ApiConstants.baseUrl}/api/review/listId'),
     headers: {
       'Content-Type': 'application/json',
     },

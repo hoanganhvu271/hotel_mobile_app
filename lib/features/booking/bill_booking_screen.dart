@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
+import '../../common/utils/api_constants.dart';
+
 class BillBookingScreen extends StatefulWidget {
   final int bookingId;
   final int billId;
@@ -29,7 +31,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
   }
 
   Future<BookingResponseDto> fetchBooking(int id) async {
-    final response = await http.get(Uri.parse('http://172.28.160.1:8080/api/booking/$id'));
+    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/booking/$id'));
 
     if (response.statusCode == 200) {
       return BookingResponseDto.fromJson(json.decode(response.body));
@@ -39,7 +41,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
   }
 
   Future<BillResponseDto> fetchBill(int id) async {
-    final response = await http.get(Uri.parse('http://172.28.160.1:8080/api/bill/$id'));
+    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/bill/$id'));
 
     if (response.statusCode == 200) {
       return BillResponseDto.fromJson(json.decode(response.body));

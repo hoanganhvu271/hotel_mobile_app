@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../common/utils/api_constants.dart';
 import '../model/user_owner_hotel.dart';
 
 class UserService {
-  static const String apiUrl = 'http://172.28.160.1:8080/api/hotel-owner/user';
+  static const String apiUrl = '${ApiConstants.baseUrl}/api/hotel-owner/user';
   Future<List<User>> fetchUsers() async {
     final response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {

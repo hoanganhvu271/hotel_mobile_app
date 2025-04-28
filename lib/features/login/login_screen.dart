@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
 
+import '../../common/utils/api_constants.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -26,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final url = Uri.parse('http://172.28.160.1:8080/api/auth/login');
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/login');
     final body = {
       'username': _usernameController.text,
       'password': _passwordController.text,

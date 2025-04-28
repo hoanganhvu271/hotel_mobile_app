@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_app/common/utils/api_constants.dart';
 import 'package:hotel_app/features/booking/booking_confirm.dart';
 import 'package:intl/intl.dart';
 import '../../features/booking/model/booking_room_result.dart';
@@ -43,7 +44,7 @@ class BookingRoomCard extends StatelessWidget {
                   image: DecorationImage(
                     image: NetworkImage(
                       room.roomImg != null && room.roomImg!.isNotEmpty
-                          ? 'http://172.28.160.1:8080/api/files/${room.roomImg}'
+                          ? '${ApiConstants.baseUrl}/api/files/${room.roomImg}'
                           : 'https://placehold.co/179x112',
                     ),
                     fit: BoxFit.cover,
