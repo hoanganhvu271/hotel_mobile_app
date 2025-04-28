@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-// No intl needed here unless formatting happens inside this widget
 
 class RevenueLineChart extends StatelessWidget {
   final List<FlSpot> revenueData;
   final FlSpot? selectedSpot;
-  final bool showSelectedInfo; // To control grid line visibility
+  final bool showSelectedInfo;
   final double chartMinX;
   final double chartMaxX;
   final double chartMinY;
   final double chartMaxY;
   final double leftInterval;
-  final Widget Function(double, TitleMeta) leftTitleWidgets; // Function for Y titles
-  final Function(FlTouchEvent, LineTouchResponse?) onTapSpot; // Callback for touch
+  final Widget Function(double, TitleMeta) leftTitleWidgets;
+  final Function(FlTouchEvent, LineTouchResponse?) onTapSpot;
 
   const RevenueLineChart({
     Key? key,
@@ -30,21 +29,17 @@ class RevenueLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The build method now *only* returns the LineChart widget
     return LineChart(
       LineChartData(
-        // Use passed min/max values
         minX: chartMinX,
         maxX: chartMaxX,
         minY: chartMinY,
         maxY: chartMaxY,
 
-        // ----- Grid Data (Dynamic Vertical Line) -----
         gridData: FlGridData(
           show: true,
           drawHorizontalLine: false,
           drawVerticalLine: true,
-          // Use passed state to check if line should be shown
           checkToShowVerticalLine: (value) {
             const tolerance = 1.0;
             return showSelectedInfo && selectedSpot != null &&
@@ -59,32 +54,29 @@ class RevenueLineChart extends StatelessWidget {
           },
         ),
 
-        // ----- Titles Data (Axis Labels) -----
         titlesData: FlTitlesData(
           show: true,
-          bottomTitles: const AxisTitles( sideTitles: SideTitles(showTitles: false)), // X Axis hidden
-          leftTitles: AxisTitles( // Y Axis configured using passed function
+          bottomTitles: const AxisTitles( sideTitles: SideTitles(showTitles: false)),
+          leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              reservedSize: 35, // Keep consistent
-              getTitlesWidget: leftTitleWidgets, // Use passed function
-              interval: leftInterval, // Use passed interval
+              reservedSize: 35,
+              getTitlesWidget: leftTitleWidgets,
+              interval: leftInterval,
             ),
           ),
           topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         ),
 
-        // ----- Border Data -----
         borderData: FlBorderData(
           show: true,
           border: Border.all(color: Colors.grey.shade300, width: 1),
         ),
 
-        // ----- Line Bar Data -----
         lineBarsData: [
           LineChartBarData(
-            spots: revenueData, // Use passed data
+            spots: revenueData,
             isCurved: true,
             gradient: const LinearGradient(
               colors: [Colors.cyanAccent, Colors.blueAccent],
@@ -104,10 +96,9 @@ class RevenueLineChart extends StatelessWidget {
           ),
         ],
 
-        // ----- Touch Interaction Data -----
         lineTouchData: LineTouchData(
-          handleBuiltInTouches: false, // Manual handling
-          touchCallback: onTapSpot, // Use passed callback function
+          handleBuiltInTouches: false,
+          touchCallback: onTapSpot,
           getTouchedSpotIndicator: (LineChartBarData barData, List<int> spotIndexes) {
             return spotIndexes.map((index) {
               return TouchedSpotIndicatorData(
@@ -123,9 +114,6 @@ class RevenueLineChart extends StatelessWidget {
           touchSpotThreshold: 20,
         ),
       ),
-      // Keep swap animation if desired, triggered by parent state changes
-      // swapAnimationDuration: const Duration(milliseconds: 250),
-      // swapAnimationCurve: Curves.linear,
     );
   }
 }

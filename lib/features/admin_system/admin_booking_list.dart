@@ -4,7 +4,6 @@ import 'package:hotel_app/common/widgets/heading.dart';
 import 'package:hotel_app/features/admin_system/model/revenue_model.dart';
 import 'package:intl/intl.dart';
 
-
 class BookingPage extends StatelessWidget {
   final List<BookingDetail> bookingDetails;
 
@@ -21,7 +20,6 @@ class BookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define formatters once
     final currencyFormatter = NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0);
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
@@ -44,35 +42,33 @@ class BookingPage extends StatelessWidget {
               ),
             ],
           ),
-          // Body contains the list of bookings
           Expanded(
             child: bookingDetails.isEmpty
-                ? Center( // Show a message if the list is empty
+                ? Center(
               child: Text(
                 'Không có đặt phòng nào.',
                 style: textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
               ),
             )
-                : ListView.separated( // Use separated for dividers between cards
-              padding: const EdgeInsets.all(12.0), // Padding around the entire list
+                : ListView.separated(
+              padding: const EdgeInsets.all(12.0),
               itemCount: bookingDetails.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 10), // Space between cards
+              separatorBuilder: (context, index) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final booking = bookingDetails[index];
 
                 return Card(
-                  elevation: 3, // Softer shadow
-                  margin: EdgeInsets.zero, // ListView.separated handles spacing
+                  elevation: 3,
+                  margin: EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Slightly more rounded corners
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  clipBehavior: Clip.antiAlias, // Clips content to rounded corners
+                  clipBehavior: Clip.antiAlias,
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0), // Padding inside the card
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Booking ID - Prominent
                         Text(
                           'Booking ID: ${booking.bookingId}',
                           style: textTheme.titleMedium?.copyWith(
@@ -80,9 +76,8 @@ class BookingPage extends StatelessWidget {
                             color: Color(0xFF65462D)
                           ),
                         ),
-                        const Divider(height: 20, thickness: 1), // Visual separator
+                        const Divider(height: 20, thickness: 1),
 
-                        // Use helper widget for info rows for consistency
                         _buildInfoRow(Icons.meeting_room_outlined, 'Phòng:', booking.roomName, textTheme),
                         _buildInfoRow(Icons.person_outline, 'Khách hàng:', booking.fullName, textTheme),
                         _buildInfoRow(Icons.phone_outlined, 'Điện thoại:', booking.phone, textTheme),
@@ -102,24 +97,22 @@ class BookingPage extends StatelessWidget {
     );
   }
 
-  // Helper widget to create consistent info rows with icons
   Widget _buildInfoRow(IconData icon, String label, String value, TextTheme textTheme, {Color? valueColor}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0), // Spacing between rows
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top if text wraps
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: Colors.grey[600]), // Icon for the row
+          Icon(icon, size: 18, color: Colors.grey[600]),
           const SizedBox(width: 10),
           Text(
             '$label ',
-            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: Colors.grey[700]), // Slightly bolder label
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: Colors.grey[700]),
           ),
-          Expanded( // Allows value text to wrap
+          Expanded(
             child: Text(
               value,
               style: textTheme.bodyMedium?.copyWith(color: valueColor ?? textTheme.bodyMedium?.color),
-              // softWrap: true, // Ensures text wraps
             ),
           ),
         ],

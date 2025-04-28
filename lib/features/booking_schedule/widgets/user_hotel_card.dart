@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-
 import '../model/user_owner_hotel.dart';
 
 class UserHotelCard extends StatelessWidget {

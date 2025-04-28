@@ -4,7 +4,7 @@ import 'package:hotel_app/features/admin_system/model/daily_revenue.dart';
 import 'package:http/http.dart' as http;
 
 class AdminService {
-  static const String _baseUrl = 'http://172.28.160.1:8080/api/admin/'; // dùng cho emulator Android
+  static const String _baseUrl = 'http://172.28.160.1:8080/api/admin/';
 
   Future<List<DailyRevenue>> fetchMonthlyRevenue() async {
     final response = await http.get(Uri.parse('http://172.28.160.1:8080/api/admin/revenue/monthly'));

@@ -28,27 +28,12 @@ class _ApiDropdownState extends State<ApiDropdown> {
     loadData();
   }
 
-  // Future<void> loadData() async {
-  //   try {
-  //     List<String> data = await widget.fetchData();
-  //     setState(() {
-  //       items = data;
-  //       selected = widget.initialValue ?? (data.isNotEmpty ? data[0] : null);
-  //       if (selected != null) widget.onChanged(selected!);
-  //     });
-  //   } catch (e) {
-  //     print('Error fetching ${widget.label}: $e');
-  //   }
-  // }
-
   Future<void> loadData() async {
     try {
       List<String> data = await widget.fetchData();
       setState(() {
         items = ['Tất cả', ...data];
-        // Nếu initialValue là null thì hiển thị 'Tất cả'
         selected = widget.initialValue ?? 'Tất cả';
-        // Gửi giá trị null nếu là 'Tất cả', ngược lại gửi selected
         widget.onChanged(selected == 'Tất cả' ? null : selected!);
       });
     } catch (e) {
@@ -63,7 +48,7 @@ class _ApiDropdownState extends State<ApiDropdown> {
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
       child: Row(
         children: [
-          Expanded( // phần label tự chiếm không gian còn lại bên trái
+          Expanded(
             child: Text(
               '${widget.label}:',
               style: const TextStyle(

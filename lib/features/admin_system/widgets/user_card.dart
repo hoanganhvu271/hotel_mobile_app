@@ -4,13 +4,13 @@ import 'package:hotel_app/features/admin_system/model/user_model.dart';
 class UserCard extends StatelessWidget {
   final User user;
   final VoidCallback onTap;
-  final String Function(String) roleTranslator; // <- thêm dòng này
+  final String Function(String) roleTranslator;
 
   const UserCard({
     super.key,
     required this.user,
     required this.onTap,
-    required this.roleTranslator, // <- thêm dòng này
+    required this.roleTranslator,
   });
 
   @override

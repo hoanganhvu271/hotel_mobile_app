@@ -11,12 +11,11 @@ class MoreUserSrceen extends StatelessWidget {
       color: Colors.transparent,
       child: SafeArea(
           child: Column(
-            children: [
-              AppBarWidget(title: "Booking_N15"),
-              Expanded(child: MoreContentWidget())
-            ],
-          )
-      ),
+        children: [
+          AppBarWidget(title: "Booking_N15"),
+          Expanded(child: MoreContentWidget())
+        ],
+      )),
     );
   }
 }
@@ -25,11 +24,10 @@ class AppBarWidget extends StatelessWidget {
   final String title;
   final Color? backgroundColor;
 
-  const AppBarWidget({
-    super.key,
-    required this.title,
-    this.backgroundColor = const Color(0xFF65462D)
-  });
+  const AppBarWidget(
+      {super.key,
+      required this.title,
+      this.backgroundColor = const Color(0xFF65462D)});
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +81,8 @@ class MoreContentWidget extends StatelessWidget {
                       title: "Tài khoản",
                     ),
                     FirstMoreItem(
-                      imagePath: "assets/icons/icon_hotel.svg",
-                      title: "Quản lý Khách sạn",
+                      imagePath: "assets/icons/icon_booking.svg",
+                      title: "Đơn đặt phòng",
                     ),
                   ],
                 ),
@@ -93,10 +91,16 @@ class MoreContentWidget extends StatelessWidget {
               Column(
                 spacing: 24,
                 children: [
-                  const RemainingMoreItem(imagePath: "assets/icons/icon_setting.svg", title: 'Cài đặt'),
-                  RemainingMoreItem(imagePath: "assets/icons/icon_support.svg", title: 'Hỗ trợ',
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MapScreen()))
-                  ),
+                  const RemainingMoreItem(
+                      imagePath: "assets/icons/icon_setting.svg",
+                      title: 'Cài đặt'),
+                  RemainingMoreItem(
+                      imagePath: "assets/icons/icon_support.svg",
+                      title: 'Hỗ trợ',
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MapScreen()))),
                   // RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
                   //     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
                   // ),
@@ -160,8 +164,7 @@ class FirstMoreItem extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Colors.grey
-                  ),
+                      color: Colors.grey),
                 ),
               ],
             ),
@@ -207,8 +210,7 @@ class RemainingMoreItem extends StatelessWidget {
                   color: const Color(0xFF000000).withValues(alpha: 0.05),
                   blurRadius: 4,
                   offset: const Offset(0, 4),
-                  spreadRadius: 0
-              ),
+                  spreadRadius: 0),
             ],
           ),
           child: Row(
@@ -221,8 +223,7 @@ class RemainingMoreItem extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: disable ? const Color(0xFF898181) : Colors.grey
-                ),
+                    color: disable ? const Color(0xFF898181) : Colors.grey),
               ),
             ],
           ),
@@ -267,14 +268,15 @@ class CustomFilledButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 10,
             children: [
-              iconPath != null ? SvgPicture.asset(iconPath!) : const SizedBox.shrink(),
+              iconPath != null
+                  ? SvgPicture.asset(iconPath!)
+                  : const SizedBox.shrink(),
               Text(
                 title,
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: textColor ?? Colors.white
-                ),
+                    color: textColor ?? Colors.white),
               ),
             ],
           ),

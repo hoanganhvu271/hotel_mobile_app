@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hotel_app/features/booking/bill_booking_screen.dart';
-import 'package:hotel_app/features/booking/booking_screen.dart';
 import 'package:hotel_app/features/booking/model/booking_create_response.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -88,8 +87,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
             if (priceCourse == widget.booking.price && value.contains(qrContent)) {
               _countdownTimer?.cancel();
-
-              // Make API calls to update booking status
               await http.patch(
                 Uri.parse("http://172.28.160.1:8080/api/bill/${widget.booking.billId}/status?paidStatus=true"),
               );
@@ -107,9 +104,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        // Close the dialog
                         Navigator.pop(context);
-                        // Then navigate to the BillBookingScreen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -284,23 +279,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
             ElevatedButton(
               onPressed: () async {
-                // Cập nhật trạng thái thanh toán và xác nhận đặt phòng
                 try {
-                  // Gửi yêu cầu PATCH để cập nhật trạng thái thanh toán của hóa đơn
                   final responseBill = await http.patch(
                     Uri.parse("http://172.28.160.1:8080/api/bill/${widget.booking.billId}/status?paidStatus=true"),
                   );
-
-                  // Kiểm tra nếu phản hồi là thành công
                   if (responseBill.statusCode == 200) {
-                    // Gửi yêu cầu PUT để xác nhận trạng thái đặt phòng
                     final responseBooking = await http.put(
                       Uri.parse("http://172.28.160.1:8080/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
                     );
-
-                    // Kiểm tra nếu phản hồi là thành công
                     if (responseBooking.statusCode == 200) {
-                      // Nếu thành công, chuyển đến màn hình hóa đơn
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -317,7 +304,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     throw Exception("Không thể cập nhật trạng thái thanh toán.");
                   }
                 } catch (e) {
-                  // Hiển thị lỗi nếu có sự cố trong quá trình gửi yêu cầu
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -337,7 +323,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               },
               child: const Text('Xem Hóa Đơn'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,  // Use backgroundColor instead of primary
+                backgroundColor: Colors.blue,
                 padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
                 textStyle: const TextStyle(
                   fontSize: 16,

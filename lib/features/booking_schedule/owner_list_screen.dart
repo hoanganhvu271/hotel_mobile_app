@@ -3,7 +3,6 @@ import 'package:hotel_app/common/widgets/heading.dart';
 import 'package:hotel_app/features/booking_schedule/booking_schedule_screen.dart';
 import 'package:hotel_app/features/booking_schedule/services/owner_hotel.dart';
 import 'package:hotel_app/features/booking_schedule/widgets/user_hotel_card.dart';
-
 import 'model/user_owner_hotel.dart';
 
 class OwnerListScreen extends StatefulWidget {
@@ -116,7 +115,6 @@ class _OwnerListScreenState extends State<OwnerListScreen> {
                   ],
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
@@ -128,23 +126,23 @@ class _OwnerListScreenState extends State<OwnerListScreen> {
                     prefixIcon: const Icon(Icons.search, color: _brownColor),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                      icon: Icon(Icons.clear),
-                      tooltip: 'Xóa tìm kiếm',
-                      onPressed: () {
-                        _searchController.clear();
-                        _filterUsers('');
-                      },
-                    )
+                            icon: Icon(Icons.clear),
+                            tooltip: 'Xóa tìm kiếm',
+                            onPressed: () {
+                              _searchController.clear();
+                              _filterUsers('');
+                            },
+                          )
                         : null,
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                      const BorderSide(color: _brownColor, width: 1),
+                          const BorderSide(color: _brownColor, width: 1),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide:
-                      const BorderSide(color: _brownColor, width: 1.5),
+                          const BorderSide(color: _brownColor, width: 1.5),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 12.0, horizontal: 15.0),
@@ -152,7 +150,6 @@ class _OwnerListScreenState extends State<OwnerListScreen> {
                   onChanged: _filterUsers,
                 ),
               ),
-
               Expanded(
                 child: FutureBuilder<List<User>>(
                   future: _usersFuture,
@@ -221,7 +218,7 @@ class _OwnerListScreenState extends State<OwnerListScreen> {
                           horizontal: 16.0, vertical: 8.0),
                       itemCount: _filteredUsers.length,
                       separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
+                          const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final user = _filteredUsers[index];
                         return UserHotelCard(
@@ -245,7 +242,6 @@ class _OwnerListScreenState extends State<OwnerListScreen> {
               ),
             ],
           ),
-        )
-    );
+        ));
   }
 }

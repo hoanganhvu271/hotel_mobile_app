@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_app/common/widgets/heading.dart';
 import 'package:hotel_app/features/admin_system/admin_booking_list.dart';
-import 'package:hotel_app/features/admin_system/model/revenue_model.dart'; // Assuming this exists
-import 'package:hotel_app/features/admin_system/services/revenue_service.dart'; // Assuming this exists
+import 'package:hotel_app/features/admin_system/model/revenue_model.dart';
+import 'package:hotel_app/features/admin_system/services/revenue_service.dart';
 import 'package:hotel_app/features/admin_system/widgets/revenue_line_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -402,7 +402,6 @@ class _AdminRoomRevenueScreenState extends State<AdminRoomRevenueScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Nút xem doanh thu
                 ElevatedButton.icon(
                   onPressed: _isLoading ? null : _fetchRevenue,
                   icon: _isLoading
@@ -424,7 +423,6 @@ class _AdminRoomRevenueScreenState extends State<AdminRoomRevenueScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Hiển thị tổng doanh thu
                 Center(
                   child: Text(
                     'Tổng doanh thu: ${NumberFormat.currency(locale: 'vi_VN', symbol: '₫', decimalDigits: 0).format(_totalRevenueInRange)}',

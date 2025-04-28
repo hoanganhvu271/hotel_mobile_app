@@ -51,7 +51,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // Bỏ AppBar ở đây
+      appBar: null,
       body: Column(
         children: [
 
@@ -59,7 +59,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
 
           Stack(
             children: [
-              const Heading(title: 'XÁC NHẬN HÓA ĐƠN'), // Heading widget
+              const Heading(title: 'XÁC NHẬN HÓA ĐƠN'),
               Positioned(
                 left: 20,
                 top: 22,
@@ -83,23 +83,21 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                 final booking = snapshot.data![0] as BookingResponseDto;
                 final bill = snapshot.data![1] as BillResponseDto;
 
-                // Định dạng thời gian
                 String formattedCheckIn = DateFormat('HH:mm dd/MM/yyyy').format(booking.checkIn);
                 String formattedCheckOut = DateFormat('HH:mm dd/MM/yyyy').format(booking.checkOut);
 
                 return Padding(
-                  padding: const EdgeInsets.all(16.0), // Thêm padding cho toàn bộ nội dung
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa theo chiều dọc
-                    crossAxisAlignment: CrossAxisAlignment.center, // Căn giữa theo chiều ngang
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Hiển thị Mã hóa đơn
                       Container(
                         width: double.infinity,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 48), // Dịch sang phải 50
+                          padding: const EdgeInsets.only(left: 48),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start, // Căn trái
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
                                 width: 146,
@@ -109,7 +107,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w700, // Đậm
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -121,7 +119,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400, // Nhạt
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
@@ -130,13 +128,12 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      // Hiển thị Nhận phòng
                       Container(
                         width: double.infinity,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 48), // Dịch sang phải 50
+                          padding: const EdgeInsets.only(left: 48),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start, // Căn trái
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
                                 width: 146,
@@ -146,7 +143,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w700, // Đậm
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -158,7 +155,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400, // Nhạt
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
@@ -167,13 +164,12 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      // Hiển thị Trả phòng
                       Container(
                         width: double.infinity,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 48), // Dịch sang phải 50
+                          padding: const EdgeInsets.only(left: 48),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start, // Căn trái
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
                                 width: 146,
@@ -183,7 +179,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w700, // Đậm
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -195,7 +191,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400, // Nhạt
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
@@ -204,13 +200,12 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      // Hiển thị Tổng tiền
                       Container(
                         width: double.infinity,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 48), // Dịch sang phải 50
+                          padding: const EdgeInsets.only(left: 48),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start, // Căn trái
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
                                 width: 146,
@@ -220,19 +215,19 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w700, // Đậm
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
                               SizedBox(
                                 width: 185,
                                 child: Text(
-                                  '${NumberFormat("#,###").format(bill.totalPrice)} VND', // Định dạng tiền tệ
+                                  '${NumberFormat("#,###").format(bill.totalPrice)} VND',
                                   style: TextStyle(
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400, // Nhạt
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
@@ -241,13 +236,12 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      // Hiển thị Trạng thái thanh toán
                       Container(
                         width: double.infinity,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 48), // Dịch sang phải 50
+                          padding: const EdgeInsets.only(left: 48),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start, // Căn trái
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(
                                 width: 146,
@@ -257,7 +251,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w700, // Đậm
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
@@ -269,7 +263,7 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                                     color: const Color(0xFF65462D),
                                     fontSize: 16,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w400, // Nhạt
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
@@ -285,7 +279,6 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
               }
             },
           )
-
 
         ],
       ),

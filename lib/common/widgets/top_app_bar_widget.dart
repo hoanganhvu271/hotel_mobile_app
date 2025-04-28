@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/booking/booking_screen.dart';
+
 class TopAppBarWidget extends StatefulWidget {
   const TopAppBarWidget({super.key});
 
@@ -20,7 +21,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
             offset: const Offset(0, -90),
             child: Stack(
               children: [
-                // Background Image
                 Positioned(
                   left: 0,
                   top: 0,
@@ -29,7 +29,7 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                     height: 284,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/images/anh-phong-07.jpg"), // Thay đổi này
+                        image: AssetImage("assets/images/anh-phong-07.jpg"),
                         fit: BoxFit.cover,
                       ),
                       shape: RoundedRectangleBorder(
@@ -43,7 +43,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                   ),
                 ),
 
-                // Search bar background
                 Positioned(
                   left: 14,
                   top: 194,
@@ -73,7 +72,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Row(
                           children: [
-                            // Search icon
                             SvgPicture.string(
                               '''
                               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +82,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                               height: 40,
                             ),
                             SizedBox(width: 10),
-                            // Search text
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 30.0),
@@ -108,7 +105,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                   ),
                 ),
 
-                // Filter button
                 Positioned(
                   left: 338,
                   top: 194,
@@ -140,7 +136,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                   ),
                 ),
 
-                // Title
                 Positioned(
                   left: 80,
                   top: 131.61,
@@ -160,7 +155,6 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                   ),
                 ),
 
-                // Avatar
                 Positioned(
                   left: 13.73,
                   top: 123.74,

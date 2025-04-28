@@ -33,7 +33,6 @@ class BookingRoomCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Hình ảnh phòng
             Positioned(
               left: 9,
               top: 9,
@@ -56,7 +55,6 @@ class BookingRoomCard extends StatelessWidget {
               ),
             ),
 
-            // Thông tin bên phải
             Positioned(
               left: 200,
               top: showBookButton ? 30 : 8,
@@ -114,7 +112,6 @@ class BookingRoomCard extends StatelessWidget {
               ),
             ),
 
-            // Nút đặt phòng (chỉ hiển thị nếu showBookButton = true)
             if (showBookButton)
               Positioned(
                 left: 9,

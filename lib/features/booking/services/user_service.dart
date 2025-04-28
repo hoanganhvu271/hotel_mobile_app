@@ -2,7 +2,7 @@ import 'package:hotel_app/common/local/shared_prefs/token_manager.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../model/user_booking.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 Future<UserInfo> fetchUserInfo() async {
   String? token = await TokenManager.getToken();
   if (token == null) {

@@ -10,7 +10,7 @@ class Heading extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: double.infinity, // Sử dụng double.infinity để container chiếm toàn bộ chiều ngang
+          width: double.infinity,
           height: 88,
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(),
@@ -33,10 +33,9 @@ class Heading extends StatelessWidget {
                   ),
                 ),
               ),
-              // Căn giữa chữ theo chiều ngang
               Positioned(
                 left: 0,
-                right: 0, // Căn trái và phải đều 0 để căn giữa
+                right: 0,
                 top: 32,
                 child: Center(
                   child: Text(

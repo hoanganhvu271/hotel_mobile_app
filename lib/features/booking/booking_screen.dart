@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-
 import 'booking_list_room_screen.dart';
 import 'model/booking_room_result.dart';
 import 'model/booking_search_request.dart';
@@ -13,7 +12,6 @@ import '../../common/widgets/api_input_field.dart';
 import '../../common/widgets/booking_search.dart';
 import '../../common/widgets/date_time_picker.dart';
 import '../../common/widgets/heading.dart';
-import '../../common/widgets/home_booking_btn.dart';
 import '../../common/widgets/range_input_field.dart';
 import '../../common/widgets/service_checkbox_list.dart';
 import '../../common/widgets/static_dropdown.dart';
@@ -57,7 +55,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      final rooms = data.map((json) => BookingRoomResult.fromJson(json)).toList();
+      final rooms =
+          data.map((json) => BookingRoomResult.fromJson(json)).toList();
 
       if (!mounted) return;
       Navigator.push(
@@ -70,7 +69,6 @@ class _BookingScreenState extends State<BookingScreen> {
       print("Lỗi khi gửi yêu cầu: ${response.statusCode}");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +101,6 @@ class _BookingScreenState extends State<BookingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     SearchFrameTotal(
                       onChanged: (val) => _searchModel.infoSearch = val,
                       onTapSearch: () async {
@@ -124,39 +121,41 @@ class _BookingScreenState extends State<BookingScreen> {
                       onChanged: (value) => _searchModel.district = value,
                     ),
                     DateTimePickerDropdown(
-                        label: "Nhận phòng",
-                        initialDateTime: DateTime(now.year, now.month, now.day, 14, 0),
-                        onChanged: (date, time) {
-                          _searchModel.checkInDate = date;
-                          _searchModel.checkInTime = time;
-                        },
+                      label: "Nhận phòng",
+                      initialDateTime:
+                          DateTime(now.year, now.month, now.day, 14, 0),
+                      onChanged: (date, time) {
+                        _searchModel.checkInDate = date;
+                        _searchModel.checkInTime = time;
+                      },
                     ),
                     DateTimePickerDropdown(
-                        label: "Trả phòng",
-                        initialDateTime: DateTime(now.year, now.month, now.day + 1, 11, 0),
-                        onChanged: (date, time) {
-                          _searchModel.checkOutDate = date;
-                          _searchModel.checkOutTime = time;
-                        },
+                      label: "Trả phòng",
+                      initialDateTime:
+                          DateTime(now.year, now.month, now.day + 1, 11, 0),
+                      onChanged: (date, time) {
+                        _searchModel.checkOutDate = date;
+                        _searchModel.checkOutTime = time;
+                      },
                     ),
 
                     ApiInputField(
                       label: 'Người lớn',
                       initialValue: '2',
                       onChanged: (value) =>
-                      _searchModel.adults = int.tryParse(value) ?? 2,
+                          _searchModel.adults = int.tryParse(value) ?? 2,
                     ),
                     ApiInputField(
                       label: 'Trẻ em',
                       initialValue: '0',
                       onChanged: (value) =>
-                      _searchModel.children = int.tryParse(value) ?? 0,
+                          _searchModel.children = int.tryParse(value) ?? 0,
                     ),
                     ApiInputField(
                       label: 'Giường',
                       initialValue: '1',
                       onChanged: (value) =>
-                      _searchModel.bedNumber = int.tryParse(value) ?? 1,
+                          _searchModel.bedNumber = int.tryParse(value) ?? 1,
                     ),
                     RangeInputField(
                       label: 'Khoảng giá',
@@ -174,7 +173,8 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                     const SizedBox(height: 15),
                     ServiceCheckboxList(
-                      onChanged: (selected) => _searchModel.services = selected.map((e) => e.toString()).toList(),
+                      onChanged: (selected) => _searchModel.services =
+                          selected.map((e) => e.toString()).toList(),
                     ),
                     const SizedBox(height: 20),
                     // BookingBtn(
@@ -192,7 +192,8 @@ class _BookingScreenState extends State<BookingScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),
+      bottomNavigationBar:
+          const KeepAliveComponent(child: BottomBarNavigation()),
     );
   }
 }

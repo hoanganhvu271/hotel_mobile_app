@@ -32,7 +32,7 @@ class _StaticDropdownState extends State<StaticDropdown> {
     if (widget.initialValue != null) {
       selectedLabel = options.entries
           .firstWhere((entry) => entry.value == widget.initialValue,
-          orElse: () => const MapEntry('Giá thấp - cao', 'price_asc'))
+              orElse: () => const MapEntry('Giá thấp - cao', 'price_asc'))
           .key;
     } else {
       selectedLabel = options.keys.first;

@@ -24,7 +24,7 @@ class _DateTimePickerDropdownState extends State<DateTimePickerDropdown> {
   void initState() {
     super.initState();
     selectedDateTime = widget.initialDateTime ?? DateTime.now();
-    _notifyParent(); // Gọi để gửi giá trị khởi tạo về parent
+    _notifyParent();
   }
 
   Future<void> _pickDate() async {

@@ -3,7 +3,6 @@ import 'package:hotel_app/common/widgets/heading.dart';
 import 'package:hotel_app/features/booking_schedule/services/booking_schedule_service.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
-
 import 'model/booking_schedule_models.dart';
 
 class BookingScheduleScreen extends StatefulWidget {

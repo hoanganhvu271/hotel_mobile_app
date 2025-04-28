@@ -41,7 +41,7 @@ class _AdminSystemUsersState extends State<AdminSystemUsers> {
             (user.fullName?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false) ||
                 (user.phone?.contains(searchController.text) ?? false) ||
                 (user.username?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false) ||
-                (user.email?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false); // Add email check
+                (user.email?.toLowerCase().contains(searchController.text.toLowerCase()) ?? false);
 
         final matchesRoles = selectedRoles.isEmpty || user.roleDtoList.any((role) => selectedRoles.contains(role.name));
 
@@ -194,7 +194,7 @@ class _AdminSystemUsersState extends State<AdminSystemUsers> {
                     controller: searchController,
                     decoration: InputDecoration(
                       labelText: 'Tìm kiếm theo tên, số điện thoại, username, gmail',
-                      labelStyle: TextStyle(color: Colors.brown.shade800), // Set label color to dark brown
+                      labelStyle: TextStyle(color: Colors.brown.shade800),
                     ),
                     onChanged: (value) => _filterUsers(),
                   ),

@@ -13,7 +13,7 @@ class LabelValueRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (value == null || value!.trim().isEmpty) {
-      return const SizedBox.shrink(); // Không hiển thị gì nếu không có giá trị
+      return const SizedBox.shrink();
     }
 
     return Padding(

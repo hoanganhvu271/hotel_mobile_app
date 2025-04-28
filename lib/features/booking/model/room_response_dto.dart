@@ -13,7 +13,7 @@ class RoomResponseDto {
     return RoomResponseDto(
       roomImg: json['roomImg'],
       hotelName: json['hotelDto']['hotelName'],
-      roomImageUrl: json['roomImageUrls'].isNotEmpty ? json['roomImageUrls'][0] : '', // Lấy URL ảnh phòng, nếu có
+      roomImageUrl: json['roomImageUrls'].isNotEmpty ? json['roomImageUrls'][0] : '',
     );
   }
 }

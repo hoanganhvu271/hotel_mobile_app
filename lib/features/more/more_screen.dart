@@ -107,6 +107,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:hotel_app/features/booking_schedule/owner_list_screen.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
+import 'package:hotel_app/features/more_user/more_user_srceen.dart';
 import 'package:hotel_app/features/review/booking_list_user_screen.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -262,6 +263,45 @@ class MoreScreen extends StatelessWidget {
                     SizedBox(width: 10),
                     Text(
                       'Đặt phòng',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+
+
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MoreUserSrceen()),
+                );
+              },
+              child: Container(
+                width: 350,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF43A047),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.admin_panel_settings,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'More User Screen',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
