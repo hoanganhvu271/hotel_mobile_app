@@ -3,10 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:hotel_app/features/review/model/booking_user_result.dart';
 import 'package:hotel_app/features/review/model/room_booking_detail.dart';
 import 'package:hotel_app/features/review/model/booking_with_room_info.dart';
+import '../../../common/utils/api_constants.dart';
 
-Future<List<BookingWithRoomInfo>> fetchBookingsWithRoomDetails(int userId) async {
+Future<List<BookingWithRoomInfo>> fetchBookingsWithRoomDetails(
+    int userId) async {
   final response = await http.get(
-    Uri.parse('http://192.168.1.50:8080/api/booking/user/$userId'),
+    Uri.parse('${ApiConstants.baseUrl}/api/booking/user/$userId'),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
   );
 
@@ -18,7 +20,8 @@ Future<List<BookingWithRoomInfo>> fetchBookingsWithRoomDetails(int userId) async
       final booking = BookingUserResult.fromJson(bookingJson);
 
       final roomResponse = await http.get(
-        Uri.parse('http://192.168.1.50:8080/api/room/booking/${booking.bookingId}'),
+        Uri.parse(
+            '${ApiConstants.baseUrl}/api/room/booking/${booking.bookingId}'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
       );
 

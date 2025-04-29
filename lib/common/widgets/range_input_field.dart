@@ -69,7 +69,8 @@ class _RangeInputFieldState extends State<RangeInputField> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Từ',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(color: Color(0xFFCAC4D0)),
@@ -90,7 +91,8 @@ class _RangeInputFieldState extends State<RangeInputField> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Đến',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(color: Color(0xFFCAC4D0)),

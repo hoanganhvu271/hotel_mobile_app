@@ -1,5 +1,3 @@
-// models/booking_search_request.dart
-
 class BookingSearchRequest {
   String infoSearch;
   String? city;

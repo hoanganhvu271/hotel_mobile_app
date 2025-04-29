@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_app/features/booking/services/district_service.dart';
 import '../../features/booking/services/city_service.dart';
+
 class Local extends StatefulWidget {
   @override
   _LocalState createState() => _LocalState();
@@ -52,7 +53,6 @@ class _LocalState extends State<Local> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Dropdown Thành phố
         Padding(
           padding: const EdgeInsets.only(left: 40),
           child: Row(
@@ -77,17 +77,13 @@ class _LocalState extends State<Local> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedCity = newValue!;
-                    // TODO: gọi tiếp API lấy district nếu muốn
                   });
                 },
               ),
             ],
           ),
         ),
-
         SizedBox(height: 20),
-
-        // Dropdown Khu vực
         Padding(
           padding: const EdgeInsets.only(left: 50),
           child: Row(
@@ -127,7 +123,4 @@ class _LocalState extends State<Local> {
       ],
     );
   }
-
-
-
 }

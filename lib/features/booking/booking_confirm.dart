@@ -3,6 +3,7 @@ import 'package:hotel_app/features/booking/model/booking_create_response.dart';
 import 'package:hotel_app/features/booking/payment_screen.dart';
 import 'package:hotel_app/features/booking/services/user_service.dart';
 import 'package:intl/intl.dart';
+import '../../common/utils/api_constants.dart';
 import '../../common/widgets/booking_room_card.dart';
 import '../../common/widgets/heading.dart';
 import '../../features/booking/model/booking_room_result.dart';
@@ -42,7 +43,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     });
 
     final response = await http.post(
-      Uri.parse('http://192.168.1.50:8080/api/booking'),
+      Uri.parse('${ApiConstants.baseUrl}/api/booking'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -90,7 +91,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
               ),
             ),
             BookingRoomCard(room: widget.room, showBookButton: false),
-
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -106,7 +106,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
-                        return Text('Lỗi tải thông tin người dùng: ${snapshot.error}');
+                        return Text(
+                            'Lỗi tải thông tin người dùng: ${snapshot.error}');
                       } else if (snapshot.hasData) {
                         UserInfo user = snapshot.data!;
                         return Align(
@@ -116,10 +117,9 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                             children: [
                               _buildInfoRow('Khách hàng', user.fullName),
                               _buildInfoRow('Số điện thoại', user.phone),
-                              _buildInfoRow('Điểm tích lũy', user.score.toString()),
-
+                              _buildInfoRow(
+                                  'Điểm tích lũy', user.score.toString()),
                               const SizedBox(height: 10),
-
                               ElevatedButton(
                                 onPressed: () {
                                   setState(() {
@@ -142,7 +142,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                       }
                     },
                   ),
-
                   const SizedBox(height: 20),
                   Text(
                     'Thông tin đặt phòng',
@@ -156,9 +155,12 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                       children: [
                         _buildInfoRow('Ngày nhận phòng', widget.room.checkIn),
                         _buildInfoRow('Ngày trả phòng', widget.room.checkOut),
-                        _buildInfoRow('Số giường', widget.room.bedNumber.toString()),
-                        _buildInfoRow('Số người lớn', widget.room.adults.toString()),
-                        _buildInfoRow('Số trẻ em', widget.room.children.toString()),
+                        _buildInfoRow(
+                            'Số giường', widget.room.bedNumber.toString()),
+                        _buildInfoRow(
+                            'Số người lớn', widget.room.adults.toString()),
+                        _buildInfoRow(
+                            'Số trẻ em', widget.room.children.toString()),
                         _buildInfoRow(
                           'Tổng tiền phòng',
                           NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ')
@@ -171,13 +173,14 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                           ),
                           _buildInfoRow(
                             'Tổng',
-                            NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ').format(finalPrice),
+                            NumberFormat.currency(
+                                    locale: 'vi_VN', symbol: 'VNĐ')
+                                .format(finalPrice),
                           ),
                         ],
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
@@ -227,7 +230,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     );
   }
 }
-
 
 String formatDateTime(String original) {
   final inputFormat = DateFormat("HH:mm dd/MM/yyyy");

@@ -1,9 +1,10 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
+import '../../../common/utils/api_constants.dart';
+
 Future<List<String>> fetchCities() async {
-  final response = await http.get(Uri.parse('http://192.168.1.50:8080/api/hotel/cities'));
+  final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/hotel/cities'));
 
   if (response.statusCode == 200) {
     List<dynamic> data = jsonDecode(response.body);

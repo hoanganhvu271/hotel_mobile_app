@@ -3,9 +3,6 @@ import 'package:intl/intl.dart';
 import '../../common/widgets/booking_room_card.dart';
 import '../../common/widgets/read_only_date_time_display.dart';
 import '../../common/widgets/heading.dart';
-import 'package:hotel_app/common/widgets/keep_alive_component.dart';
-import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
-
 import '../../features/booking/model/booking_room_result.dart';
 
 class BookingListRoomScreen extends StatelessWidget {
@@ -20,7 +17,6 @@ class BookingListRoomScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Heading
             Transform.translate(
               offset: const Offset(0, -25),
               child: Stack(
@@ -47,28 +43,30 @@ class BookingListRoomScreen extends StatelessWidget {
                       ReadOnlyDateTimeDisplay(
                         label: 'Nhận phòng',
                         time: DateFormat('HH:mm').format(
-                          DateFormat('HH:mm dd/MM/yyyy').parse(rooms[0].checkIn),
+                          DateFormat('HH:mm dd/MM/yyyy')
+                              .parse(rooms[0].checkIn),
                         ),
                         date: DateFormat('dd/MM/yyyy').format(
-                          DateFormat('HH:mm dd/MM/yyyy').parse(rooms[0].checkIn),
+                          DateFormat('HH:mm dd/MM/yyyy')
+                              .parse(rooms[0].checkIn),
                         ),
                       ),
                       const SizedBox(height: 6),
                       ReadOnlyDateTimeDisplay(
                         label: 'Trả phòng',
                         time: DateFormat('HH:mm').format(
-                          DateFormat('HH:mm dd/MM/yyyy').parse(rooms[0].checkOut),
+                          DateFormat('HH:mm dd/MM/yyyy')
+                              .parse(rooms[0].checkOut),
                         ),
                         date: DateFormat('dd/MM/yyyy').format(
-                          DateFormat('HH:mm dd/MM/yyyy').parse(rooms[0].checkOut),
+                          DateFormat('HH:mm dd/MM/yyyy')
+                              .parse(rooms[0].checkOut),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
-
             Expanded(
               child: ListView.builder(
                 itemCount: rooms.length,
@@ -77,18 +75,12 @@ class BookingListRoomScreen extends StatelessWidget {
                 },
               ),
             ),
-
-
           ],
         ),
       ),
-      // bottomNavigationBar: const KeepAliveComponent(
-      //   child: BottomBarNavigation(),
-      // ),
     );
   }
 }
-
 
 String formatDateTime(String original) {
   final inputFormat = DateFormat("HH:mm dd/MM/yyyy");

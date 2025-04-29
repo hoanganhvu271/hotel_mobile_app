@@ -23,7 +23,6 @@ class _ApiInputFieldState extends State<ApiInputField> {
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue ?? '');
-    // Gọi onChanged ngay khi có initialValue
     if (widget.initialValue != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.onChanged(widget.initialValue!);

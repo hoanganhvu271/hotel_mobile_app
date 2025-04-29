@@ -2,9 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:hotel_app/features/admin/admin_screen.dart';
-//import 'package:hotel_app/features/user/customer_screen.dart';
-//import 'package:hotel_app/features/owner/hotel_owner_screen.dart';
 import 'package:hotel_app/features/register/register_screen.dart';
 import 'package:hotel_app/features/home/home_screen.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
@@ -77,6 +74,24 @@ class _LoginScreenState extends State<LoginScreen> {
           _errorMessage = 'Sai tài khoản hoặc mật khẩu';
         });
       }
+
+
+      // if (response.statusCode == 200) {
+      //   final data = jsonDecode(response.body);
+      //   final token = data['jwt'];
+      //
+      //   final prefs = await SharedPreferences.getInstance();
+      //   await prefs.setString('jwt_token', token);
+      //
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const HomeScreen()),
+      //   );
+      // } else {
+      //   setState(() {
+      //     _errorMessage = 'Sai tài khoản hoặc mật khẩu';
+      //   });
+      // }
     } catch (e) {
       setState(() {
         _errorMessage = 'Lỗi kết nối đến server';

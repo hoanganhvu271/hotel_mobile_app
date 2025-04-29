@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_app/common/utils/api_constants.dart';
 import 'package:hotel_app/features/booking/booking_confirm.dart';
 import 'package:intl/intl.dart';
 import '../../features/booking/model/booking_room_result.dart';
@@ -10,7 +11,7 @@ class BookingRoomCard extends StatelessWidget {
   const BookingRoomCard({
     super.key,
     required this.room,
-    this.showBookButton = true, // mặc định là hiển thị nút đặt phòng
+    this.showBookButton = true,
   });
 
   @override
@@ -33,7 +34,6 @@ class BookingRoomCard extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Hình ảnh phòng
             Positioned(
               left: 9,
               top: 9,
@@ -44,7 +44,7 @@ class BookingRoomCard extends StatelessWidget {
                   image: DecorationImage(
                     image: NetworkImage(
                       room.roomImg != null && room.roomImg!.isNotEmpty
-                          ? 'http://192.168.1.50:8080/api/files/${room.roomImg}'
+                          ? '${ApiConstants.baseUrl}/api/files/${room.roomImg}'
                           : 'https://placehold.co/179x112',
                     ),
                     fit: BoxFit.cover,
@@ -56,10 +56,9 @@ class BookingRoomCard extends StatelessWidget {
               ),
             ),
 
-            // Thông tin bên phải
             Positioned(
               left: 200,
-              top: 30,
+              top: showBookButton ? 30 : 8,
               right: 12,
               child: SizedBox(
                 child: Column(
@@ -79,6 +78,15 @@ class BookingRoomCard extends StatelessWidget {
                       style: const TextStyle(
                         color: Color(0xFF65462D),
                         fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Đánh giá: ${room.rating.toStringAsFixed(1)} ⭐',
+                      style: const TextStyle(
+                        color: Color(0xFF65462D),
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -105,7 +113,6 @@ class BookingRoomCard extends StatelessWidget {
               ),
             ),
 
-            // Nút đặt phòng (chỉ hiển thị nếu showBookButton = true)
             if (showBookButton)
               Positioned(
                 left: 9,
