@@ -44,7 +44,7 @@ class BookingRoomCard extends StatelessWidget {
                   image: DecorationImage(
                     image: NetworkImage(
                       room.roomImg != null && room.roomImg!.isNotEmpty
-                          ? 'http://172.28.160.1:8080/api/files/${room.roomImg}'
+                          ? 'http://192.168.1.50:8080/api/files/${room.roomImg}'
                           : 'https://placehold.co/179x112',
                     ),
                     fit: BoxFit.cover,

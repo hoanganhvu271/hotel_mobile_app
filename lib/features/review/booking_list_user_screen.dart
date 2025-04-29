@@ -23,7 +23,7 @@
 //   }
 //
 //   Future<void> submitReview(String content, int rating, int bookingId) async {
-//     final url = Uri.parse('http://172.28.160.1:8080/api/review');
+//     final url = Uri.parse('http://192.168.1.50:8080/api/review');
 //     final response = await http.post(
 //       url,
 //       headers: {'Content-Type': 'application/json'},
@@ -127,7 +127,7 @@
 //                                 ClipRRect(
 //                                   borderRadius: BorderRadius.circular(8),
 //                                   child: Image.network(
-//                                     'http://172.28.160.1:8080/api/files/${room.roomImg}',
+//                                     'http://192.168.1.50:8080/api/files/${room.roomImg}',
 //                                     width: 110,
 //                                     height: 90,
 //                                     fit: BoxFit.cover,
@@ -378,7 +378,7 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
   }
 
   Future<void> submitReview(String content, int rating, int bookingId) async {
-    final url = Uri.parse('http://172.28.160.1:8080/api/review');
+    final url = Uri.parse('http://192.168.1.50:8080/api/review');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -606,7 +606,7 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.network(
-                                  'http://172.28.160.1:8080/api/files/${room.roomImg}',
+                                  'http://192.168.1.50:8080/api/files/${room.roomImg}',
                                   width: 105,
                                   height: 90,
                                   fit: BoxFit.cover,

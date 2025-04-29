@@ -9,7 +9,7 @@ Future<UserInfo> fetchUserInfo() async {
     throw Exception('Token không tồn tại');
   }
   final response = await http.get(
-    Uri.parse('http://172.28.160.1:8080/api/user/info'),
+    Uri.parse('http://192.168.1.50:8080/api/user/info'),
     headers: {
       'Authorization': 'Bearer $token',
     },

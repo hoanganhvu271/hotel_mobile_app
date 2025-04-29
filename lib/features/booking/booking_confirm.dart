@@ -42,7 +42,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     });
 
     final response = await http.post(
-      Uri.parse('http://172.28.160.1:8080/api/booking'),
+      Uri.parse('http://192.168.1.50:8080/api/booking'),
       headers: {
         'Content-Type': 'application/json',
       },

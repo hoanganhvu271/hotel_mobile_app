@@ -46,7 +46,7 @@ class _BookingScreenState extends State<BookingScreen> {
   );
 
   Future<void> submitBookingSearch() async {
-    final url = Uri.parse('http://172.28.160.1:8080/api/booking/search');
+    final url = Uri.parse('http://192.168.1.50:8080/api/booking/search');
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},

@@ -37,9 +37,6 @@ class HomeScreen extends StatelessWidget {
               label: 'ĐẶT PHÒNG',
               screen: const BookingScreen(),
             ),
-
-
-
             GestureDetector(
               onTap: () {
                 Navigator.push(

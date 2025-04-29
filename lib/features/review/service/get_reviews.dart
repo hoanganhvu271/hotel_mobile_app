@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 Future<List<ReviewResponseDto>> getReviews(List<int> reviewIds) async {
   final response = await http.post(
-    Uri.parse('http://172.28.160.1:8080/api/review/listId'),
+    Uri.parse('http://192.168.1.50:8080/api/review/listId'),
     headers: {
       'Content-Type': 'application/json',
     },

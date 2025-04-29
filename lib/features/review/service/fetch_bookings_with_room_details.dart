@@ -6,7 +6,7 @@ import 'package:hotel_app/features/review/model/booking_with_room_info.dart';
 
 Future<List<BookingWithRoomInfo>> fetchBookingsWithRoomDetails(int userId) async {
   final response = await http.get(
-    Uri.parse('http://172.28.160.1:8080/api/booking/user/$userId'),
+    Uri.parse('http://192.168.1.50:8080/api/booking/user/$userId'),
     headers: {'Content-Type': 'application/json; charset=UTF-8'},
   );
 
@@ -18,7 +18,7 @@ Future<List<BookingWithRoomInfo>> fetchBookingsWithRoomDetails(int userId) async
       final booking = BookingUserResult.fromJson(bookingJson);
 
       final roomResponse = await http.get(
-        Uri.parse('http://172.28.160.1:8080/api/room/booking/${booking.bookingId}'),
+        Uri.parse('http://192.168.1.50:8080/api/room/booking/${booking.bookingId}'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
       );
 
