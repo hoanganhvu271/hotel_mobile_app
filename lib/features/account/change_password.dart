@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiConstants {
-  static const String baseUrl = 'http://192.168.1.50:8080';
+  static const String baseUrl = '${ApiConstants.baseUrl}';
   static const String changePassword = '/api/user/change-password';
 }
 

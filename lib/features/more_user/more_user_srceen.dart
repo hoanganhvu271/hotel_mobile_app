@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hotel_app/features/account/info.dart';
+import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
+import 'package:hotel_app/features/review/booking_list_user_screen.dart';
 
 class MoreUserSrceen extends StatelessWidget {
   const MoreUserSrceen({super.key});
@@ -72,17 +75,29 @@ class MoreContentWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 80),
-              const IntrinsicHeight(
+              IntrinsicHeight(
                 child: Row(
                   spacing: 26,
                   children: [
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_profile.svg",
                       title: "Tài khoản",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const UserInfoScreen()),
+                        );
+                      },
                     ),
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_booking.svg",
                       title: "Đơn đặt phòng",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const BookingListUserScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -107,10 +122,16 @@ class MoreContentWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 80),
-              const CustomFilledButton(
+              CustomFilledButton(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
                 title: "Đăng xuất",
                 iconPath: "assets/icons/icon_logout.svg",
-                backgroundColor: Color(0xFFB3261E),
+                backgroundColor: const Color(0xFFB3261E),
               ),
             ],
           ),

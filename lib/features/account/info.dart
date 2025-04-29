@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../common/utils/api_constants.dart';
 import 'user_update.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
 
@@ -23,7 +24,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       _errorMessage = null;
     });
 
-    final url = Uri.parse('http://192.168.1.50:8080/api/user/info');
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/user/info');
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('jwt_token');

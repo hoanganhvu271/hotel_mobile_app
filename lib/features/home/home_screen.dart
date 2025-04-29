@@ -7,6 +7,7 @@ import 'package:hotel_app/common/widgets/top_app_bar_widget.dart';
 import 'package:hotel_app/features/booking/booking_screen.dart';
 
 import '../../common/utils/api_constants.dart';
+import '../more_user/more_user_srceen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -103,6 +104,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
+            Transform.translate(
+              offset: const Offset(0, -95),
+              child: const BookingBtn(
+                label: 'More',
+                screen: MoreUserSrceen(),
+              ),
+            ),
           ],
         ),
       ),

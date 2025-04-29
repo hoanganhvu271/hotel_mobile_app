@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
 
+import '../../common/utils/api_constants.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -27,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _errorMessage = null;
     });
 
-    final url = Uri.parse('http://192.168.1.50:8080/api/auth/register');
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/register');
     final body = {
       'fullName': _fullNameController.text,
       'phone': _phoneController.text,

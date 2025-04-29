@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hotel_app/features/register/register_screen.dart';
 import 'package:hotel_app/features/home/home_screen.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
+
+import '../../common/utils/api_constants.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -25,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final url = Uri.parse('http://192.168.1.50:8080/api/auth/login');
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/auth/login');
     final body = {
       'username': _usernameController.text,
       'password': _passwordController.text,
@@ -52,17 +55,17 @@ class _LoginScreenState extends State<LoginScreen> {
         if (roles.contains('ROLE_ADMIN')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const AdminSystemHome()),
           );
         } else if (roles.contains('ROLE_CUSTOMER')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MapScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         } else if (roles.contains('ROLE_HOTEL_OWNER')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MoreScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
         } else {
           setState(() {
