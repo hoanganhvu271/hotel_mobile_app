@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hotel_app/features/more_user/more_user_srceen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/utils/api_constants.dart';
+import 'change_password.dart';
 import 'user_update.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
 
@@ -39,7 +41,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
       if (response.statusCode == 200) {
         setState(() {
-          _userInfo = jsonDecode(response.body);
+          _userInfo = jsonDecode(utf8.decode(response.bodyBytes));
         });
       } else {
         setState(() {
@@ -67,18 +69,31 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
+      appBar: AppBar(
+        backgroundColor: Colors.brown,
+        title: const Text('Thông tin tài khoản'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'change_password') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'change_password',
+                child: Text('Đổi mật khẩu'),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Stack(
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.brown),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => MoreScreen()),
-                );
-              },
-            ),
             if (_isLoading)
               const Center(child: CircularProgressIndicator())
             else if (_errorMessage != null)

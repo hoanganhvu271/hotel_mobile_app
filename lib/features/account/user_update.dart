@@ -64,7 +64,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
 
       if (response.statusCode == 200) {
-        final updatedData = json.decode(response.body);
+        final updatedData = json.decode(utf8.decode(response.bodyBytes));
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
         );

@@ -82,22 +82,20 @@ class MoreContentWidget extends StatelessWidget {
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_profile.svg",
                       title: "Tài khoản",
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const UserInfoScreen()),
-                        );
-                      },
+                          MaterialPageRoute(
+                              builder: (context) => const UserInfoScreen()))
+                      ,
                     ),
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_booking.svg",
                       title: "Đơn đặt phòng",
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const BookingListUserScreen()),
-                        );
-                      },
+                          MaterialPageRoute(
+                              builder: (context) => const BookingListUserScreen()))
+                      ,
                     ),
                   ],
                 ),
@@ -145,12 +143,14 @@ class FirstMoreItem extends StatelessWidget {
   final String imagePath;
   final String title;
   final Function()? onTap;
+  final bool disable;
 
   const FirstMoreItem({
     super.key,
     required this.imagePath,
     required this.title,
     this.onTap,
+    this.disable = false,
   });
 
   @override
@@ -160,7 +160,7 @@ class FirstMoreItem extends StatelessWidget {
         color: const Color(0xFFF2F2F3),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          onTap: () => {},
+          onTap: onTap,
           borderRadius: BorderRadius.circular(12),
           splashColor: Colors.black.withValues(alpha: 0.2),
           child: Container(
