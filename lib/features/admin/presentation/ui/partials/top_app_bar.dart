@@ -49,9 +49,15 @@ class TopAppBar extends StatelessWidget {
                 child: InkWell(
                     onTap: () => Navigator.pop(context),
                     splashColor: Colors.black.withValues(alpha: 0.2),
-                    child: SvgPicture.asset("assets/icons/icon_back.svg")
+                    child: Center(
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    )),
                 ),
-              ),)
+              ),
           ],
         ),
       ),

@@ -1,53 +1,110 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_app/features/admin/presentation/ui/hotel_owner_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/constants/api_url.dart';
+import 'package:hotel_app/features/admin/model/room_response_dto.dart';
+import 'package:hotel_app/features/admin/presentation/provider/room_provider.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/search_box_widget.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
+import 'package:hotel_app/features/admin/presentation/ui/room_edit_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/room_form_screen.dart';
-import '../../../../models/room.dart';
 
-class RoomManagerScreen extends StatelessWidget {
+class RoomManagerScreen extends ConsumerStatefulWidget {
   const RoomManagerScreen({super.key});
 
   @override
+  ConsumerState<RoomManagerScreen> createState() => _RoomManagerScreenState();
+}
+
+class _RoomManagerScreenState extends ConsumerState<RoomManagerScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      ref.read(roomViewModel.notifier).loadMore();
+    }
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final viewModel = ref.watch(roomViewModel);
+
     return SafeArea(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Material(
-          child: Column(
+        child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RoomFormScreen(),
+                ),
+              );
+            },
+            child: const Icon(Icons.add),
+          ),
+          body: Column(
             children: [
               const TopAppBar(title: "Danh sách phòng"),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
-                child: SearchBoxWidget(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16),
+                child: SearchBoxWidget(
+                    onChange: (text) => ref.read(roomViewModel.notifier).setSearchState(query: text, page: 0),
+                ),
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ListView.separated(
-                    itemBuilder: (_, index) => RoomItemWidget(
-                    room: Room(
-                      roomId: 1,
-                      hotelId: 1,
-                      roomName: "Phòng 1",
-                      area: 20.0,
-                      pricePerHour: 100000,
-                      pricePerNight: 200000,
-                      extraHourPrice: 50000,
-                      standardOccupancy: 2,
-                      maxOccupancy: 4,
-                      numChildrenFree: 1,
-                      availableRoom: 5,
-                      roomImg: "assets/images/room_img.png",
-                      bedNumber: 2,
-                      timeCreated: DateTime.now(),
+                child: RefreshIndicator(
+                  onRefresh: () => ref.read(roomViewModel.notifier).refresh(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: viewModel.when(
+                      emptyData: () {
+                        return const Center(
+                          child: Text("No data"),
+                        );
+                      },
+                      success: (rooms) {
+                        return ListView.separated(
+                          itemBuilder: (_, index) {
+                            if (index == viewModel.listData.length) {
+                              return viewModel.canLoadMore ? const Center(
+                                child: CircularProgressIndicator(),
+                              ) : const SizedBox.shrink();
+                            }
+                            else {
+                              return RoomItemWidget(room: viewModel.listData[index]);
+                            }
+                          },
+                          itemCount: viewModel.listData.length + 1,
+                          separatorBuilder: (_, index) => const SizedBox(height: 14),
+                        );
+                      },
+                      error: (error) {
+                        return Center(
+                          child: Text("Error: $error"),
+                        );
+                      },
+                      loading: () {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      orElse: () {
+                        return const Center(
+                          child: Text("No data"),
+                        );
+                      },
                     ),
                   ),
-                    itemCount: 10,
-                    separatorBuilder: (_, index) => const SizedBox(height: 14),
-                  ),
-                )
+                ),
               ),
             ],
           ),
@@ -55,10 +112,11 @@ class RoomManagerScreen extends StatelessWidget {
       ),
     );
   }
+
 }
 
 class RoomItemWidget extends StatelessWidget {
-  final Room room;
+  final RoomResponseDto room;
 
   const RoomItemWidget({
     super.key,
@@ -76,7 +134,7 @@ class RoomItemWidget extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const RoomFormScreen(),
+              builder: (context) => RoomEditScreen(room: room),
             ),
           );
         },
@@ -97,8 +155,8 @@ class RoomItemWidget extends StatelessWidget {
           child: Row(
             children: [
               // replace with CacheNetworkImage later ...
-              Image.asset(
-                room.roomImg,
+              CachedNetworkImage(
+                imageUrl: '${ApiUrl.baseURL}${ApiUrl.uploadPath}/${room.roomImg}',
                 width: 130,
                 height: 130,
                 fit: BoxFit.cover,
@@ -116,9 +174,9 @@ class RoomItemWidget extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    Text("ID: #${room.roomId}"),
+                    Text("ID: ${room.id}"),
                     const SizedBox(height: 5),
-                    Text("Giá: ${room.pricePerHour} đ/giờ"),
+                    Text("Giá: ${room.pricePerNight} đ/giờ"),
                     const SizedBox(height: 5),
                     Text("Diện tích: ${room.area} m2"),
                   ],

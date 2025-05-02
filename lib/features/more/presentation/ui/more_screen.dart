@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_app/features/map/presentation/ui/map_screen.dart';
 
 import '../../../../constants/app_colors.dart';
 import '../../../admin/presentation/ui/hotel_owner_screen.dart';
@@ -98,7 +97,7 @@ class MoreContentWidget extends StatelessWidget {
                 children: [
                   const RemainingMoreItem(imagePath: "assets/icons/icon_setting.svg", title: 'Cài đặt'),
                   RemainingMoreItem(imagePath: "assets/icons/icon_support.svg", title: 'Hỗ trợ',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MapScreen()))
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
                   ),
                   RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))

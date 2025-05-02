@@ -2,20 +2,40 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hotel_app/common/utils/time_util.dart';
+import 'package:hotel_app/features/admin/model/booking_stats_dto.dart';
 import 'package:hotel_app/features/admin/model/chart_data.dart';
-import 'package:hotel_app/features/admin/presentation/provider/review_stats_provider.dart';
+import 'package:hotel_app/features/admin/presentation/provider/room_provider.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/admin/presentation/ui/report_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/reservation_manager_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/room_manager_screen.dart';
-
 import '../../../../constants/app_colors.dart';
+import '../provider/booking_provider.dart';
+import '../provider/dashboard_provider.dart';
 
-class HotelOwnerScreen extends StatelessWidget {
+class HotelOwnerScreen extends ConsumerWidget {
   const HotelOwnerScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    int roomQty = ref.watch(roomCountViewModel).when(
+      success: (data) => data,
+      error: (e) => 0,
+      loading: () => 0,
+      orElse: () => 0,
+    );
+
+    int bookingQty = ref.watch(bookingCountViewModel).when(
+      success: (data) => data,
+      error: (e) => 0,
+      loading: () => 0,
+      orElse: () => 0,
+    );
+
+    print("Room quantity: $roomQty");
+    print("Booking quantity: $bookingQty");
+
     return SafeArea(
       child: ColoredBox(
         color: ColorsLib.greyBGColor,
@@ -31,7 +51,7 @@ class HotelOwnerScreen extends StatelessWidget {
                     spacing: 10,
                     children: [
                       const SizedBox(height: 5),
-                      StatusWidget(),
+                      const StatusWidget(),
                       BookingChart(),
                       const StatisticWidget(),
                       IntrinsicHeight(
@@ -42,7 +62,7 @@ class HotelOwnerScreen extends StatelessWidget {
                               OptionItem(
                                 title: "Quản lý phòng",
                                 iconPath: "assets/icons/icon_door.svg",
-                                value: 50,
+                                value: roomQty,
                                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RoomManagerScreen()))
                               )
                             ),
@@ -50,7 +70,7 @@ class HotelOwnerScreen extends StatelessWidget {
                                 child: OptionItem(
                                   title: "Đặt phòng",
                                   iconPath: "assets/icons/icon_report.svg",
-                                  value: 29,
+                                  value: bookingQty,
                                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  const ReservationManagerScreen()))
                                 )
                             ),
@@ -151,21 +171,21 @@ class StatusWidget extends StatelessWidget {
 }
 
 
-class BookingChart extends StatelessWidget {
-  final List<ChartData> bookings = [
-    ChartData(label: "Day 1", value: 20),
-    ChartData(label: "Day 2", value: 30),
-    ChartData(label: "Day 3", value: 25),
-    ChartData(label: "Day 4", value: 40),
-    ChartData(label: "Day 5", value: 35),
-    ChartData(label: "Day 6", value: 50),
-    ChartData(label: "Day 7", value: 45),
-  ];
+class BookingChart extends ConsumerWidget {
+  // final List<ChartData> bookings = [
+  //   ChartData(label: "Day 1", value: 20),
+  //   ChartData(label: "Day 2", value: 30),
+  //   ChartData(label: "Day 3", value: 25),
+  //   ChartData(label: "Day 4", value: 40),
+  //   ChartData(label: "Day 5", value: 35),
+  //   ChartData(label: "Day 6", value: 50),
+  //   ChartData(label: "Day 7", value: 45),
+  // ];
 
-  BookingChart({super.key});
+  const BookingChart({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -194,7 +214,23 @@ class BookingChart extends StatelessWidget {
                 color: Color(0xFF667085),
               ),
             ),
-            BookingBarChart(bookings: bookings),
+            ref.watch(bookingStatsViewModel).when(
+              success: (data) {
+                return BookingBarChart(bookings: data);
+              },
+              error: (e) => Center(
+                child: Text(
+                  e.toString(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF667085),
+                  ),
+                ),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              orElse: () => const SizedBox.shrink(),
+            )
           ],
         ),
       ),
@@ -203,7 +239,7 @@ class BookingChart extends StatelessWidget {
 }
 
 class BookingBarChart extends StatelessWidget {
-  final List<ChartData> bookings;
+  final List<BookingStatsDto> bookings;
 
   const BookingBarChart({super.key, required this.bookings});
 
@@ -214,7 +250,7 @@ class BookingBarChart extends StatelessWidget {
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceBetween,
-          maxY: bookings.reduce((a, b) => a.value > b.value ? a : b).value.toDouble(),
+          maxY: bookings.reduce((a, b) => a.count > b.count ? a : b).count.toDouble(),
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
@@ -251,7 +287,7 @@ class BookingBarChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        bookings[index].label,
+                        TimeUtils.formatDateOnly(bookings[index].date),
                         style: const TextStyle(fontSize: 12, color: Color(0xFF667085)),
                       ),
                     );
@@ -286,7 +322,7 @@ class BookingBarChart extends StatelessWidget {
               x: index,
               barRods: [
                 BarChartRodData(
-                  toY: bookings[index].value,
+                  toY: bookings[index].count.toDouble(),
                   width: 30,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(6),

@@ -3,6 +3,7 @@ import '../../../models/service.dart';
 import 'hotel_dto.dart';
 
 class RoomResponseDto {
+  final int id;
   final String roomName;
   final double area;
   final double comboPrice2h;
@@ -20,6 +21,7 @@ class RoomResponseDto {
   final List<RoomImage> roomImageUrls;
 
   RoomResponseDto({
+    required this.id,
     required this.roomName,
     required this.area,
     required this.comboPrice2h,
@@ -39,6 +41,7 @@ class RoomResponseDto {
 
   factory RoomResponseDto.fromJson(Map<String, dynamic> json) {
     return RoomResponseDto(
+      id: json['roomId'],
       roomName: json['roomName'],
       area: json['area'].toDouble(),
       comboPrice2h: json['comboPrice2h'].toDouble(),
@@ -62,6 +65,7 @@ class RoomResponseDto {
   }
 
   Map<String, dynamic> toJson() => {
+    'roomId': id,
     'roomName': roomName,
     'area': area,
     'comboPrice2h': comboPrice2h,
