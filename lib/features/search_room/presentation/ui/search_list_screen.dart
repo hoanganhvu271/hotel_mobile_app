@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/common/state/compare_room_state.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
+import 'package:hotel_app/features/room_details/presentation/ui/widgets/mini_room_card.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/custom_appbar.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/room_cart_item.dart';
 import 'package:hotel_app/features/search_room/presentation/provider/room_search_provider.dart';
@@ -36,24 +38,39 @@ class _SearchListScreenState extends ConsumerState<SearchListScreen> {
   @override
   Widget build(BuildContext context) {
     final roomState = ref.watch(roomSearchViewModel);
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: CustomSearchAppBar(),
-      body: roomState.when(
-        none: () => const Center(child: Text('Please search for rooms.')),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        success: (roomList) => roomList.isEmpty
-            ? const Center(child: Text('No rooms found.'))
-            : ListView.builder(
-                itemCount: roomList.length,
-                itemBuilder: (context, index) {
-                  return RoomCardItem(room: roomList[index]);
-                },
-              ),
-        error: (msg) => Center(child: Text('Error: $msg')),
-        orElse: () => const Center(
-          child: Text('Something went wrong. Please try again.'),
-        ),
+      body: Stack(
+        children: [
+          roomState.when(
+            none: () => const Center(child: Text('Please search for rooms.')),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            success: (roomList) => roomList.isEmpty
+                ? const Center(child: Text('No rooms found.'))
+                : ListView.builder(
+                    itemCount: roomList.length,
+                    itemBuilder: (context, index) {
+                      return RoomCardItem(room: roomList[index]);
+                    },
+                  ),
+            error: (msg) => Center(child: Text('Error: $msg')),
+            orElse: () => const Center(
+              child: Text('Something went wrong. Please try again.'),
+            ),
+          ),
+          Visibility(
+            visible: ref.watch(compareRoomIdProvider) != 0,
+            child: Positioned(
+              bottom: 20,
+              right: 0,
+              child: MiniRoomCard(
+                  roomId: ref.watch(compareRoomIdProvider),
+                  width: screenWidth * 0.45),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomBarNavigation(),
     );
