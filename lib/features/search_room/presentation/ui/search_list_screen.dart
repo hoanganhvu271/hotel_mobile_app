@@ -23,6 +23,11 @@ class SearchListScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchListScreenState extends ConsumerState<SearchListScreen> {
+  double _miniCardTop = 500;
+  double _miniCardRight = 0;
+  final double _miniCardWidthFraction = 0.45;
+  final GlobalKey _miniCardKey = GlobalKey();
+
   @override
   void dispose() {
     super.dispose();
@@ -64,10 +69,53 @@ class _SearchListScreenState extends ConsumerState<SearchListScreen> {
             ),
           ),
           Positioned(
-            child: MiniRoomCard(width: screenWidth * 0.45),
-            bottom: 5,
-            right: 0,
-          )
+            top: _miniCardTop - 35,
+            right: _miniCardRight,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  _miniCardTop += details.delta.dy;
+                  _miniCardRight -= details.delta.dx;
+
+                  final mediaQuery = MediaQuery.of(context);
+                  final screenHeight =
+                      mediaQuery.size.height - mediaQuery.padding.top - 215;
+                  final screenWidth = mediaQuery.size.width;
+
+                  final renderBox = _miniCardKey.currentContext
+                      ?.findRenderObject() as RenderBox?;
+                  final cardSize = renderBox?.size;
+
+                  final cardHeight = cardSize?.height ?? 200.0; // fallback
+                  final cardWidth =
+                      cardSize?.width ?? (screenWidth * _miniCardWidthFraction);
+
+                  _miniCardTop =
+                      _miniCardTop.clamp(0.0, screenHeight - cardHeight);
+                  _miniCardRight =
+                      _miniCardRight.clamp(0.0, screenWidth - cardWidth);
+                });
+              },
+              onPanEnd: (details) {
+                double screenWidth = MediaQuery.of(context).size.width;
+                double cardWidth = screenWidth * _miniCardWidthFraction;
+
+                setState(() {
+                  // Nếu gần bên trái hơn => snap vào trái (right = screenWidth - cardWidth)
+                  // Nếu gần bên phải hơn => snap vào phải (right = 0)
+                  if (_miniCardRight < (screenWidth - cardWidth) / 2) {
+                    _miniCardRight = 0; // Snap vào phải
+                  } else {
+                    _miniCardRight = screenWidth - cardWidth; // Snap vào trái
+                  }
+                });
+              },
+              child: MiniRoomCard(
+                width:
+                    MediaQuery.of(context).size.width * _miniCardWidthFraction,
+              ),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: BottomBarNavigation(),

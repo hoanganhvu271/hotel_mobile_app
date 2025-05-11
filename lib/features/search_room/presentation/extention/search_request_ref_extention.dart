@@ -59,4 +59,21 @@ extension SearchRequestRefExtension on WidgetRef {
       services: [],
     );
   }
+
+  void validateSearchRequest() {
+    final currentRequest = read(searchRequestState.notifier).state;
+
+    // Check for null values and set them to empty strings
+    final String safeCity = currentRequest.city ?? '';
+    final String safeDistrict = currentRequest.district ?? '';
+
+    // Only update if a change was necessary
+    if (currentRequest.city != safeCity ||
+        currentRequest.district != safeDistrict) {
+      read(searchRequestState.notifier).state = currentRequest.copyWith(
+        city: safeCity,
+        district: safeDistrict,
+      );
+    }
+  }
 }

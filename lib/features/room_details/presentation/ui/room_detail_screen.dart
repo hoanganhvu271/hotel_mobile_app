@@ -4,9 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/common/state/compare_room_state.dart';
 import 'package:hotel_app/common/utils/service_text_util.dart';
 import 'package:hotel_app/common/utils/text_util.dart';
+import 'package:hotel_app/features/booking/model/booking_search_request.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 import 'package:hotel_app/features/room_details/model/review.dart';
-import 'package:hotel_app/features/room_details/model/room_details.dart';
 import 'package:hotel_app/features/room_details/presentation/provider/room_details_provider.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/app_bar_custom.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/mini_room_card.dart';
@@ -26,6 +26,10 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
   bool hasFetched = false;
   final ScrollController _scrollController = ScrollController();
   bool isScrolled = false;
+  double _miniCardTop = 500;
+  double _miniCardRight = 0;
+  final double _miniCardWidthFraction = 0.45;
+  final GlobalKey _miniCardKey = GlobalKey();
 
   double calculateRatingAvg(List<Review> reviews) {
     if (reviews.isEmpty) return 0.0;
@@ -60,14 +64,43 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final roomDetailsState = ref.watch(roomDetailsViewModel);
-    double screenWidth = MediaQuery.of(context).size.width;
+    // double screenWidth = MediaQuery.of(context).size.width;
 
-    List<int> comparePrice = [];
-    List<String> getServicesNotInOther = [];
+    // List<int> comparePrice = [];
+    // List<String> getServicesNotInOther = [];
+
+    final compareRoom = ref.watch(compareRoomProvider);
+    print(compareRoom);
+
+    Color getPriceColor(double price, double? comparePrice) {
+      if (compareRoom.roomId == null || comparePrice == null)
+        return Colors.black;
+      if (price > comparePrice!) {
+        return Colors.red;
+      } else if (price < comparePrice!) {
+        return Colors.green;
+      }
+
+      return Colors.black;
+    }
+
+    bool isServiceInCompareRoom(String service) {
+      if (compareRoom.roomId == null) return true;
+      if (compareRoom.services == null) return true;
+      return compareRoom.services?.contains(service) ?? false;
+    }
 
     if (!hasFetched) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(roomDetailsViewModel.notifier).getRoomDetails(widget.roomId);
+
+        final context = _miniCardKey.currentContext;
+        if (context != null) {
+          final RenderBox box = context.findRenderObject() as RenderBox;
+          final size = box.size;
+          print('Chiều rộng: ${size.width}');
+          print('Chiều cao: ${size.height}');
+        }
 
         hasFetched = true;
       });
@@ -169,13 +202,20 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                                   'icons/services/${serviceTextUtil(service)}.svg',
                                   width: 30,
                                   height: 30,
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.brown, BlendMode.srcIn),
+                                  colorFilter: ColorFilter.mode(
+                                      isServiceInCompareRoom(service)
+                                          ? Colors.brown
+                                          : Colors.green,
+                                      BlendMode.srcIn),
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
                                   service,
-                                  style: const TextStyle(color: Colors.brown),
+                                  style: TextStyle(
+                                    color: isServiceInCompareRoom(service)
+                                        ? Colors.brown
+                                        : Colors.green,
+                                  ),
                                 ),
                               ],
                             );
@@ -222,11 +262,15 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                                       textAlign: TextAlign.center),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
                                       '${convertPriceToString(data.comboPrice2h!)} VNĐ',
-                                      textAlign: TextAlign.center),
-                                ),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: getPriceColor(data.comboPrice2h!,
+                                            compareRoom.comboPrice2h),
+                                      ),
+                                    )),
                               ],
                             ),
                             TableRow(
@@ -239,8 +283,13 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                      '${convertPriceToString(data.pricePerNight!)} VNĐ',
-                                      textAlign: TextAlign.center),
+                                    '${convertPriceToString(data.pricePerNight!)} VNĐ',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: getPriceColor(data.pricePerNight!,
+                                          compareRoom.pricePerNight),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -254,8 +303,13 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                      '${convertPriceToString(data.extraHourPrice!)} VNĐ',
-                                      textAlign: TextAlign.center),
+                                    '${convertPriceToString(data.extraHourPrice!)} VNĐ',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: getPriceColor(data.extraHourPrice!,
+                                          compareRoom.extraHourPrice),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -268,10 +322,7 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                           width: double
                               .infinity, // Chiếm toàn bộ chiều rộng có sẵn
                           child: ElevatedButton(
-                            onPressed: () {
-                              // Thêm hành động khi nút được nhấn
-                              // Ví dụ: Navigator.push(context, MaterialPageRoute(builder: (context) => BookingScreen()));
-                            },
+                            onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.brown,
                               foregroundColor: Colors.white,
@@ -336,10 +387,51 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
               ),
             ),
             Positioned(
-              bottom: 5,
-              right: 0,
-              child: MiniRoomCard(
-                width: screenWidth * 0.45,
+              top: _miniCardTop,
+              right: _miniCardRight,
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  setState(() {
+                    _miniCardTop += details.delta.dy;
+                    _miniCardRight -= details.delta.dx;
+
+                    final mediaQuery = MediaQuery.of(context);
+                    final screenHeight =
+                        mediaQuery.size.height - mediaQuery.padding.top - 180;
+                    final screenWidth = mediaQuery.size.width;
+
+                    final renderBox = _miniCardKey.currentContext
+                        ?.findRenderObject() as RenderBox?;
+                    final cardSize = renderBox?.size;
+
+                    final cardHeight = cardSize?.height ?? 200.0; // fallback
+                    final cardWidth = cardSize?.width ??
+                        (screenWidth * _miniCardWidthFraction);
+
+                    _miniCardTop =
+                        _miniCardTop.clamp(0.0, screenHeight - cardHeight);
+                    _miniCardRight =
+                        _miniCardRight.clamp(0.0, screenWidth - cardWidth);
+                  });
+                },
+                onPanEnd: (details) {
+                  double screenWidth = MediaQuery.of(context).size.width;
+                  double cardWidth = screenWidth * _miniCardWidthFraction;
+
+                  setState(() {
+                    // Nếu gần bên trái hơn => snap vào trái (right = screenWidth - cardWidth)
+                    // Nếu gần bên phải hơn => snap vào phải (right = 0)
+                    if (_miniCardRight < (screenWidth - cardWidth) / 2) {
+                      _miniCardRight = 0; // Snap vào phải
+                    } else {
+                      _miniCardRight = screenWidth - cardWidth; // Snap vào trái
+                    }
+                  });
+                },
+                child: MiniRoomCard(
+                  width: MediaQuery.of(context).size.width *
+                      _miniCardWidthFraction,
+                ),
               ),
             ),
             Positioned(

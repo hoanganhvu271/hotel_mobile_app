@@ -141,42 +141,4 @@ class RoomDetails {
       'roomImgs: $roomImgs, bedNumber: $bedNumber, extraAdult: $extraAdult, '
       'description: $description, hotelName: $hotelName, address: $address, '
       'services: $services, reviews: $reviews)';
-
-  List<int> comparePrice(RoomDetails other) {
-    List<int> result = [0, 0, 0];
-    if (this.comboPrice2h != null && other.comboPrice2h != null) {
-      if (this.comboPrice2h! < other.comboPrice2h!) {
-        result[0] = 1;
-      } else if (this.comboPrice2h! > other.comboPrice2h!) {
-        result[0] = -1;
-      }
-    }
-    if (this.pricePerNight != null && other.pricePerNight != null) {
-      if (this.pricePerNight! < other.pricePerNight!) {
-        result[1] = 1;
-      } else if (this.pricePerNight! > other.pricePerNight!) {
-        result[1] = -1;
-      }
-    }
-    if (this.extraHourPrice != null && other.extraHourPrice != null) {
-      if (this.extraHourPrice! < other.extraHourPrice!) {
-        result[2] = 1;
-      } else if (this.extraHourPrice! > other.extraHourPrice!) {
-        result[2] = -1;
-      }
-    }
-    return result;
-  }
-
-  List<String> getServiceNotInOther(RoomDetails other) {
-    List<String> result = [];
-    if (this.services != null && other.services != null) {
-      for (String service in this.services!) {
-        if (!other.services!.contains(service)) {
-          result.add(service);
-        }
-      }
-    }
-    return result;
-  }
 }

@@ -28,8 +28,6 @@ class _SearchFilterState extends ConsumerState<SearchFilter> {
 
     final districtState = ref.watch(districtViewModel);
 
-    final serviceState = ref.watch(serviceViewModel);
-
     if (!hasCityFetched) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(cityViewModel.notifier).getCities();
@@ -44,10 +42,6 @@ class _SearchFilterState extends ConsumerState<SearchFilter> {
           label: 'Tỉnh/Thành phố',
           fetchData: cityState.when(orElse: () => [], success: (data) => data),
           onChanged: (value) {
-            // if (value == 'Tất cả') {
-            //   value = '';
-            // }
-
             ref.setCity(value.toString());
             ref.read(districtViewModel.notifier).getDistricts(value.toString());
           },
@@ -57,9 +51,6 @@ class _SearchFilterState extends ConsumerState<SearchFilter> {
           fetchData:
               districtState.when(orElse: () => [], success: (data) => data),
           onChanged: (value) {
-            // if (value == 'Tất cả') {
-            //   value = '';
-            // }
             ref.setDistrict(value.toString());
           },
         ),

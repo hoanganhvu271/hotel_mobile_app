@@ -6,6 +6,8 @@ import 'package:hotel_app/common/state/room_id_state.dart';
 import 'package:hotel_app/common/utils/service_text_util.dart';
 import 'package:hotel_app/common/utils/text_util.dart';
 import 'package:hotel_app/features/room_details/model/review.dart';
+import 'package:hotel_app/features/room_details/model/room_details.dart';
+import 'package:hotel_app/features/room_details/presentation/provider/room_details_provider.dart';
 
 class MiniRoomCard extends ConsumerWidget {
   final double width;
@@ -31,8 +33,7 @@ class MiniRoomCard extends ConsumerWidget {
     final int currentRoomId = ref.watch(roomIdProvider);
 
     final room = ref.watch(compareRoomProvider);
-    print('compareRoomId: $compareRoomId');
-    print('currentRoomId: $currentRoomId');
+
     if (compareRoomId == 0 || compareRoomId == currentRoomId) {
       return const SizedBox.shrink(); // Không hiển thị
     }

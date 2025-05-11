@@ -46,6 +46,7 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
       ref.read(compareRoomIdProvider.notifier).state = 0;
       // _searchController.text =
       //     ref.read(searchRequestState.notifier).state.keyword.toString();
+      ref.resetSearchRequest();
     });
 
     List<Search> list = [];
@@ -111,6 +112,7 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
                             child: TextField(
                               controller: _searchController,
                               onChanged: (value) {
+                                print(value);
                                 _isFiltered = 0;
                                 setState(() {
                                   _searchQuery = value;
@@ -120,7 +122,6 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
                                     ref
                                         .read(searchEntryViewModel.notifier)
                                         .getSearchEntries(_searchQuery);
-                                    ref.setKeyword(_searchQuery);
                                   }
                                 });
                               },
@@ -142,6 +143,9 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
                                     setState(() {
                                       _searchQuery = _searchController.text;
                                     });
+                                    ref.setKeyword(_searchQuery);
+
+                                    ref.validateSearchRequest();
                                     print(ref.watch(searchRequestState));
                                     Navigator.push(
                                         context,
