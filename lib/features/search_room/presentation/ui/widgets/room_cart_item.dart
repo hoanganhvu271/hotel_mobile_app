@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/common/state/compare_room_state.dart';
+import 'package:hotel_app/common/state/room_id_state.dart';
 import 'package:hotel_app/features/search_room/model/room_search_list.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/room_detail_screen.dart';
 
@@ -16,6 +18,7 @@ class RoomCardItem extends ConsumerWidget {
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: () {
+          ref.read(roomIdProvider.notifier).state = room.roomId;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -23,6 +26,7 @@ class RoomCardItem extends ConsumerWidget {
             ),
           );
           print("Room tapped: ${room.hotelName}");
+          print(ref.watch(roomIdProvider));
         },
         borderRadius: BorderRadius.circular(16),
         splashColor: Colors.brown.withOpacity(0.2), // hiệu ứng sóng nước
@@ -104,13 +108,16 @@ class RoomCardItem extends ConsumerWidget {
                     ),
                     const SizedBox(height: 6),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _iconText(
                             Icons.person, room.standardOccupancy.toString()),
-                        _iconText(Icons.bed, room.bedNumber.toString()),
-                        _iconText(Icons.king_bed,
-                            '1'), // sửa theo dữ liệu thật nếu có
+                        _iconText(
+                            Icons.child_care, room.numChildrenFree.toString()),
+                        _iconText(
+                            Icons.king_bed,
+                            room.bedNumber
+                                .toString()), // sửa theo dữ liệu thật nếu có
                       ],
                     )
                   ],

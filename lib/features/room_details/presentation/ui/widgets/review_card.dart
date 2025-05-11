@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/room_details/model/review.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -23,8 +24,21 @@ class ReviewCard extends StatelessWidget {
         children: [
           Row(
             children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[200],
+                ),
+                child: ClipOval(
+                  child: SvgPicture.asset('images/avatar-default.svg',
+                      color: Colors.brown, fit: BoxFit.cover),
+                ),
+              ),
+              const SizedBox(width: 8),
               Text(
-                review.userName ?? '',
+                review.userName ?? 'User',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.brown,

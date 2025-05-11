@@ -7,9 +7,9 @@ class Search {
   Search({
     required this.title,
     required this.type,
-  }) : assert(type == "hot" || type == "history");
+  }) : assert(type == "hot" || type == "history" || type == "none");
 
   Search.fromSearchEntry(SearchEntry searchEntry)
       : title = searchEntry.value,
-        type = "history";
+        type = "none";
 }

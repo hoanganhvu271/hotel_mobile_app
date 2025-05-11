@@ -20,9 +20,12 @@ class ServiceProvider extends AutoDisposeNotifier<BaseState<List<Service>>> {
     try {
       final response = await ref.read(roomSearchRepository).getServices();
       if (response.isSuccessful) {
-        final List<dynamic> data = response.sucessfulData!;
-        state = BaseState.success(
-            data.map((json) => Service.fromJson(json)).toList());
+        final services = response.sucessfulData!;
+        if (services.isEmpty) {
+          state = BaseState.emptyData();
+        } else {
+          state = BaseState.success(services); // 🚀 Trực tiếp List<Service>
+        }
       } else {
         state = BaseState.error(response.errorMessage ?? "");
       }

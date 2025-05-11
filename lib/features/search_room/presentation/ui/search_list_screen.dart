@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/common/state/compare_room_state.dart';
+import 'package:hotel_app/common/state/room_id_state.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/mini_room_card.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/custom_appbar.dart';
@@ -10,7 +11,9 @@ import 'package:hotel_app/features/search_room/presentation/provider/room_search
 import 'package:hotel_app/features/search_room/model/search_request.dart';
 
 class SearchListScreen extends ConsumerStatefulWidget {
-  const SearchListScreen({super.key});
+  final SearchRequest searchRequest;
+
+  const SearchListScreen({super.key, required this.searchRequest});
 
   static const String routeName = '/searchList';
 
@@ -20,8 +23,6 @@ class SearchListScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchListScreenState extends ConsumerState<SearchListScreen> {
-  final SearchRequest request = SearchRequest();
-
   @override
   void dispose() {
     super.dispose();
@@ -31,7 +32,9 @@ class _SearchListScreenState extends ConsumerState<SearchListScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(roomSearchViewModel.notifier).getRoomsSearch(request);
+      ref
+          .read(roomSearchViewModel.notifier)
+          .getRoomsSearch(widget.searchRequest);
     });
   }
 
@@ -60,16 +63,11 @@ class _SearchListScreenState extends ConsumerState<SearchListScreen> {
               child: Text('Something went wrong. Please try again.'),
             ),
           ),
-          Visibility(
-            visible: ref.watch(compareRoomIdProvider) != 0,
-            child: Positioned(
-              bottom: 20,
-              right: 0,
-              child: MiniRoomCard(
-                  roomId: ref.watch(compareRoomIdProvider),
-                  width: screenWidth * 0.45),
-            ),
-          ),
+          Positioned(
+            child: MiniRoomCard(width: screenWidth * 0.45),
+            bottom: 5,
+            right: 0,
+          )
         ],
       ),
       bottomNavigationBar: BottomBarNavigation(),

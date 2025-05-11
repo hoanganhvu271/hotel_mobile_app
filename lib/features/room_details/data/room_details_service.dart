@@ -40,4 +40,3 @@ class RoomDetailsService {
     }
   }
 }
-//           (data.data as List).map((json) => json.toString()).toList();

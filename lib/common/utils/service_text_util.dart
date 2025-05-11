@@ -8,6 +8,7 @@ String serviceTextUtil(String text) {
   if (text == "Hồ bơi") return "laundry";
   if (text == "Phòng gym") return "gym";
   if (text == "Du lịch địa phương") return "travel";
+  if (text == "Dịch vụ phòng") return "service";
 
   return "";
 }
