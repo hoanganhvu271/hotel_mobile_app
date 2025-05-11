@@ -4,13 +4,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/common/state/compare_room_state.dart';
 import 'package:hotel_app/common/utils/service_text_util.dart';
 import 'package:hotel_app/common/utils/text_util.dart';
+import 'package:hotel_app/features/booking/booking_screen.dart';
 import 'package:hotel_app/features/booking/model/booking_search_request.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
+import 'package:hotel_app/features/room_details/extention/search_request_ref_extention.dart';
 import 'package:hotel_app/features/room_details/model/review.dart';
 import 'package:hotel_app/features/room_details/presentation/provider/room_details_provider.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/app_bar_custom.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/mini_room_card.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/review_list.dart';
+import 'package:hotel_app/features/search_room/presentation/state/search_request_state.dart';
+import 'package:hotel_app/features/search_room/presentation/ui/search_list_screen.dart';
 
 class RoomDetailsScreen extends ConsumerStatefulWidget {
   final roomId;
@@ -146,12 +150,28 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          data.hotelName ?? "",
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.brown,
+                        GestureDetector(
+                          onTap: () {
+                            // Xử lý khi bấm vào, ví dụ:
+                            print(
+                                'Bạn đã bấm vào tên khách sạn: ${data.hotelName}');
+                            ref.resetSearchRequest();
+                            ref.setKeyword(data.hotelName!);
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SearchListScreen(
+                                        searchRequest:
+                                            ref.watch(searchRequestState))));
+                          },
+                          child: Text(
+                            data.hotelName ?? "",
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.brown,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -322,7 +342,12 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                           width: double
                               .infinity, // Chiếm toàn bộ chiều rộng có sẵn
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BookingScreen()));
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.brown,
                               foregroundColor: Colors.white,
