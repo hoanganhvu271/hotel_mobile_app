@@ -13,10 +13,10 @@ class UpdateBookingStatusNotifier extends AutoDisposeNotifier<BaseState<bool>> {
     return state;
   }
 
-  void update(BookingStatus status) async {
+  void update(int bookingId, BookingStatus status) async {
     state = BaseState.loading();
     try {
-      final response = await ref.read(hotelOwnerRepository).updateBookingStatus(1, status);
+      final response = await ref.read(hotelOwnerRepository).updateBookingStatus(bookingId, status);
 
       if(response.isSuccessful){
         final bool data = response.successfulData!;

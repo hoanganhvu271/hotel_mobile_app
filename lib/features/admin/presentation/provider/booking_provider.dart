@@ -23,7 +23,6 @@ class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>
   }
 
   Future<void> getData() async {
-    print('Day la ketqua: ${state.page * state.limit}');
     try {
       if (state.page == 0) {
         state = state.copyWith(status: BaseStatus.loading, canLoadMore: true);
@@ -39,7 +38,6 @@ class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>
       if (response.isSuccessful) {
         final List<BookingResponseDto> bookings = response.successfulData!;
 
-        // print(alerts);
         if (bookings.length < state.limit) {
           state = state.copyWith(canLoadMore: false);
         }

@@ -4,8 +4,8 @@ import 'package:hotel_app/features/admin/model/booking_dto.dart';
 import '../../../../core/base_state.dart';
 import '../../data/hotel_owner_repository.dart';
 import '../../model/booking_stats_dto.dart';
-import '../../model/room_response_dto.dart';
 import '../../model/search_data.dart';
+import '../../model/room_response_dto.dart';
 
 
 final roomViewModel = AutoDisposeNotifierProvider<RoomProvider, SearchData<RoomResponseDto>>(() => RoomProvider());
@@ -39,7 +39,6 @@ class RoomProvider extends AutoDisposeNotifier<SearchData<RoomResponseDto>> {
       if (response.isSuccessful) {
         final List<RoomResponseDto> rooms = response.successfulData!;
 
-        // print(alerts);
         if (rooms.length < state.limit) {
           state = state.copyWith(canLoadMore: false);
         }

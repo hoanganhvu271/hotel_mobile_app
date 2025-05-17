@@ -5,20 +5,74 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/common/utils/time_util.dart';
 import 'package:hotel_app/features/admin/model/booking_stats_dto.dart';
 import 'package:hotel_app/features/admin/model/chart_data.dart';
+import 'package:hotel_app/features/admin/presentation/provider/hotel_info_provider.dart';
 import 'package:hotel_app/features/admin/presentation/provider/room_provider.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/admin/presentation/ui/report_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/reservation_manager_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/room_manager_screen.dart';
+import 'package:hotel_app/features/admin/presentation/ui/select_hotel_screen.dart';
+import '../../../../common/hotel_storage_provider.dart';
 import '../../../../constants/app_colors.dart';
 import '../provider/booking_provider.dart';
 import '../provider/dashboard_provider.dart';
 
-class HotelOwnerScreen extends ConsumerWidget {
+class HotelOwnerScreen extends ConsumerStatefulWidget {
   const HotelOwnerScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HotelOwnerScreen> createState() => _HotelOwnerScreenState();
+}
+
+class _HotelOwnerScreenState extends ConsumerState<HotelOwnerScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Check if a hotel is selected on initialization
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _checkHotelSelection();
+    });
+  }
+
+  void _checkHotelSelection() async {
+    final hotelId = ref.read(hotelStorageProvider).getCurrentHotelId();
+
+    if (hotelId == null) {
+      // Navigate to hotel selection screen if no hotel is selected
+      await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SelectHotelScreen())
+      );
+
+      // After returning, check if a hotel was selected, otherwise pop back
+      final selectedHotelId = ref.read(hotelStorageProvider).getCurrentHotelId();
+      if (selectedHotelId == null && mounted) {
+        Navigator.pop(context);
+        return;
+      }
+    }
+
+    // Load hotel info once a hotel is selected
+    ref.read(hotelInfoViewModel.notifier).getHotelInfo();
+  }
+
+  void _switchHotel() async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SelectHotelScreen())
+    );
+
+    // Reload data with the new hotel
+    ref.read(hotelInfoViewModel.notifier).getHotelInfo();
+    ref.read(bookingStatsViewModel.notifier).getData();
+    ref.read(reviewStatsViewModel.notifier).getData();
+    ref.read(roomCountViewModel.notifier).getRoomCount();
+    ref.read(bookingCountViewModel.notifier).getBookingCount();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     int roomQty = ref.watch(roomCountViewModel).when(
       success: (data) => data,
       error: (e) => 0,
@@ -33,16 +87,23 @@ class HotelOwnerScreen extends ConsumerWidget {
       orElse: () => 0,
     );
 
-    print("Room quantity: $roomQty");
-    print("Booking quantity: $bookingQty");
-
     return SafeArea(
       child: ColoredBox(
         color: ColorsLib.greyBGColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            TopAppBar(title: "Quản lý khách sạn", backgroundColor: ColorsLib.greyBGColor),
+            TopAppBar(
+              title: "Quản lý khách sạn",
+              backgroundColor: ColorsLib.greyBGColor,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.swap_horiz, color: Colors.white),
+                  onPressed: _switchHotel,
+                  tooltip: "Switch Hotel",
+                ),
+              ],
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
@@ -59,19 +120,19 @@ class HotelOwnerScreen extends ConsumerWidget {
                           spacing: 15,
                           children: [
                             Expanded(child:
-                              OptionItem(
+                            OptionItem(
                                 title: "Quản lý phòng",
                                 iconPath: "assets/icons/icon_door.svg",
                                 value: roomQty,
                                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RoomManagerScreen()))
-                              )
+                            )
                             ),
                             Expanded(
                                 child: OptionItem(
-                                  title: "Đặt phòng",
-                                  iconPath: "assets/icons/icon_report.svg",
-                                  value: bookingQty,
-                                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  const ReservationManagerScreen()))
+                                    title: "Đặt phòng",
+                                    iconPath: "assets/icons/icon_report.svg",
+                                    value: bookingQty,
+                                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) =>  const ReservationManagerScreen()))
                                 )
                             ),
                           ],
@@ -90,20 +151,18 @@ class HotelOwnerScreen extends ConsumerWidget {
   }
 }
 
-class StatusWidget extends StatelessWidget {
-  final String hotelName;
-  final String hotelAddress;
+class StatusWidget extends ConsumerWidget {
   final String logoPath;
 
   const StatusWidget({
     super.key,
-    this.hotelName = "PTIT Hotel",
-    this.hotelAddress = "Mo Lao, Ha Dong, Ha Noi",
     this.logoPath = "assets/images/logo.png",
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hotelInfo = ref.watch(hotelInfoViewModel);
+
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -120,51 +179,58 @@ class StatusWidget extends StatelessWidget {
             )
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    hotelName,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+        child: hotelInfo.when(
+          success: (hotel) => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      hotel.hotelName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    hotelAddress,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF667085),
+                    const SizedBox(height: 4),
+                    Text(
+                      hotel.address != null
+                          ? "${hotel.address?.specificAddress}, ${hotel.address?.ward}, ${hotel.address?.district}, ${hotel.address?.city}"
+                          : "No address available",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF667085),
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen())),
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Text(
-                        "Xem báo cáo >",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          decoration: TextDecoration.underline,
-                          color: Color(0xFF667085),
+                    GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReportScreen())),
+                      child: const Padding(
+                        padding: EdgeInsets.only(top: 10),
+                        child: Text(
+                          "Xem báo cáo >",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            decoration: TextDecoration.underline,
+                            color: Color(0xFF667085),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Image.asset(logoPath, width: 60, height: 60, fit: BoxFit.cover),
-          ],
-        )
+              Image.asset(logoPath, width: 60, height: 60, fit: BoxFit.cover),
+            ],
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error) => Center(child: Text("Error: $error")),
+          orElse: () => const Center(child: Text("Please select a hotel")),
+        ),
       ),
     );
   }
@@ -172,16 +238,6 @@ class StatusWidget extends StatelessWidget {
 
 
 class BookingChart extends ConsumerWidget {
-  // final List<ChartData> bookings = [
-  //   ChartData(label: "Day 1", value: 20),
-  //   ChartData(label: "Day 2", value: 30),
-  //   ChartData(label: "Day 3", value: 25),
-  //   ChartData(label: "Day 4", value: 40),
-  //   ChartData(label: "Day 5", value: 35),
-  //   ChartData(label: "Day 6", value: 50),
-  //   ChartData(label: "Day 7", value: 45),
-  // ];
-
   const BookingChart({super.key});
 
   @override
@@ -238,6 +294,7 @@ class BookingChart extends ConsumerWidget {
   }
 }
 
+
 class BookingBarChart extends StatelessWidget {
   final List<BookingStatsDto> bookings;
 
@@ -245,21 +302,40 @@ class BookingBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Check if the bookings list is empty
+    if (bookings.isEmpty) {
+      return const Center(
+        child: Text(
+          "Không có dữ liệu đặt phòng",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFF667085),
+          ),
+        ),
+      );
+    }
+
+    // Find maximum value safely
+    final double maxY = bookings.isNotEmpty
+        ? bookings.map((b) => b.count.toDouble()).reduce((a, b) => a > b ? a : b)
+        : 10.0; // Default value if list is empty
+
     return AspectRatio(
       aspectRatio: 1.7,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceBetween,
-          maxY: bookings.reduce((a, b) => a.count > b.count ? a : b).count.toDouble(),
+          maxY: maxY > 0 ? maxY : 10.0, // Make sure maxY is at least 1.0
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
               getTooltipColor: (group) {
-                return ColorsLib.primaryBoldColor;
+                return const Color(0xFF65462D); // ColorsLib.primaryBoldColor
               },
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 return BarTooltipItem(
-                  '${rod.toY}',
+                  '${rod.toY.toInt()}',
                   const TextStyle(color: Colors.white, fontSize: 12),
                 );
               },
@@ -292,7 +368,7 @@ class BookingBarChart extends StatelessWidget {
                       ),
                     );
                   } else {
-                    return const SizedBox();  // Trả về SizedBox nếu index không hợp lệ.
+                    return const SizedBox();  // Return an empty widget for invalid indices
                   }
                 },
                 reservedSize: 30,
@@ -317,12 +393,14 @@ class BookingBarChart extends StatelessWidget {
             },
           ),
           borderData: FlBorderData(show: false),
-          barGroups: List.generate(bookings.length, (index) {
+          barGroups: bookings.asMap().entries.map((entry) {
+            final index = entry.key;
+            final booking = entry.value;
             return BarChartGroupData(
               x: index,
               barRods: [
                 BarChartRodData(
-                  toY: bookings[index].count.toDouble(),
+                  toY: booking.count.toDouble(),
                   width: 30,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(6),
@@ -332,7 +410,7 @@ class BookingBarChart extends StatelessWidget {
                 )
               ],
             );
-          }),
+          }).toList(),
         ),
       ),
     );

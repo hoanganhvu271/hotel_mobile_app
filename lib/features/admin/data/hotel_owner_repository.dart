@@ -69,10 +69,10 @@ class HotelRepositoryImpl implements HotelRepository {
 
   @override
   Future<BaseResponse<List<RoomResponseDto>>> getAllRooms({
-        int offset = 0,
-        int limit = 10,
-        String order = "desc",
-        String query = "",
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
   }) async {
     return await hotelOwnerApi.getAllRooms(
       id: 1,
@@ -85,11 +85,11 @@ class HotelRepositoryImpl implements HotelRepository {
 
   @override
   Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
-        int offset = 0,
-        int limit = 10,
-        String order = "desc",
-        String query = ""
-      }) async{
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = ""
+  }) async{
 
     return await hotelOwnerApi.getAllBookings(
       id: 1,

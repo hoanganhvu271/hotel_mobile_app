@@ -1,9 +1,5 @@
-import '../../../models/room_image.dart';
-import '../../../models/service.dart';
-import 'hotel_dto.dart';
-
 class PutRoomRequest {
-  final int id;
+  final int roomId;
   final String roomName;
   final double area;
   final double comboPrice2h;
@@ -15,11 +11,11 @@ class PutRoomRequest {
   final int bedNumber;
   final double extraAdult;
   final String description;
-  final List<int> serviceList;
+  final List<int> serviceIds; // Added this field
   final List<int> editImageIdList;
 
   PutRoomRequest({
-    required this.id,
+    required this.roomId,
     required this.roomName,
     required this.area,
     required this.comboPrice2h,
@@ -31,24 +27,26 @@ class PutRoomRequest {
     required this.bedNumber,
     required this.extraAdult,
     required this.description,
-    required this.serviceList,
+    required this.serviceIds, // Added this parameter
     required this.editImageIdList,
   });
 
-  Map<String, dynamic> toJson() => {
-    'roomId': id,
-    'roomName': roomName,
-    'area': area,
-    'comboPrice2h': comboPrice2h,
-    'pricePerNight': pricePerNight,
-    'extraHourPrice': extraHourPrice,
-    'standardOccupancy': standardOccupancy,
-    'maxOccupancy': maxOccupancy,
-    'numChildrenFree': numChildrenFree,
-    'bedNumber': bedNumber,
-    'extraAdult': extraAdult,
-    'description': description,
-    'serviceDtoList': serviceList,
-    'roomImageUrls': editImageIdList,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'roomId': roomId,
+      'roomName': roomName,
+      'area': area,
+      'comboPrice2h': comboPrice2h,
+      'pricePerNight': pricePerNight,
+      'extraHourPrice': extraHourPrice,
+      'standardOccupancy': standardOccupancy,
+      'maxOccupancy': maxOccupancy,
+      'numChildrenFree': numChildrenFree,
+      'bedNumber': bedNumber,
+      'extraAdult': extraAdult,
+      'description': description,
+      'serviceIds': serviceIds, // Added this field to JSON
+      'roomImageUrls': editImageIdList,
+    };
+  }
 }

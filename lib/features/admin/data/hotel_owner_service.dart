@@ -23,14 +23,19 @@ final hotelOwnerService = Provider<HotelOwnerService>((ref) => HotelOwnerService
 class HotelOwnerService {
   Future<BaseResponse<Hotel>> getHotelById(int id) async {
     try {
-      Response data = await injector<DioClient>().get("${ApiUrl.baseURL}${ApiUrl.hotelOwner}/$id");
-      final Hotel hotel = data.data
-          .map((json) => Hotel.fromJson(json));
-      return BaseResponse(isSuccessful: true, successfulData: hotel);
+      Response response = await injector<DioClient>().get("${ApiUrl.hotelOwner}/hotel/$id");
 
+      // Parse the response data to a Hotel object
+      Hotel hotel = Hotel.fromJson(response.data);
+
+      return BaseResponse(isSuccessful: true, successfulData: hotel);
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
-      return BaseResponse(isSuccessful: false, errorMessage: errorMessage, errorCode: e.response?.statusCode.toString());
+      return BaseResponse(
+          isSuccessful: false,
+          errorMessage: errorMessage,
+          errorCode: e.response?.statusCode.toString()
+      );
     } catch (e) {
       return BaseResponse(isSuccessful: false, errorMessage: e.toString());
     }
@@ -38,12 +43,12 @@ class HotelOwnerService {
 
   Future<BaseResponse<List<BookingStatsDto>>> getBookingStats(int id) async {
     try {
-      Response data = await injector<DioClient>().get("${ApiUrl.hotelOwner}/booking/stats/per-day/$id");
+      Response data = await injector<DioClient>().get("${ApiUrl.baseURL}/api/hotel-owner/booking/stats/per-day/$id");
 
-      // Kiểm tra xem dữ liệu trả về có phải là List hay không
+      // Check if the returned data is a List
       if (data.data is List) {
         final List<BookingStatsDto> stat = (data.data as List).map((json) {
-          return BookingStatsDto.fromJson(json);  // Chuyển đổi từng phần tử của List thành BookingStatsDto
+          return BookingStatsDto.fromJson(json);
         }).toList();
 
         return BaseResponse(isSuccessful: true, successfulData: stat);

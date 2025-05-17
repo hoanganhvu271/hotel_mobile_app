@@ -11,7 +11,7 @@ class CreateRoomRequest {
   final double extraAdult;
   final String description;
   final int hotelId;
-  final List<int>? serviceIds;
+  final List<int> serviceIds; // Added this field
 
   CreateRoomRequest({
     required this.roomName,
@@ -26,7 +26,7 @@ class CreateRoomRequest {
     required this.extraAdult,
     required this.description,
     required this.hotelId,
-    this.serviceIds,
+    required this.serviceIds, // Added this parameter
   });
 
   Map<String, dynamic> toJson() {
@@ -43,7 +43,7 @@ class CreateRoomRequest {
       'extraAdult': extraAdult,
       'description': description,
       'hotelId': hotelId,
-      'serviceIds': serviceIds,
+      'serviceIds': serviceIds, // Added this field to JSON
     };
   }
 }
