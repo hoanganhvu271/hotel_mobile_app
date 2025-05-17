@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hotel_app/features/admin/model/booking_dto.dart';
 
 import '../../../../core/base_state.dart';
 import '../../data/hotel_owner_repository.dart';
+import '../../model/booking_dto.dart';
 import '../../model/booking_stats_dto.dart';
 import '../../model/search_data.dart';
 

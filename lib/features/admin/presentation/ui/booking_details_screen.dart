@@ -54,7 +54,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                ref.read(updateBookingStatusViewModel.notifier).update(status);
+                ref.read(updateBookingStatusViewModel.notifier).update(widget.id, status);
               },
               child: Text("Đồng ý"),
             ),

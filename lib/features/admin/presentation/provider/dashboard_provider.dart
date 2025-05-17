@@ -1,5 +1,3 @@
-import 'dart:core';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/features/admin/model/booking_stats_dto.dart';
 import '../../../../core/base_state.dart';
@@ -19,7 +17,7 @@ class BookingStatsNotifier extends AutoDisposeNotifier<BaseState<List<BookingSta
   void getData() async {
     state = BaseState.loading();
     try {
-      final response = await ref.read(hotelOwnerRepository).getBookingStats(1);
+      final response = await ref.read(hotelOwnerRepository).getBookingStats();
 
       if(response.isSuccessful){
         final List<BookingStatsDto> data = response.successfulData!;
@@ -40,14 +38,14 @@ class ReviewStatsNotifier extends AutoDisposeNotifier<BaseState<ReviewStatsDto>>
   @override
   BaseState<ReviewStatsDto> build() {
     state = BaseState.none();
-    getExample();
+    getData();
     return state;
   }
 
-  void getExample() async {
+  void getData() async {
     state = BaseState.loading();
     try {
-      final response = await ref.read(hotelOwnerRepository).getReviewStats(1);
+      final response = await ref.read(hotelOwnerRepository).getReviewStats();
 
       if(response.isSuccessful){
         final ReviewStatsDto data = response.successfulData!;
@@ -75,7 +73,7 @@ class CountRoomNotifier extends AutoDisposeNotifier<BaseState<int>> {
   void getRoomCount() async {
     state = BaseState.loading();
     try {
-      final response = await ref.read(hotelOwnerRepository).countRooms(hotelId: 1);
+      final response = await ref.read(hotelOwnerRepository).countRooms();
 
       if(response.isSuccessful){
         final int data = response.successfulData!;
@@ -106,7 +104,7 @@ class CountBookingNotifier extends AutoDisposeNotifier<BaseState<int>> {
   void getBookingCount() async {
     state = BaseState.loading();
     try {
-      final response = await ref.read(hotelOwnerRepository).countBookings(hotelId: 1);
+      final response = await ref.read(hotelOwnerRepository).countBookings();
 
       if(response.isSuccessful){
         final int data = response.successfulData!;

@@ -53,8 +53,17 @@ class _HotelOwnerScreenState extends ConsumerState<HotelOwnerScreen> {
       }
     }
 
-    // Load hotel info once a hotel is selected
+    // Load hotel info and dashboard data once a hotel is selected
+    _loadHotelData();
+  }
+
+  // Function to load all hotel-related data
+  void _loadHotelData() {
     ref.read(hotelInfoViewModel.notifier).getHotelInfo();
+    ref.read(bookingStatsViewModel.notifier).getData();
+    ref.read(reviewStatsViewModel.notifier).getData();
+    ref.read(roomCountViewModel.notifier).getRoomCount();
+    ref.read(bookingCountViewModel.notifier).getBookingCount();
   }
 
   void _switchHotel() async {
@@ -64,11 +73,7 @@ class _HotelOwnerScreenState extends ConsumerState<HotelOwnerScreen> {
     );
 
     // Reload data with the new hotel
-    ref.read(hotelInfoViewModel.notifier).getHotelInfo();
-    ref.read(bookingStatsViewModel.notifier).getData();
-    ref.read(reviewStatsViewModel.notifier).getData();
-    ref.read(roomCountViewModel.notifier).getRoomCount();
-    ref.read(bookingCountViewModel.notifier).getBookingCount();
+    _loadHotelData();
   }
 
   @override
@@ -151,6 +156,7 @@ class _HotelOwnerScreenState extends ConsumerState<HotelOwnerScreen> {
   }
 }
 
+// Rest of the widget implementations remain the same
 class StatusWidget extends ConsumerWidget {
   final String logoPath;
 

@@ -4,6 +4,7 @@ import 'package:hotel_app/features/admin/model/booking_details_dto.dart';
 import 'package:hotel_app/features/admin/model/booking_dto.dart';
 import 'package:hotel_app/features/admin/model/put_room_request.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../common/hotel_storage_provider.dart';
 import '../../../core/base_response.dart';
 import '../../../models/room.dart';
 import '../model/booking_stats_dto.dart';
@@ -14,13 +15,16 @@ import '../model/review_stats_dto.dart';
 import '../model/room_response_dto.dart';
 
 final hotelOwnerRepository = Provider<HotelRepository>(
-      (ref) => HotelRepositoryImpl(hotelOwnerApi: ref.watch(hotelOwnerService)),
+      (ref) => HotelRepositoryImpl(
+    hotelOwnerApi: ref.watch(hotelOwnerService),
+    hotelStorage: ref.watch(hotelStorageProvider),
+  ),
 );
 
 abstract class HotelRepository {
-  Future<BaseResponse<Hotel>> getHotelInfo(int id);
-  Future<BaseResponse<List<BookingStatsDto>>> getBookingStats(int id);
-  Future<BaseResponse<ReviewStatsDto>> getReviewStats(int id);
+  Future<BaseResponse<Hotel>> getHotelInfo();
+  Future<BaseResponse<List<BookingStatsDto>>> getBookingStats();
+  Future<BaseResponse<ReviewStatsDto>> getReviewStats();
   Future<BaseResponse<List<RoomResponseDto>>> getAllRooms({
     int offset = 0,
     int limit = 10,
@@ -39,32 +43,52 @@ abstract class HotelRepository {
     required XFile mainImage,
     List<XFile>? extraImages});
 
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({required PutRoomRequest request, required XFile? mainImage, List<XFile>? extraImages});
+  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+    required PutRoomRequest request,
+    required XFile? mainImage,
+    List<XFile>? extraImages
+  });
 
   Future<BaseResponse<BookingDetailsDto>> getBookingDetails(int id);
   Future<BaseResponse<bool>> updateBookingStatus(int id, BookingStatus status);
-  Future<BaseResponse<int>> countRooms({required int hotelId});
-  Future<BaseResponse<int>> countBookings({required int hotelId});
+  Future<BaseResponse<int>> countRooms();
+  Future<BaseResponse<int>> countBookings();
 }
 
 class HotelRepositoryImpl implements HotelRepository {
   final HotelOwnerService hotelOwnerApi;
+  final HotelStorage hotelStorage;
 
-  HotelRepositoryImpl({required this.hotelOwnerApi});
+  HotelRepositoryImpl({
+    required this.hotelOwnerApi,
+    required this.hotelStorage,
+  });
 
-  @override
-  Future<BaseResponse<Hotel>> getHotelInfo(int id) async {
-    return await hotelOwnerApi.getHotelById(id);
+  // Get the current hotel ID from storage
+  int? _getCurrentHotelId() {
+    final hotelId = hotelStorage.getCurrentHotelId();
+    if (hotelId == null) {
+      throw Exception("No hotel selected. Please select a hotel first.");
+    }
+    return hotelId;
   }
 
   @override
-  Future<BaseResponse<List<BookingStatsDto>>> getBookingStats(int id) async {
-    return await hotelOwnerApi.getBookingStats(id);
+  Future<BaseResponse<Hotel>> getHotelInfo() async {
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.getHotelById(hotelId!);
   }
 
   @override
-  Future<BaseResponse<ReviewStatsDto>> getReviewStats(int id) async {
-    return await hotelOwnerApi.getReviewStats(id);
+  Future<BaseResponse<List<BookingStatsDto>>> getBookingStats() async {
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.getBookingStats(hotelId!);
+  }
+
+  @override
+  Future<BaseResponse<ReviewStatsDto>> getReviewStats() async {
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.getReviewStats(hotelId!);
   }
 
   @override
@@ -74,8 +98,9 @@ class HotelRepositoryImpl implements HotelRepository {
     String order = "desc",
     String query = "",
   }) async {
+    final hotelId = _getCurrentHotelId();
     return await hotelOwnerApi.getAllRooms(
-      id: 1,
+      id: hotelId!,
       offset: offset,
       limit: limit,
       order: order,
@@ -89,10 +114,10 @@ class HotelRepositoryImpl implements HotelRepository {
     int limit = 10,
     String order = "desc",
     String query = ""
-  }) async{
-
+  }) async {
+    final hotelId = _getCurrentHotelId();
     return await hotelOwnerApi.getAllBookings(
-      id: 1,
+      id: hotelId!,
       offset: offset,
       limit: limit,
       order: order,
@@ -101,32 +126,68 @@ class HotelRepositoryImpl implements HotelRepository {
   }
 
   @override
-  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({required CreateRoomRequest request, required XFile mainImage, List<XFile>? extraImages}) async{
-    return await hotelOwnerApi.createRoomWithImages(request: request, mainImage: mainImage, extraImages: extraImages);
+  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({
+    required CreateRoomRequest request,
+    required XFile mainImage,
+    List<XFile>? extraImages
+  }) async {
+    // Update the request to use the current hotel ID
+    final hotelId = _getCurrentHotelId();
+    final updatedRequest = CreateRoomRequest(
+      roomName: request.roomName,
+      area: request.area,
+      comboPrice2h: request.comboPrice2h,
+      pricePerNight: request.pricePerNight,
+      extraHourPrice: request.extraHourPrice,
+      standardOccupancy: request.standardOccupancy,
+      maxOccupancy: request.maxOccupancy,
+      numChildrenFree: request.numChildrenFree,
+      bedNumber: request.bedNumber,
+      extraAdult: request.extraAdult,
+      description: request.description,
+      hotelId: hotelId!,
+      serviceIds: request.serviceIds,
+    );
+
+    return await hotelOwnerApi.createRoomWithImages(
+        request: updatedRequest,
+        mainImage: mainImage,
+        extraImages: extraImages
+    );
   }
 
   @override
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({required PutRoomRequest request, required XFile? mainImage, List<XFile>? extraImages}) async{
-    return await hotelOwnerApi.updateRoomWithImages(request: request, mainImage: mainImage, extraImages: extraImages);
+  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+    required PutRoomRequest request,
+    required XFile? mainImage,
+    List<XFile>? extraImages
+  }) async {
+    return await hotelOwnerApi.updateRoomWithImages(
+        request: request,
+        mainImage: mainImage,
+        extraImages: extraImages
+    );
   }
 
   @override
-  Future<BaseResponse<BookingDetailsDto>> getBookingDetails(int id) async{
+  Future<BaseResponse<BookingDetailsDto>> getBookingDetails(int id) async {
     return await hotelOwnerApi.getBookingDetailsById(id: id);
   }
 
   @override
-  Future<BaseResponse<bool>> updateBookingStatus(int id, BookingStatus status) async{
+  Future<BaseResponse<bool>> updateBookingStatus(int id, BookingStatus status) async {
     return await hotelOwnerApi.updateBookingStatus(bookingId: id, status: status);
   }
 
   @override
-  Future<BaseResponse<int>> countRooms({required int hotelId}) async{
-    return await hotelOwnerApi.countRooms(hotelId: hotelId);
+  Future<BaseResponse<int>> countRooms() async {
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.countRooms(hotelId: hotelId!);
   }
 
   @override
-  Future<BaseResponse<int>> countBookings({required int hotelId}) async{
-    return await hotelOwnerApi.countBookings(hotelId: hotelId);
+  Future<BaseResponse<int>> countBookings() async {
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.countBookings(hotelId: hotelId!);
   }
 }

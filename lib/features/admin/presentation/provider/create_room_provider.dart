@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/features/admin/model/create_room_request.dart';
 import 'package:hotel_app/features/admin/presentation/provider/image_upload_provider.dart';
@@ -20,7 +19,6 @@ class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<RoomResponseDto>>
   void createRoom(CreateRoomRequest request) async {
     state = BaseState.loading();
     try {
-
       final mainImage = ref.read(uploadImageProvider.notifier).getMainImage();
       if (mainImage.imageFile == null) {
         state = BaseState.error("Main image is required");
@@ -28,9 +26,9 @@ class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<RoomResponseDto>>
       }
 
       final response = await ref.read(hotelOwnerRepository).createRoomWithImages(
-          request: request,
-          mainImage: ref.read(uploadImageProvider.notifier).getMainImage().imageFile!,
-          extraImages: ref.read(uploadImageProvider.notifier).getExtraImages().isNotEmpty
+        request: request,
+        mainImage: ref.read(uploadImageProvider.notifier).getMainImage().imageFile!,
+        extraImages: ref.read(uploadImageProvider.notifier).getExtraImages().isNotEmpty
             ? ref.read(uploadImageProvider.notifier).getExtraImages()
             : null,
       );
@@ -69,5 +67,4 @@ class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<RoomResponseDto>>
       state = BaseState.error(e.toString());
     }
   }
-
 }

@@ -11,18 +11,13 @@ class HotelInfoProvider extends AutoDisposeNotifier<BaseState<Hotel>> {
   @override
   BaseState<Hotel> build() {
     state = BaseState.none();
-    // Fetch hotel info when provider is initialized
-    getHotelInfo();
     return state;
   }
 
   Future<void> getHotelInfo() async {
-    // We'll use hotel ID 1 as default, but you could make this configurable
-    const int hotelId = 1;
-
     state = BaseState.loading();
     try {
-      final response = await ref.read(hotelOwnerRepository).getHotelInfo(hotelId);
+      final response = await ref.read(hotelOwnerRepository).getHotelInfo();
 
       if (response.isSuccessful) {
         final Hotel data = response.successfulData!;

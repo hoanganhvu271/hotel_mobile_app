@@ -7,6 +7,7 @@ import 'package:hotel_app/features/admin/presentation/ui/partials/add_more_image
 import 'package:hotel_app/features/admin/presentation/ui/partials/room_info_widget.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/service_selector_widget.dart';
 import 'package:hotel_app/features/more/presentation/ui/more_screen.dart';
+import '../../../../common/hotel_storage_provider.dart';
 import '../../../../constants/app_colors.dart';
 import '../provider/image_upload_provider.dart';
 
@@ -61,6 +62,8 @@ class _RoomFormScreenState extends ConsumerState<RoomFormScreen> {
   @override
   Widget build(BuildContext context) {
     final createRoomState = ref.watch(createRoomViewModel);
+    // Get the current hotel ID from storage
+    final currentHotelId = ref.watch(selectedHotelIdProvider);
 
     ref.listen(createRoomViewModel, (previous, current) {
       if (previous?.status != current.status) {
@@ -171,6 +174,17 @@ class _RoomFormScreenState extends ConsumerState<RoomFormScreen> {
                                 return;
                               }
 
+                              // Make sure a hotel is selected
+                              if (currentHotelId == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Vui lòng chọn khách sạn trước khi tạo phòng"),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
                               // Create room request
                               ref.read(createRoomViewModel.notifier).createRoom(
                                   CreateRoomRequest(
@@ -185,8 +199,8 @@ class _RoomFormScreenState extends ConsumerState<RoomFormScreen> {
                                     bedNumber: int.parse(bedNumberController.text),
                                     extraAdult: double.parse(extraAdultController.text),
                                     description: descriptionController.text,
-                                    hotelId: 1,
-                                    serviceIds: selectedServiceIds, // Add selected service IDs
+                                    hotelId: currentHotelId,
+                                    serviceIds: selectedServiceIds,
                                   )
                               );
                             },

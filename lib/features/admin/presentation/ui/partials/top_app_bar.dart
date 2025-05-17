@@ -6,11 +6,13 @@ import '../../../../../constants/app_colors.dart';
 class TopAppBar extends StatelessWidget {
   final String title;
   final Color backgroundColor;
+  final List<Widget>? actions; // Added actions parameter
 
   const TopAppBar({
     super.key,
     required this.title,
     this.backgroundColor = Colors.white,
+    this.actions, // Added actions parameter initialization
   });
 
   @override
@@ -47,15 +49,26 @@ class TopAppBar extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                    onTap: () => Navigator.pop(context),
-                    splashColor: Colors.black.withValues(alpha: 0.2),
-                    child: Center(
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    )),
+                  onTap: () => Navigator.pop(context),
+                  splashColor: Colors.black.withOpacity(0.2),
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Add actions to the right side of the app bar
+            if (actions != null && actions!.isNotEmpty)
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: actions!,
                 ),
               ),
           ],
