@@ -11,7 +11,6 @@ import '../features/main/presentation/model/tab_model.dart';
 import '../features/noti/noti_screen.dart';
 import 'firebase_messaging_service.dart';
 
-
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
