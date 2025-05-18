@@ -25,12 +25,17 @@ class ReviewManagementNotifier extends AutoDisposeNotifier<SearchData<ReviewResp
         state = state.copyWith(status: BaseStatus.loading, canLoadMore: true);
       }
 
+      int? rating = state.rating;
+      if (rating == null || rating <= 0) {
+        rating = null;
+      }
+
       final response = await ref.read(hotelOwnerRepository).getAllReviews(
         offset: state.page * state.limit,
         limit: state.limit,
         order: state.order,
         query: state.query,
-        rating: state.rating,
+        rating: rating,
       );
 
       if (response.isSuccessful) {

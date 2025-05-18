@@ -174,7 +174,7 @@ class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen>
         });
         ref.read(reviewManagementProvider.notifier).setSearchState(
           page: 0,
-          rating: value == 'all' ? null : int.parse(value),
+          rating: value == 'all' ? 0 : int.parse(value),
         );
       },
       selectedColor: ColorsLib.primaryColor.withOpacity(0.2),
