@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/search_room/model/search_request.dart';
 import 'package:hotel_app/features/search_room/presentation/provider/room_search_provider.dart';
+import 'package:hotel_app/features/search_room/presentation/state/search_request_state.dart';
+import 'package:hotel_app/features/search_room/presentation/ui/search_list_screen.dart';
 
 class SearchItem extends ConsumerWidget {
   final String type;
@@ -22,7 +24,7 @@ class SearchItem extends ConsumerWidget {
     Key? key,
     required this.title,
     required this.type,
-  })  : assert(type == "hot" || type == "history"),
+  })  : assert(type == "hot" || type == "history" || type == "none"),
         super(key: key);
 
   @override
@@ -31,9 +33,14 @@ class SearchItem extends ConsumerWidget {
 
     return InkWell(
       onTap: () {
-        print("Clicked on $title");
-        request.keyword = title;
-        ref.read(roomSearchViewModel.notifier).getRoomsSearch(request);
+        ref.read(searchRequestState.notifier).state.keyword = title;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                SearchListScreen(searchRequest: ref.watch(searchRequestState)),
+          ),
+        );
       },
       child: Container(
         width: screenWidth,
@@ -52,12 +59,22 @@ class SearchItem extends ConsumerWidget {
         ),
         child: Row(children: [
           SizedBox(width: 20),
-          SvgPicture.asset(
-            type == "hot"
-                ? 'assets/icons/fire.svg'
-                : 'assets/icons/history.svg',
-            height: 25,
-          ),
+          if (type == "hot")
+            SvgPicture.asset(
+              'assets/icons/hot.svg',
+              width: 20,
+              height: 20,
+            ),
+          if (type == "history")
+            SvgPicture.asset(
+              'assets/icons/history.svg',
+              width: 20,
+              height: 20,
+            ),
+          if (type == "none")
+            SizedBox(
+              width: 25,
+            ),
           SizedBox(width: 20),
           Text(
             title,

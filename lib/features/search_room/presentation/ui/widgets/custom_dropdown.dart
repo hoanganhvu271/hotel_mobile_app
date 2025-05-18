@@ -25,26 +25,30 @@ class _CustomDropdown extends State<CustomDropdown> {
   @override
   void initState() {
     super.initState();
+    loadData();
   }
 
-  void loadData() {
-    try {
-      List<String> data = widget.fetchData;
-      setState(() {
-        items = ['Tất cả', ...data];
-        // Nếu initialValue là null thì hiển thị 'Tất cả'
-        selected = widget.initialValue ?? 'Tất cả';
-        // Gửi giá trị null nếu là 'Tất cả', ngược lại gửi selected
-        widget.onChanged(selected == 'Tất cả' ? null : selected!);
-      });
-    } catch (e) {
-      print('Error fetching ${widget.label}: $e');
+  @override
+  void didUpdateWidget(CustomDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.fetchData != widget.fetchData) {
+      loadData();
     }
+  }
+
+  void loadData() async {
+    List<String> data = widget.fetchData;
+    setState(() {
+      items = ['Tất cả', ...data];
+      // Nếu initialValue là null thì hiển thị 'Tất cả'
+      selected = widget.initialValue ?? 'Tất cả';
+      // Gửi giá trị null nếu là 'Tất cả', ngược lại gửi selected
+      widget.onChanged(selected == 'Tất cả' ? null : selected!);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    loadData();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
       child: Row(

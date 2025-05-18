@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/features/search_room/presentation/state/search_request_state.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/search_room_screen.dart';
 
-class CustomSearchAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class CustomSearchAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(80);
 
@@ -16,7 +17,7 @@ class CustomSearchAppBar extends StatelessWidget
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
@@ -55,7 +56,9 @@ class CustomSearchAppBar extends StatelessWidget
                   children: [
                     Expanded(
                       child: Text(
-                        'Khách sạn, địa điểm,...',
+                        ref.watch(searchRequestState).keyword?.isEmpty ?? true
+                            ? "Khách sạn, địa điểm..."
+                            : ref.watch(searchRequestState).keyword ?? "",
                         style: TextStyle(
                           color: Colors.brown.shade200,
                           fontSize: 16,

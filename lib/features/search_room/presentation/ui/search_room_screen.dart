@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/core/base_state.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 import 'package:hotel_app/features/search_room/model/search.dart';
-import 'package:hotel_app/features/search_room/model/search_entry.dart';
-import 'package:hotel_app/features/search_room/presentation/provider/room_search_provider.dart';
+import 'package:hotel_app/features/search_room/presentation/extention/search_request_ref_extention.dart';
+import 'package:hotel_app/features/search_room/presentation/state/search_request_state.dart';
+import 'package:hotel_app/features/search_room/presentation/ui/search_list_screen.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/search_filter.dart';
-import 'package:hotel_app/features/search_room/presentation/ui/widgets/search_item.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/search_list.dart';
 import 'package:hotel_app/features/search_room/presentation/provider/search_entry_provider.dart';
+import 'package:hotel_app/common/state/compare_room_state.dart';
 
 class SearchRoomScreen extends ConsumerStatefulWidget {
   final int isFiltered;
@@ -41,6 +42,13 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
   Widget build(BuildContext context) {
     final searchEntryState = ref.watch(searchEntryViewModel);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(compareRoomIdProvider.notifier).state = 0;
+      // _searchController.text =
+      //     ref.read(searchRequestState.notifier).state.keyword.toString();
+      ref.resetSearchRequest();
+    });
+
     List<Search> list = [];
 
     if (searchEntryState.status.isSuccess && searchEntryState.data != null) {
@@ -53,7 +61,7 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 85,
+        toolbarHeight: Size.fromHeight(kToolbarHeight).height + 20,
         title: const Text('Tìm phòng'),
         titleTextStyle: const TextStyle(
           fontFamily: 'Roboto',
@@ -104,6 +112,7 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
                             child: TextField(
                               controller: _searchController,
                               onChanged: (value) {
+                                print(value);
                                 _isFiltered = 0;
                                 setState(() {
                                   _searchQuery = value;
@@ -134,9 +143,18 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
                                     setState(() {
                                       _searchQuery = _searchController.text;
                                     });
-                                    // ref
-                                    //     .read(roomSearchViewModel.notifier)
-                                    //     .getRoomsSearch(_searchQuery);
+                                    ref.setKeyword(_searchQuery);
+
+                                    ref.validateSearchRequest();
+                                    print(ref.watch(searchRequestState));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SearchListScreen(
+                                                  searchRequest: ref.watch(
+                                                      searchRequestState),
+                                                )));
                                   },
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
@@ -176,7 +194,7 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
                                 ],
                               ),
                               child: Icon(
-                                Icons.filter_list,
+                                Icons.tune,
                                 color: _isFiltered == 0
                                     ? const Color(0xFF65462D)
                                     : Colors.white,

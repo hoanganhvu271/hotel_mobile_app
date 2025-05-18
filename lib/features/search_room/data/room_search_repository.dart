@@ -3,6 +3,7 @@ import 'package:hotel_app/core/base_response.dart';
 import 'package:hotel_app/features/search_room/data/room_search_service.dart';
 import 'package:hotel_app/features/search_room/model/room_search_list.dart';
 import 'package:hotel_app/features/search_room/model/search_request.dart';
+import 'package:hotel_app/features/search_room/model/service.dart';
 
 final roomSearchRepository = Provider<RoomSearchRepository>(
   (ref) => RoomSearchRepositoryImpl(
@@ -15,7 +16,7 @@ abstract class RoomSearchRepository {
       SearchRequest request);
   Future<BaseResponse<List<String>>> getCities();
   Future<BaseResponse<List<String>>> getDistricts(String city);
-  Future<BaseResponse<List<String>>> getServices();
+  Future<BaseResponse<List<Service>>> getServices();
 }
 
 class RoomSearchRepositoryImpl implements RoomSearchRepository {
@@ -38,7 +39,7 @@ class RoomSearchRepositoryImpl implements RoomSearchRepository {
   }
 
   @override
-  Future<BaseResponse<List<String>>> getServices() async {
-    return await roomSearchService.getServices();
+  Future<BaseResponse<List<Service>>> getServices() {
+    return roomSearchService.getServices();
   }
 }
