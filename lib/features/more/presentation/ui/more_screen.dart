@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -97,7 +98,9 @@ class MoreContentWidget extends StatelessWidget {
                 children: [
                   const RemainingMoreItem(imagePath: "assets/icons/icon_setting.svg", title: 'Cài đặt'),
                   RemainingMoreItem(imagePath: "assets/icons/icon_support.svg", title: 'Hỗ trợ',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
+                    onTap: () {
+                      FirebaseCrashlytics.instance.crash();
+                    }
                   ),
                   RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
