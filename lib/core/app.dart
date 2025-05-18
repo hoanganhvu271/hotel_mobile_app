@@ -19,7 +19,7 @@ import 'package:hotel_app/features/more/presentation/ui/more_screen.dart';
 
 import 'firebase_messaging_service.dart';
 
-class MyApp extends ConsumerStatefulWidget {
+
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
@@ -37,16 +37,6 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     _tabController = TabController(length: TabEnum.values.length, vsync: this);
-  }
-
-  @override
-  ConsumerState<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
-  @override
-  void initState() {
-    super.initState();
     // Initialize Firebase Messaging
     _initializeFirebaseMessaging();
   }
@@ -76,10 +66,9 @@ class _MyAppState extends ConsumerState<MyApp> {
             controller: _tabController,
             children: [
               TabComponent(tabKey: listKey[TabEnum.home.index], child: HomeScreen()),
-              TabComponent(tabKey: listKey[TabEnum.map.index], child: MapScreen()),
               TabComponent(tabKey: listKey[TabEnum.order.index], child: OrderScreen()),
               TabComponent(tabKey: listKey[TabEnum.noti.index], child: NotiScreen()),
-              TabComponent(tabKey: listKey[TabEnum.more.index], child: MoreScreen()),
+              TabComponent(tabKey: listKey[TabEnum.more.index], child: MoreUserSrceen()),
             ],
           ),
           bottomNavigationBar: const KeepAliveComponent(child: BottomBarNavigation()),

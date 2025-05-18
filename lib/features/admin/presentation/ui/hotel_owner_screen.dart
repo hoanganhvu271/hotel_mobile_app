@@ -337,9 +337,7 @@ class BookingBarChart extends StatelessWidget {
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
-              getTooltipColor: (group) {
-                return const Color(0xFF65462D); // ColorsLib.primaryBoldColor
-              },
+              tooltipBgColor: const Color(0xFF65462D),
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 return BarTooltipItem(
                   '${rod.toY.toInt()}',

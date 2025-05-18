@@ -1,12 +1,10 @@
-enum TabEnum { home, map, order, noti, more }
+enum TabEnum { home, order, noti, more }
 
 extension TabEnumExtension on TabEnum {
   String get enumToString {
     switch (this) {
       case TabEnum.home:
         return "Home";
-      case TabEnum.map:
-        return "Map";
       case TabEnum.order:
         return "Order";
       case TabEnum.noti:

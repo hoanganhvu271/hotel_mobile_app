@@ -43,7 +43,7 @@ Future<void> runMain() async {
     observers: [
       Observers(),
     ],
-    child: const MyApp(),
+    child: MyApp(),
   ));
 }
 
