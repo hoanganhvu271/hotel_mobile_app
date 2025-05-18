@@ -16,11 +16,38 @@ import '../../../core/base_response.dart';
 import '../../../di/injector.dart';
 import '../model/booking_status.dart';
 import '../model/create_room_request.dart';
+import '../model/hotel_dto.dart';
 import '../model/put_room_request.dart';
 
 final hotelOwnerService = Provider<HotelOwnerService>((ref) => HotelOwnerService());
 
 class HotelOwnerService {
+  Future<BaseResponse<List<HotelDto>>> getHotelsByUser(int userId) async {
+    try {
+      Response response = await injector<DioClient>().get("${ApiUrl.hotelOwner}/hotels/$userId");
+
+      // Parse the response data to a list of Hotel objects
+      if (response.data is List) {
+        final List<HotelDto> hotels = (response.data as List)
+            .map((json) => HotelDto.fromJson(json))
+            .toList();
+
+        return BaseResponse(isSuccessful: true, successfulData: hotels);
+      } else {
+        return BaseResponse(isSuccessful: false, errorMessage: "Dữ liệu trả về không phải là một danh sách.");
+      }
+    } on DioException catch (e) {
+      final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
+      return BaseResponse(
+          isSuccessful: false,
+          errorMessage: errorMessage,
+          errorCode: e.response?.statusCode.toString()
+      );
+    } catch (e) {
+      return BaseResponse(isSuccessful: false, errorMessage: e.toString());
+    }
+  }
+
   Future<BaseResponse<Hotel>> getHotelById(int id) async {
     try {
       Response response = await injector<DioClient>().get("${ApiUrl.hotelOwner}/hotel/$id");

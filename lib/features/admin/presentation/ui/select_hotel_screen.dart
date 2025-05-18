@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/constants/app_colors.dart';
-import 'package:hotel_app/features/admin/model/hotel_response.dart';
+import 'package:hotel_app/features/admin/model/hotel_dto.dart';
 
 import '../../../../common/hotel_storage_provider.dart';
 import '../provider/user_hotel_provider.dart';
@@ -24,7 +24,7 @@ class _SelectHotelScreenState extends ConsumerState<SelectHotelScreen> {
     });
   }
 
-  Future<void> _selectHotel(Hotel hotel) async {
+  Future<void> _selectHotel(HotelDto hotel) async {
     // Save the selected hotel ID and return to the previous screen
     await ref.read(hotelStorageProvider).saveHotelId(hotel.hotelId);
     if (mounted) {
@@ -71,12 +71,10 @@ class _SelectHotelScreenState extends ConsumerState<SelectHotelScreen> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  subtitle: hotel.address != null
-                      ? Text(
-                    "${hotel.address?.specificAddress}, ${hotel.address?.ward}, ${hotel.address?.district}, ${hotel.address?.city}",
+                  subtitle: Text(
+                    "${hotel.address.specificAddress}, ${hotel.address.ward}, ${hotel.address.district}, ${hotel.address.city}",
                     style: const TextStyle(fontSize: 14),
-                  )
-                      : const Text("No address available"),
+                  ),
                   trailing: isSelected
                       ? const Icon(Icons.check_circle, color: Colors.green, size: 28)
                       : const Icon(Icons.arrow_forward_ios, size: 20),
