@@ -269,7 +269,7 @@ class HotelOwnerService {
 
       return BaseResponse(
         isSuccessful: true,
-        successfulData: response.data['success'],
+        successfulData: response.data,
       );
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";

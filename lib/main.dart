@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/app.dart';
 import 'core/observers.dart';
 import 'di/injector.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> runMain() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,16 @@ Future<void> runMain() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+
+  //Noti:
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   runApp(ProviderScope(
     observers: [
