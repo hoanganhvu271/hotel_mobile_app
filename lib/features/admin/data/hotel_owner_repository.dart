@@ -11,6 +11,7 @@ import '../model/booking_stats_dto.dart';
 import '../model/booking_status.dart';
 import '../model/create_room_request.dart';
 import '../model/hotel_response.dart';
+import '../model/review_response_dto.dart';
 import '../model/review_stats_dto.dart';
 import '../model/room_response_dto.dart';
 
@@ -53,6 +54,15 @@ abstract class HotelRepository {
   Future<BaseResponse<bool>> updateBookingStatus(int id, BookingStatus status);
   Future<BaseResponse<int>> countRooms();
   Future<BaseResponse<int>> countBookings();
+  Future<BaseResponse<List<ReviewResponseDto>>> getAllReviews({
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    int? rating
+  });
+
+  Future<BaseResponse<bool>> replyToReview(int reviewId, String reply);
 }
 
 class HotelRepositoryImpl implements HotelRepository {
@@ -190,4 +200,28 @@ class HotelRepositoryImpl implements HotelRepository {
     final hotelId = _getCurrentHotelId();
     return await hotelOwnerApi.countBookings(hotelId: hotelId!);
   }
+
+  @override
+  Future<BaseResponse<List<ReviewResponseDto>>> getAllReviews({
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    int? rating,
+  }) async {
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.getAllReviews(
+      id: hotelId!,
+      offset: offset,
+      limit: limit,
+      order: order,
+      query: query,
+      rating: rating,
+    );
+  }
+
+  Future<BaseResponse<bool>> replyToReview(int reviewId, String reply) async {
+    return await hotelOwnerApi.replyToReview(reviewId, reply);
+  }
+
 }

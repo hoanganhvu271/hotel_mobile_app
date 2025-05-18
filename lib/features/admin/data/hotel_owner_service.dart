@@ -18,6 +18,7 @@ import '../model/booking_status.dart';
 import '../model/create_room_request.dart';
 import '../model/hotel_dto.dart';
 import '../model/put_room_request.dart';
+import '../model/review_response_dto.dart';
 
 final hotelOwnerService = Provider<HotelOwnerService>((ref) => HotelOwnerService());
 
@@ -89,7 +90,6 @@ class HotelOwnerService {
       return BaseResponse(isSuccessful: false, errorMessage: e.toString());
     }
   }
-
 
   Future<BaseResponse<ReviewStatsDto>> getReviewStats(int id) async {
     try {
@@ -318,6 +318,62 @@ class HotelOwnerService {
       return BaseResponse(
         isSuccessful: true,
         successfulData: response.data,
+      );
+    } on DioException catch (e) {
+      final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
+      return BaseResponse(
+        isSuccessful: false,
+        errorMessage: errorMessage,
+        errorCode: e.response?.statusCode.toString(),
+      );
+    } catch (e) {
+      return BaseResponse(isSuccessful: false, errorMessage: e.toString());
+    }
+  }
+
+  // Add to hotel_owner_service.dart
+  Future<BaseResponse<List<ReviewResponseDto>>> getAllReviews({
+    required int id,
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    int? rating,
+  }) async {
+    try {
+      String url = "${ApiUrl.hotelOwner}/reviews/$id?offset=$offset&limit=$limit&order=$order&query=$query";
+      if (rating != null) {
+        url += "&rating=$rating";
+      }
+
+      Response data = await injector<DioClient>().get(url);
+      List<dynamic> reviewsData = data.data;
+
+      final List<ReviewResponseDto> reviews = reviewsData
+          .map((json) => ReviewResponseDto.fromJson(json))
+          .toList();
+
+      return BaseResponse(isSuccessful: true, successfulData: reviews);
+    } on DioException catch (e) {
+      final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
+      return BaseResponse(isSuccessful: false, errorMessage: errorMessage, errorCode: e.response?.statusCode.toString());
+    } catch (e) {
+      return BaseResponse(isSuccessful: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<BaseResponse<bool>> replyToReview(int reviewId, String reply) async {
+    try {
+      final response = await injector<DioClient>().post(
+        "${ApiUrl.hotelOwner}/review/$reviewId/reply",
+        data: {
+          'reply': reply,
+        },
+      );
+
+      return BaseResponse(
+        isSuccessful: true,
+        successfulData: true,
       );
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";

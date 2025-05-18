@@ -9,6 +9,7 @@ class SearchData<T> extends BaseState {
   final int limit;
   final bool canLoadMore;
   final List<T> listData;
+  final int? rating; // Add this for review filtering
 
   SearchData({
     required super.status,
@@ -20,6 +21,7 @@ class SearchData<T> extends BaseState {
     this.limit = 10,
     this.canLoadMore = true,
     this.listData = const [],
+    this.rating, // Add this parameter
   });
 
   SearchData<T> copyWith({
@@ -32,6 +34,7 @@ class SearchData<T> extends BaseState {
     int? limit,
     bool? canLoadMore,
     List<T>? listData,
+    int? rating, // Add this parameter
   }) {
     return SearchData<T>(
       status: status ?? this.status,
@@ -43,6 +46,7 @@ class SearchData<T> extends BaseState {
       limit: limit ?? this.limit,
       canLoadMore: canLoadMore ?? this.canLoadMore,
       listData: listData ?? this.listData,
+      rating: rating ?? this.rating, // Add this line
     );
   }
 }

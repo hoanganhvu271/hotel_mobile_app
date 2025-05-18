@@ -10,6 +10,7 @@ import 'package:hotel_app/features/admin/presentation/provider/room_provider.dar
 import 'package:hotel_app/features/admin/presentation/ui/partials/top_app_bar.dart';
 import 'package:hotel_app/features/admin/presentation/ui/report_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/reservation_manager_screen.dart';
+import 'package:hotel_app/features/admin/presentation/ui/review_management_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/room_manager_screen.dart';
 import 'package:hotel_app/features/admin/presentation/ui/select_hotel_screen.dart';
 import '../../../../common/hotel_storage_provider.dart';
@@ -430,64 +431,86 @@ class StatisticWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
       color: Colors.transparent,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF000000).withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 4),
-            )
-          ],
-        ),
-        child: Column(
-          spacing: 20,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Đánh giá",
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF667085),
-              ),
+      child: InkWell(
+        onTap: () {
+          // Navigate to Review Management Screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReviewManagementScreen(),
             ),
-            ref.watch(reviewStatsViewModel).when(
-              success: (data) {
-                return Column(
-                  spacing: 20,
-                  children: [
-                    RatingItem(
-                      title: "Trung bình",
-                      value: data.averageRating,
-                      percent: data.averageRatingChangePercent,
+          );
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF000000).withValues(alpha: 0.1),
+                blurRadius: 4,
+                offset: const Offset(0, 4),
+              )
+            ],
+          ),
+          child: Column(
+            spacing: 20,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Đánh giá",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF667085),
                     ),
-                    RatingItem(
-                      title: "Số lượng",
-                      value: data.totalReviews.toDouble(),
-                      percent: data.reviewCountChangePercent,
-                      borderColor: Color(0xFFC6D7FE),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Colors.grey[400],
+                  ),
+                ],
+              ),
+              ref.watch(reviewStatsViewModel).when(
+                success: (data) {
+                  return Column(
+                    spacing: 20,
+                    children: [
+                      RatingItem(
+                        title: "Trung bình",
+                        value: data.averageRating,
+                        percent: data.averageRatingChangePercent,
+                      ),
+                      RatingItem(
+                        title: "Số lượng",
+                        value: data.totalReviews.toDouble(),
+                        percent: data.reviewCountChangePercent,
+                        borderColor: Color(0xFFC6D7FE),
+                      ),
+                    ],
+                  );
+                },
+                error: (e) => Center(
+                  child: Text(
+                    e.toString(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF667085),
                     ),
-                  ],
-                );
-              },
-              error: (e) => Center(
-                child: Text(
-                  e.toString(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF667085),
                   ),
                 ),
-              ),
-              orElse: () => const SizedBox.shrink(),
-            )
-          ],
+                orElse: () => const SizedBox.shrink(),
+              )
+            ],
+          ),
         ),
       ),
     );
