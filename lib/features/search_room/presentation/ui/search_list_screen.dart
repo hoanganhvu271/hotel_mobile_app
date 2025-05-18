@@ -118,7 +118,6 @@ class _SearchListScreenState extends ConsumerState<SearchListScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomBarNavigation(),
     );
   }
 }

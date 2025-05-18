@@ -31,7 +31,7 @@ class RoomSearchService {
       final dataList = (data.data as List)
           .map((json) => RoomSearchList.fromJson(json))
           .toList();
-      return BaseResponse(isSuccessful: true, sucessfulData: dataList);
+      return BaseResponse(isSuccessful: true, successfulData: dataList);
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
       return BaseResponse(
@@ -60,7 +60,7 @@ class RoomSearchService {
       }
       final dataList =
           (data.data as List).map((json) => json.toString()).toList();
-      return BaseResponse(isSuccessful: true, sucessfulData: dataList);
+      return BaseResponse(isSuccessful: true, successfulData: dataList);
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
       return BaseResponse(
@@ -90,7 +90,7 @@ class RoomSearchService {
       }
       final dataList =
           (data.data as List).map((json) => json.toString()).toList();
-      return BaseResponse(isSuccessful: true, sucessfulData: dataList);
+      return BaseResponse(isSuccessful: true, successfulData: dataList);
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
       return BaseResponse(
@@ -129,7 +129,7 @@ class RoomSearchService {
 
       return BaseResponse(
         isSuccessful: true,
-        sucessfulData: dataList,
+        successfulData: dataList,
       );
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";

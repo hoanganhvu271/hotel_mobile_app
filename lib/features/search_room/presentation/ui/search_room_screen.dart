@@ -238,7 +238,6 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
           },
         ),
       ),
-      bottomNavigationBar: BottomBarNavigation(),
     );
   }
 }

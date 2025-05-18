@@ -20,7 +20,7 @@ class ServiceProvider extends AutoDisposeNotifier<BaseState<List<Service>>> {
     try {
       final response = await ref.read(roomSearchRepository).getServices();
       if (response.isSuccessful) {
-        final services = response.sucessfulData!;
+        final services = response.successfulData!;
         if (services.isEmpty) {
           state = BaseState.emptyData();
         } else {

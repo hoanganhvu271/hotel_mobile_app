@@ -193,8 +193,6 @@ class _BookingScreenState extends State<BookingScreen> {
           ],
         ),
       ),
-      bottomNavigationBar:
-          const KeepAliveComponent(child: BottomBarNavigation()),
     );
   }
 }

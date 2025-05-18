@@ -22,7 +22,7 @@ class SearchEntryNotifier
       final response =
           await ref.read(searchEntryRepository).getSearchEntries(query);
       if (response.isSuccessful) {
-        final List<SearchEntry> data = response.sucessfulData!;
+        final List<SearchEntry> data = response.successfulData!;
         state = BaseState.success(data);
       } else {
         state = BaseState.error(response.errorMessage ?? "");

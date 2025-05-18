@@ -19,7 +19,7 @@ class DistrictNotifier extends AutoDisposeNotifier<BaseState<List<String>>> {
     try {
       final response = await ref.read(roomSearchRepository).getDistricts(city);
       if (response.isSuccessful) {
-        final List<String> data = response.sucessfulData!;
+        final List<String> data = response.successfulData!;
         state = BaseState.success(data);
       } else {
         state = BaseState.error(response.errorMessage ?? "");

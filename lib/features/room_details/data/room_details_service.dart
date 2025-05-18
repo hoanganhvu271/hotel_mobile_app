@@ -27,7 +27,7 @@ class RoomDetailsService {
       }
       return BaseResponse(
         isSuccessful: true,
-        sucessfulData: RoomDetails.fromJson(data.data as Map<String, dynamic>),
+        successfulData: RoomDetails.fromJson(data.data as Map<String, dynamic>),
       );
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";

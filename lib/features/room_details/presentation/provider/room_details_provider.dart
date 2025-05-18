@@ -21,7 +21,7 @@ class RoomDetailsNotifier extends AutoDisposeNotifier<BaseState<RoomDetails>> {
       final response =
           await ref.read(roomDetailsRepository).getRoomDetails(roomId);
       if (response.isSuccessful) {
-        final RoomDetails data = response.sucessfulData!;
+        final RoomDetails data = response.successfulData!;
         state = BaseState.success(data);
       } else {
         state = BaseState.error(response.errorMessage ?? "");

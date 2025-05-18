@@ -23,7 +23,7 @@ class RoomSearchNotifier
       final response =
           await ref.read(roomSearchRepository).getRoomsSearch(request);
       if (response.isSuccessful) {
-        final List<RoomSearchList> data = response.sucessfulData!;
+        final List<RoomSearchList> data = response.successfulData!;
         state = BaseState.success(data);
       } else {
         state = BaseState.error(response.errorMessage ?? "");

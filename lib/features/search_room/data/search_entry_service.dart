@@ -28,7 +28,7 @@ class SearchEntryService {
       final dataList = (data.data as List)
           .map((json) => SearchEntry.fromJson(json))
           .toList();
-      return BaseResponse(isSuccessful: true, sucessfulData: dataList);
+      return BaseResponse(isSuccessful: true, successfulData: dataList);
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
       return BaseResponse(
