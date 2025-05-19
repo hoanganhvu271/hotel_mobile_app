@@ -52,7 +52,7 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
               HomeScreen(),
               MapScreen(),
               OrderScreen(),
-              NotiScreen(),
+              NotificationScreen(),
               // MoreScreen(),
                MoreUserSrceen(),
             ],

@@ -5,6 +5,8 @@ import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
 import 'package:hotel_app/features/review/booking_list_user_screen.dart';
 
+import '../noti/noti_screen.dart';
+
 class MoreUserSrceen extends StatelessWidget {
   const MoreUserSrceen({super.key});
 
@@ -104,7 +106,7 @@ class MoreContentWidget extends StatelessWidget {
               Column(
                 spacing: 24,
                 children: [
-                  const RemainingMoreItem(
+                  RemainingMoreItem(
                       imagePath: "assets/icons/icon_setting.svg",
                       title: 'Cài đặt'),
                   RemainingMoreItem(
@@ -113,7 +115,7 @@ class MoreContentWidget extends StatelessWidget {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MapScreen()))),
+                              builder: (context) => const NotificationScreen()))),
                   // RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
                   //     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
                   // ),

@@ -72,6 +72,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       appBar: AppBar(
         backgroundColor: Colors.brown,
         title: const Text('Thông tin tài khoản'),
+        titleTextStyle: const TextStyle(
+          color: Colors.white, // Set text color to white
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white, // Set back arrow color to white
+        ),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
