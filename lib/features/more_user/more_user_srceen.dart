@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hotel_app/features/admin_system/admin_system_home.dart';
+import 'package:hotel_app/features/admin_system/admin_system_hotels.dart';
+import 'package:hotel_app/features/hotel_owner/hotel_owner_system_home.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
+import 'package:hotel_app/features/more_user/web_socket_page.dart';
+import 'package:hotel_app/features/review/booking_list_user_screen.dart';
 
 class MoreUserSrceen extends StatelessWidget {
   const MoreUserSrceen({super.key});
@@ -72,7 +77,7 @@ class MoreContentWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 80),
-              const IntrinsicHeight(
+              IntrinsicHeight(
                 child: Row(
                   spacing: 26,
                   children: [
@@ -83,6 +88,13 @@ class MoreContentWidget extends StatelessWidget {
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_booking.svg",
                       title: "Đơn đặt phòng",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookingListUserScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -101,9 +113,36 @@ class MoreContentWidget extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => const MapScreen()))),
-                  // RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
-                  //     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
-                  // ),
+                  RemainingMoreItem(
+                      imagePath: "assets/icons/icon_support.svg",
+                      title: 'Trang ADMIN',
+                      disable: true,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AdminSystemHome()))),
+                  RemainingMoreItem(
+                      imagePath: "assets/icons/icon_support.svg",
+                      title: 'Trang chủ hotel',
+                      disable: true,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const HotelOwnerSystemHome()))),
+
+
+
+
+                  RemainingMoreItem(
+                      imagePath: "assets/icons/icon_support.svg",
+                      title: 'TMP',
+                      disable: true,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WebSocketPage()))),
                 ],
               ),
               const SizedBox(height: 80),
@@ -139,7 +178,7 @@ class FirstMoreItem extends StatelessWidget {
         color: const Color(0xFFF2F2F3),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          onTap: () => {},
+          onTap: onTap,
           borderRadius: BorderRadius.circular(12),
           splashColor: Colors.black.withValues(alpha: 0.2),
           child: Container(

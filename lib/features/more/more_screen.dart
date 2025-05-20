@@ -15,7 +15,6 @@ class MoreScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Square button in the top-left corner
           Positioned(
             top: 40,
             left: 40,
@@ -98,8 +97,7 @@ class MoreScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20), // Space between buttons
-                // Booking list button
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -111,14 +109,14 @@ class MoreScreen extends StatelessWidget {
                     width: 350,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E88E5), // Change color if needed
+                      color: const Color(0xFF1E88E5),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Icon(
-                          Icons.book_online, // You can change this icon if you prefer
+                          Icons.book_online,
                           color: Colors.white,
                           size: 24,
                         ),

@@ -103,7 +103,7 @@ class _OwnerListScreenState extends State<OwnerListScreen> {
                 offset: const Offset(0, -25),
                 child: Stack(
                   children: [
-                    const Heading(title: 'QUẢN LÝ CHỦ KHÁCH SẠN 222'),
+                    const Heading(title: 'QUẢN LÝ CHỦ KHÁCH SẠN'),
                     Positioned(
                       left: 20,
                       top: 22,

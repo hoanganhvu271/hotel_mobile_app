@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_app/common/widgets/heading.dart';
+import 'package:hotel_app/features/admin_system/admin_info_management.dart';
 import 'package:hotel_app/features/admin_system/admin_system_hotels.dart';
 import 'package:hotel_app/features/admin_system/admin_system_users.dart';
 import 'package:hotel_app/features/admin_system/model/admin_data.dart';
@@ -68,6 +69,8 @@ class _AdminSystemHomeState extends State<AdminSystemHome> {
                               _buildInfoCard("Số lượng khách hàng", data.totalUsers),
                               const SizedBox(height: 20),
                               _buildInfoCard("Số lượng đặt phòng", data.totalBookings),
+                              const SizedBox(height: 20),
+                              _buildInfoCard("Quản lí thông tin"),
                             ],
                           );
                         } else {
@@ -100,17 +103,8 @@ class _AdminSystemHomeState extends State<AdminSystemHome> {
     );
   }
 
-  Widget _buildInfoCard(String title, int value) {
+  Widget _buildInfoCard(String title, [int? value]) {
     return GestureDetector(
-      // onTap: () {
-      //   if (title == "Số lượng khách hàng") {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const AdminSystemUsers()),
-      //     );
-      //   }
-      // },
-
       onTap: () {
         if (title == "Số lượng khách sạn") {
           Navigator.push(
@@ -122,9 +116,13 @@ class _AdminSystemHomeState extends State<AdminSystemHome> {
             context,
             MaterialPageRoute(builder: (context) => const AdminSystemUsers()),
           );
+        } else if (title == "Quản lí thông tin") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AdminInfoManagement()),
+          );
         }
       },
-
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -135,14 +133,16 @@ class _AdminSystemHomeState extends State<AdminSystemHome> {
             children: [
               Text(title,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-              Text(value.toString(),
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              if (value != null)
+                Text(value.toString(),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ],
           ),
         ),
       ),
     );
   }
+
 
 
   Widget _buildRevenueChart(List<DailyRevenue> data) {
