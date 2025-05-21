@@ -135,7 +135,7 @@ class _RoomFormScreenState extends ConsumerState<RoomEditScreen> {
     // Listen for delete room state changes
     ref.listen(deleteRoomProvider, (previous, current) {
       if (previous?.status != current.status) {
-        if (current.status.isSuccess) {
+        if (current.status.isSuccess && current.success == true) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Xóa phòng thành công")),
           );
@@ -143,8 +143,28 @@ class _RoomFormScreenState extends ConsumerState<RoomEditScreen> {
           Navigator.of(context).pop(); // Pop twice to go back to rooms list
         } else if (current.status.isError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Lỗi: ${current.message}")),
+            SnackBar(
+              content: Text(current.message ?? "Lỗi xóa phòng"),
+              backgroundColor: Colors.red,
+            ),
           );
+
+          // Nếu lỗi là do phòng đang được đặt, hiển thị thông báo chi tiết hơn
+          if (current.checkState == CheckRoomState.hasBookings) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Không thể xóa phòng"),
+                content: const Text("Phòng này đang có booking liên quan. Bạn cần hủy tất cả các booking của phòng này trước khi xóa."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Đã hiểu"),
+                  ),
+                ],
+              ),
+            );
+          }
         }
       }
     });

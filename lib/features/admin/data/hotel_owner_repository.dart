@@ -31,12 +31,6 @@ abstract class HotelRepository {
     String order = "desc",
     String query = "",
   });
-  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
-    int offset = 0,
-    int limit = 10,
-    String order = "desc",
-    String query = "",
-  });
 
   Future<BaseResponse<bool>> createRoomWithImages({
     required CreateRoomRequest request,
@@ -63,6 +57,14 @@ abstract class HotelRepository {
 
   Future<BaseResponse<bool>> replyToReview(int reviewId, String reply);
   Future<BaseResponse<bool>> deleteRoom(int roomId);
+  Future<BaseResponse<bool>> checkRoomHasBookings(int roomId);
+  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    String? status,
+  });
 }
 
 class HotelRepositoryImpl implements HotelRepository {
@@ -110,23 +112,6 @@ class HotelRepositoryImpl implements HotelRepository {
   }) async {
     final hotelId = _getCurrentHotelId();
     return await hotelOwnerApi.getAllRooms(
-      id: hotelId!,
-      offset: offset,
-      limit: limit,
-      order: order,
-      query: query,
-    );
-  }
-
-  @override
-  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
-    int offset = 0,
-    int limit = 10,
-    String order = "desc",
-    String query = ""
-  }) async {
-    final hotelId = _getCurrentHotelId();
-    return await hotelOwnerApi.getAllBookings(
       id: hotelId!,
       offset: offset,
       limit: limit,
@@ -227,5 +212,30 @@ class HotelRepositoryImpl implements HotelRepository {
   @override
   Future<BaseResponse<bool>> deleteRoom(int roomId) async {
     return await hotelOwnerApi.deleteRoom(roomId);
+  }
+
+  @override
+  Future<BaseResponse<bool>> checkRoomHasBookings(int roomId) async {
+    return await hotelOwnerApi.checkRoomHasBookings(roomId);
+  }
+
+  @override
+  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    String? status
+  }) async {
+    print(status);
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.getAllBookings(
+      id: hotelId!,
+      offset: offset,
+      limit: limit,
+      order: order,
+      query: query,
+      status: status,
+    );
   }
 }

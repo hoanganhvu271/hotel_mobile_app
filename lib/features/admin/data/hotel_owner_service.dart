@@ -134,9 +134,26 @@ class HotelOwnerService {
     int limit = 10,
     String order = "desc",
     String query = "",
+    String? status, 
   }) async {
     try {
-      Response data = await injector<DioClient>().get("${ApiUrl.hotelOwner}/bookings/$id?offset=$offset&limit=$limit&order=$order&query=$query");
+      // Tạo query parameters cơ bản
+      Map<String, dynamic> queryParams = {
+        "offset": offset,
+        "limit": limit,
+        "order": order,
+        "query": query,
+      };
+
+      if (status != null && status.isNotEmpty) {
+        queryParams["status"] = status;
+      }
+
+      Response data = await injector<DioClient>().get(
+        "${ApiUrl.hotelOwner}/bookings/$id",
+        queryParameters: queryParams,
+      );
+
       List<dynamic> bookingsData = data.data;
 
       final List<BookingResponseDto> bookings = bookingsData
@@ -391,6 +408,26 @@ class HotelOwnerService {
     try {
       await injector<DioClient>().delete("${ApiUrl.hotelOwner}/room/$roomId");
       return BaseResponse(isSuccessful: true, successfulData: true);
+    } on DioException catch (e) {
+      final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
+      return BaseResponse(
+        isSuccessful: false,
+        errorMessage: errorMessage,
+        errorCode: e.response?.statusCode.toString(),
+      );
+    } catch (e) {
+      return BaseResponse(isSuccessful: false, errorMessage: e.toString());
+    }
+  }
+
+  Future<BaseResponse<bool>> checkRoomHasBookings(int roomId) async {
+    try {
+      final response = await injector<DioClient>().get("${ApiUrl.hotelOwner}/room/$roomId/has-bookings");
+
+      return BaseResponse(
+        isSuccessful: true,
+        successfulData: response.data as bool,
+      );
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
       return BaseResponse(
