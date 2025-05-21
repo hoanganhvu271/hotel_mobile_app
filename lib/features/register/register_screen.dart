@@ -63,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         }
       } else if (response.statusCode == 400) {
-        final errorData = jsonDecode(response.body);
+        final errorData = jsonDecode(utf8.decode(response.bodyBytes));
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
