@@ -24,11 +24,6 @@ class BottomBarNavigation extends ConsumerWidget {
             isSelected: tab == TabEnum.home
           ),
           BottomNavigationItem(
-              tab: TabEnum.map,
-              iconPath: 'assets/icons/icon_map.svg',
-              isSelected: tab == TabEnum.map
-          ),
-          BottomNavigationItem(
             tab: TabEnum.order,
             iconPath: 'assets/icons/icon_order.svg',
             isSelected: tab == TabEnum.order

@@ -395,12 +395,11 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
           children: [
             const Heading(title: 'LỊCH SỬ ĐẶT PHÒNG'),
             Positioned(
-              left: 10,
-              top: MediaQuery.of(context).padding.top + 5,
+              left: 20,
+              top: 22,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 24),
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Navigator.pop(context),
-                tooltip: 'Quay lại',
               ),
             ),
           ],
@@ -408,7 +407,7 @@ class _BookingListUserScreenState extends State<BookingListUserScreen> {
       ),
       body: SafeArea(
         child: Transform.translate(
-          offset: const Offset(0, -25),
+          offset: const Offset(0, -5),
           child: Column(
             children: [
               _buildFilterSortControls(),

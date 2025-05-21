@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'   // Phiên bản gradle plugin Android
+        classpath 'com.google.gms:google-services:4.3.15'  // Plugin google services cho Firebase
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -5,6 +16,7 @@ allprojects {
     }
 }
 
+// Phần còn lại của file, ví dụ:
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"

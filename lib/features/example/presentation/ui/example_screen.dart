@@ -8,6 +8,7 @@ class ExampleScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(exampleViewmodel);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Example Screen'),

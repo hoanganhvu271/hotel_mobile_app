@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hotel_app/features/register/register_screen.dart';
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (roles.contains('ROLE_ADMIN')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const AdminSystemHome()),
           );
         } else if (roles.contains('ROLE_CUSTOMER')) {
           Navigator.pushReplacement(

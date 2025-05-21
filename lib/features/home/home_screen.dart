@@ -105,42 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const AdminSystemHome()),
-                    );
-                  },
-                  child: const Text('Đi đến Trang 1'),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const HotelOwnerSystemHome()),
-                    );
-                  },
-                  child: const Text('Đi đến Trang 2'),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const MoreUserSrceen()),
-                    );
-                  },
-                  child: const Text('Đi đến Trang 3'),
-                ),
-              ],
-            ),
-
           ],
         ),
       ),

@@ -18,7 +18,7 @@ class BookingListRoomScreen extends StatelessWidget {
         child: Column(
           children: [
             Transform.translate(
-              offset: const Offset(0, -25),
+              offset: const Offset(0, -5),
               child: Stack(
                 children: [
                   const Heading(title: 'ĐẶT PHÒNG'),
@@ -35,7 +35,7 @@ class BookingListRoomScreen extends StatelessWidget {
             ),
             if (rooms.isNotEmpty)
               Transform.translate(
-                offset: const Offset(0, -12),
+                offset: const Offset(0, 0),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(

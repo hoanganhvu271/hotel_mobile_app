@@ -81,7 +81,7 @@ class _BookingScreenState extends State<BookingScreen> {
         child: Column(
           children: [
             Transform.translate(
-              offset: const Offset(0, -25),
+              offset: const Offset(0, -5),
               child: Stack(
                 children: [
                   const Heading(title: 'ĐẶT PHÒNG'),
@@ -193,8 +193,6 @@ class _BookingScreenState extends State<BookingScreen> {
           ],
         ),
       ),
-      bottomNavigationBar:
-          const KeepAliveComponent(child: BottomBarNavigation()),
     );
   }
 }

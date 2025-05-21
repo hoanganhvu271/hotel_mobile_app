@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ApiConstants {
-  static const String baseUrl = 'http://192.168.1.50:8080';
-  static const String updateUser = '/api/user/update';
-}
+import '../../common/utils/api_constants.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final String fullName;
@@ -54,7 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       final token = await _getToken();
       final response = await http.put(
-        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.updateUser}'),
+        Uri.parse('${ApiConstants.baseUrl}/api/user/update'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -67,7 +64,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
 
       if (response.statusCode == 200) {
-        final updatedData = json.decode(response.body);
+        final updatedData = json.decode(utf8.decode(response.bodyBytes));
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile updated successfully')),
         );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hotel_app/features/account/info.dart';
+import 'package:hotel_app/features/admin/presentation/ui/hotel_owner_screen.dart';
 import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:hotel_app/features/admin_system/admin_system_hotels.dart';
 import 'package:hotel_app/features/hotel_owner/hotel_owner_system_home.dart';
@@ -18,11 +20,11 @@ class MoreUserSrceen extends StatelessWidget {
       color: Colors.transparent,
       child: SafeArea(
           child: Column(
-        children: [
-          AppBarWidget(title: "Booking_N15"),
-          Expanded(child: MoreContentWidget())
-        ],
-      )),
+            children: [
+              AppBarWidget(title: "Booking_N15"),
+              Expanded(child: MoreContentWidget())
+            ],
+          )),
     );
   }
 }
@@ -33,8 +35,8 @@ class AppBarWidget extends StatelessWidget {
 
   const AppBarWidget(
       {super.key,
-      required this.title,
-      this.backgroundColor = const Color(0xFF65462D)});
+        required this.title,
+        this.backgroundColor = const Color(0xFF65462D)});
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +109,13 @@ class _MoreContentWidgetState extends State<MoreContentWidget> {
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_profile.svg",
                       title: "Tài khoản",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserInfoScreen()),
+                        );
+                      },
                     ),
                     const SizedBox(width: 26),
                     FirstMoreItem(
@@ -138,13 +147,13 @@ class _MoreContentWidgetState extends State<MoreContentWidget> {
                           MaterialPageRoute(
                               builder: (context) => const MapScreen()))),
                   RemainingMoreItem(
-                      imagePath: "assets/icons/icon_admin.svg",
-                      title: 'Trang admin',
-                      disable: false,
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AdminSystemHome())),
+                    imagePath: "assets/icons/icon_admin.svg",
+                    title: 'Trang admin',
+                    disable: false,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AdminSystemHome())),
                   ),
                   RemainingMoreItem(
                     imagePath: "assets/icons/icon_hotel_owner.svg",
@@ -156,6 +165,15 @@ class _MoreContentWidgetState extends State<MoreContentWidget> {
                             builder: (context) => const HotelOwnerSystemHome())),
                   ),
 
+                  RemainingMoreItem(
+                    imagePath: "assets/icons/icon_hotel_owner.svg",
+                    title: 'Trang chủ khách sạn2',
+                    disable: false,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HotelOwnerScreen())),
+                  ),
                   // if (userRoles.contains('ROLE_ADMIN'))
                   //   RemainingMoreItem(
                   //     imagePath: "assets/icons/icon_admin.svg",

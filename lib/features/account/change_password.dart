@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ApiConstants {
-  static const String baseUrl = 'http://192.168.1.50:8080';
-  static const String changePassword = '/api/user/change-password';
-}
+import '../../common/utils/api_constants.dart';
+
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key? key}) : super(key: key);
@@ -37,7 +35,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     try {
       final token = await _getToken();
       final response = await http.put(
-        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.changePassword}'),
+        Uri.parse('${ApiConstants.baseUrl}/api/user/change-password'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

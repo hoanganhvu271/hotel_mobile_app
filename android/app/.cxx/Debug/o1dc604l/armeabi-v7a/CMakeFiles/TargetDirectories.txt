@@ -1,0 +1,2 @@
+C:/Tuiii/hotel_mobile_app/android/app/.cxx/Debug/o1dc604l/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Tuiii/hotel_mobile_app/android/app/.cxx/Debug/o1dc604l/armeabi-v7a/CMakeFiles/rebuild_cache.dir

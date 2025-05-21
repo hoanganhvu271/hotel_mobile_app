@@ -72,130 +72,130 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
-          children: [
-            Transform.translate(
-              offset: const Offset(0, -25),
-              child: Stack(
-                children: [
-                  const Heading(title: 'XÁC NHẬN THÔNG TIN'),
-                  Positioned(
-                    left: 20,
-                    top: 22,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Column(
+              children: [
+                Transform.translate(
+                  offset: const Offset(0, -5),
+                  child: Stack(
+                    children: [
+                      const Heading(title: 'XÁC NHẬN THÔNG TIN'),
+                      Positioned(
+                        left: 20,
+                        top: 22,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            BookingRoomCard(room: widget.room, showBookButton: false),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Thông tin khách hàng',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 10),
-                  FutureBuilder<UserInfo>(
-                    future: fetchUserInfo(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return Text(
-                            'Lỗi tải thông tin người dùng: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        UserInfo user = snapshot.data!;
-                        return Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              _buildInfoRow('Khách hàng', user.fullName),
-                              _buildInfoRow('Số điện thoại', user.phone),
-                              _buildInfoRow(
-                                  'Điểm tích lũy', user.score.toString()),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _useScore = !_useScore;
+                ),
+                BookingRoomCard(room: widget.room, showBookButton: false),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Thông tin khách hàng',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 10),
+                      FutureBuilder<UserInfo>(
+                        future: fetchUserInfo(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Lỗi tải thông tin người dùng: ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            UserInfo user = snapshot.data!;
+                            return Align(
+                              alignment: Alignment.center,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  _buildInfoRow('Khách hàng', user.fullName),
+                                  _buildInfoRow('Số điện thoại', user.phone),
+                                  _buildInfoRow('Điểm tích lũy', user.score.toString()),
+                                  const SizedBox(height: 10),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _useScore = !_useScore;
 
-                                    int discount = user.score;
-                                    finalPrice = widget.room.price - discount;
-                                    if (finalPrice < 0) finalPrice = 0;
-                                  });
-                                },
-                                child: Text(_useScore
-                                    ? 'Bỏ sử dụng điểm thưởng'
-                                    : 'Sử dụng điểm thưởng'),
+                                        int discount = user.score;
+                                        finalPrice = widget.room.price - discount;
+                                        if (finalPrice < 0) finalPrice = 0;
+                                      });
+                                    },
+                                    child: Text(_useScore
+                                        ? 'Bỏ sử dụng điểm thưởng'
+                                        : 'Sử dụng điểm thưởng'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return const Text('Không có dữ liệu người dùng');
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Thông tin đặt phòng',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _buildInfoRow('Ngày nhận phòng', widget.room.checkIn),
+                            _buildInfoRow('Ngày trả phòng', widget.room.checkOut),
+                            _buildInfoRow('Số giường', widget.room.bedNumber.toString()),
+                            _buildInfoRow('Số người lớn', widget.room.adults.toString()),
+                            _buildInfoRow('Số trẻ em', widget.room.children.toString()),
+                            _buildInfoRow(
+                              'Tổng tiền phòng',
+                              NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ')
+                                  .format(widget.room.price),
+                            ),
+                            if (_useScore) ...[
+                              _buildInfoRow(
+                                'Điểm thưởng',
+                                '-${NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ').format(widget.room.price - finalPrice)}',
+                              ),
+                              _buildInfoRow(
+                                'Tổng',
+                                NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ')
+                                    .format(finalPrice),
                               ),
                             ],
-                          ),
-                        );
-                      } else {
-                        return const Text('Không có dữ liệu người dùng');
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Thông tin đặt phòng',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildInfoRow('Ngày nhận phòng', widget.room.checkIn),
-                        _buildInfoRow('Ngày trả phòng', widget.room.checkOut),
-                        _buildInfoRow(
-                            'Số giường', widget.room.bedNumber.toString()),
-                        _buildInfoRow(
-                            'Số người lớn', widget.room.adults.toString()),
-                        _buildInfoRow(
-                            'Số trẻ em', widget.room.children.toString()),
-                        _buildInfoRow(
-                          'Tổng tiền phòng',
-                          NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ')
-                              .format(widget.room.price),
+                          ],
                         ),
-                        if (_useScore) ...[
-                          _buildInfoRow(
-                            'Điểm thưởng',
-                            '-${NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ').format(widget.room.price - finalPrice)}',
-                          ),
-                          _buildInfoRow(
-                            'Tổng',
-                            NumberFormat.currency(
-                                    locale: 'vi_VN', symbol: 'VNĐ')
-                                .format(finalPrice),
-                          ),
-                        ],
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          _createBooking();
+                        },
+                        child: const Text('Xác nhận đặt phòng'),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      _createBooking();
-                    },
-                    child: const Text('Xác nhận đặt phòng'),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
+
 
   Widget _buildInfoRow(String title, String value) {
     return Container(

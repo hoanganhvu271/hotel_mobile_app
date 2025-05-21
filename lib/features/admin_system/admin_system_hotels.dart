@@ -100,7 +100,7 @@ class _AdminSystemHotelsState extends State<AdminSystemHotels> {
         child: Column(
           children: [
             Transform.translate(
-              offset: const Offset(0, -25),
+              offset: const Offset(0, -5),
               child: Stack(
                 children: [
                   const Heading(title: 'QUẢN LÝ CHỦ KHÁCH SẠN'),

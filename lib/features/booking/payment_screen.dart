@@ -198,7 +198,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           children: [
             Transform.translate(
-              offset: const Offset(0, -25),
+              offset: const Offset(0, -5),
               child: Stack(
                 children: [
                   const Heading(title: 'THANH TOÁN'),
@@ -330,22 +330,44 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   );
                 }
               },
+              // style: ElevatedButton.styleFrom(
+              //   backgroundColor: Colors.grey[700],
+              //   padding: const EdgeInsets.symmetric(
+              //     vertical: 12.0,
+              //     horizontal: 30.0,
+              //   ),
+              //   textStyle: const TextStyle(
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              //   foregroundColor: Colors.white,
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(10),
+              //   ),
+              // ),
+              // child: const Text('Xem hóa đơn'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[700],
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12.0,
-                  horizontal: 30.0,
-                ),
+                backgroundColor: Colors.white.withOpacity(0.7), // nền trắng mờ
+                foregroundColor: const Color(0xFF49454F), // màu chữ giống InputChip
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
                 textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.10,
+                  height: 1.43,
+                  fontFamily: 'Roboto',
                 ),
-                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
+                  side: const BorderSide(
+                    color: Color(0xFFCAC4D0), // viền giống InputChip
+                    width: 1,
+                  ),
                 ),
+                elevation: 0, // không đổ bóng để giống chip
               ),
-              child: const Text('Xem Hóa Đơn'),
+              child: const Text('Xem hóa đơn'),
+
             )
 
 

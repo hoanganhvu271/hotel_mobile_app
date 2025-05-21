@@ -58,7 +58,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
     return Scaffold(
       body: SafeArea(
         child: Transform.translate(
-          offset: const Offset(0, -25),
+          offset: const Offset(0, -5),
           child: Column(
             children: [
               Stack(

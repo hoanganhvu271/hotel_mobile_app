@@ -1,33 +1,58 @@
+import 'dart:async';
+import 'dart:ui';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'core/app.dart';
 import 'core/observers.dart';
 import 'di/injector.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() => runMain();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> runMain() async {
-  //Đảm bảo tất cả các singleton được khởi tạo trước khi runApp.
   WidgetsFlutterBinding.ensureInitialized();
   await initSingletons();
 
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  //status bar color
-  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-  //   statusBarColor: AppColors.white,
-  //   statusBarBrightness: Brightness.light,
-  // ));
+  // Bắt lỗi trong UI thread
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+  //Bắt lỗi toàn cục từ nền tảng (Flutter 3.7+)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  //Noti:
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   runApp(ProviderScope(
     observers: [
       Observers(),
     ],
-    child: const MyApp(),
+    child: MyApp(),
   ));
 }
+
+void main() {
+  runZonedGuarded(() {
+    runMain();
+  }, (error, stackTrace) {
+    // Bắt lỗi async ngoài UI thread
+    FirebaseCrashlytics.instance.recordError(error, stackTrace, fatal: true);
+  });
+}
+

@@ -15,7 +15,7 @@ class ExampleService {
       Response data = await injector<DioClient>().get('https://jsonplaceholder.typicode.com/posts');
       final dataList = (data.data as List)
           .map((json) => ExampleModel.fromJson(json)).toList();
-      return BaseResponse(isSuccessful: true, sucessfulData: dataList);
+      return BaseResponse(isSuccessful: true, successfulData: dataList);
 
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
