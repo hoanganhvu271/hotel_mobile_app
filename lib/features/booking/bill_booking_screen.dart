@@ -56,9 +56,6 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
       appBar: null,
       body: Column(
         children: [
-
-
-
           Stack(
             children: [
               const Heading(title: 'XÁC NHẬN HÓA ĐƠN'),
@@ -273,7 +270,44 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                           ),
                         ),
                       ),
+
+                      SizedBox(height: 20),
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            int count = 0;
+                            Navigator.of(context).popUntil((route) {
+                              return count++ == 5;
+                            });
+                          },
+                          icon: const Icon(Icons.home, color: Colors.white),
+                          label: const Text(
+                            'Về Trang Chủ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF65462D),
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 14.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            elevation: 5,
+                            shadowColor: Colors.brown.shade200,
+                          ),
+                        ),
+                      ),
+
+
                     ],
+
+
+
+
+
                   ),
                 );
               } else {

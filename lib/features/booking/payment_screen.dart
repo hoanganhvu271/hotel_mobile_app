@@ -281,30 +281,40 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ElevatedButton(
               onPressed: () async {
                 try {
+                  // Cập nhật trạng thái thanh toán
                   final responseBill = await http.patch(
-                    Uri.parse("${ApiConstants.baseUrl}/api/bill/${widget.booking.billId}/status?paidStatus=true"),
+                    Uri.parse(
+                      "${ApiConstants.baseUrl}/api/bill/${widget.booking.billId}/status?paidStatus=true",
+                    ),
                   );
-                  if (responseBill.statusCode == 200) {
-                    final responseBooking = await http.put(
-                      Uri.parse("${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
-                    );
-                    if (responseBooking.statusCode == 200) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BillBookingScreen(
-                            bookingId: widget.booking.bookingId,
-                            billId: widget.booking.billId ?? 0,
-                          ),
-                        ),
-                      );
-                    } else {
-                      throw Exception("Không thể xác nhận đặt phòng.");
-                    }
-                  } else {
+
+                  if (responseBill.statusCode != 200) {
                     throw Exception("Không thể cập nhật trạng thái thanh toán.");
                   }
+
+                  // Cập nhật trạng thái đặt phòng
+                  final responseBooking = await http.put(
+                    Uri.parse(
+                      "${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED",
+                    ),
+                  );
+
+                  if (responseBooking.statusCode != 200) {
+                    throw Exception("Không thể xác nhận đặt phòng.");
+                  }
+
+                  // Điều hướng đến màn hình hóa đơn
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BillBookingScreen(
+                        bookingId: widget.booking.bookingId,
+                        billId: widget.booking.billId ?? 0,
+                      ),
+                    ),
+                  );
                 } catch (e) {
+                  // Hiển thị hộp thoại lỗi
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -312,9 +322,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       content: Text('Lỗi: $e'),
                       actions: [
                         TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                          onPressed: () => Navigator.pop(context),
                           child: const Text('OK'),
                         ),
                       ],
@@ -322,15 +330,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   );
                 }
               },
-              child: const Text('Xem Hóa Đơn'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
+                backgroundColor: Colors.grey[700],
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 30.0,
+                ),
                 textStyle: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
+              child: const Text('Xem Hóa Đơn'),
             )
 
 

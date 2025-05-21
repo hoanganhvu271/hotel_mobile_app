@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:hotel_app/features/home/widget/hotel_card.dart';
+import 'package:hotel_app/features/hotel_owner/hotel_owner_system_home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hotel_app/common/widgets/home_booking_btn.dart';
@@ -7,6 +9,7 @@ import 'package:hotel_app/common/widgets/top_app_bar_widget.dart';
 import 'package:hotel_app/features/booking/booking_screen.dart';
 
 import '../../common/utils/api_constants.dart';
+import '../more_user/more_user_srceen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,6 +104,41 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AdminSystemHome()),
+                    );
+                  },
+                  child: const Text('Đi đến Trang 1'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HotelOwnerSystemHome()),
+                    );
+                  },
+                  child: const Text('Đi đến Trang 2'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const MoreUserSrceen()),
+                    );
+                  },
+                  child: const Text('Đi đến Trang 3'),
+                ),
+              ],
             ),
 
           ],

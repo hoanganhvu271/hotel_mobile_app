@@ -3,9 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:hotel_app/features/admin_system/admin_system_hotels.dart';
 import 'package:hotel_app/features/hotel_owner/hotel_owner_system_home.dart';
+import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
 import 'package:hotel_app/features/more_user/web_socket_page.dart';
 import 'package:hotel_app/features/review/booking_list_user_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MoreUserSrceen extends StatelessWidget {
   const MoreUserSrceen({super.key});
@@ -63,8 +65,29 @@ class AppBarWidget extends StatelessWidget {
   }
 }
 
-class MoreContentWidget extends StatelessWidget {
+class MoreContentWidget extends StatefulWidget {
   const MoreContentWidget({super.key});
+
+  @override
+  State<MoreContentWidget> createState() => _MoreContentWidgetState();
+}
+
+class _MoreContentWidgetState extends State<MoreContentWidget> {
+  List<String> userRoles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserRoles();
+  }
+
+  Future<void> loadUserRoles() async {
+    final prefs = await SharedPreferences.getInstance();
+    final roles = prefs.getStringList('user_roles') ?? [];
+    setState(() {
+      userRoles = roles;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +102,13 @@ class MoreContentWidget extends StatelessWidget {
               const SizedBox(height: 80),
               IntrinsicHeight(
                 child: Row(
-                  spacing: 26,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_profile.svg",
                       title: "Tài khoản",
                     ),
+                    const SizedBox(width: 26),
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_booking.svg",
                       title: "Đơn đặt phòng",
@@ -114,42 +138,59 @@ class MoreContentWidget extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => const MapScreen()))),
                   RemainingMoreItem(
-                      imagePath: "assets/icons/icon_support.svg",
-                      title: 'Trang ADMIN',
-                      disable: true,
+                      imagePath: "assets/icons/icon_admin.svg",
+                      title: 'Trang admin',
+                      disable: false,
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const AdminSystemHome()))),
+                              builder: (context) => const AdminSystemHome())),
+                  ),
                   RemainingMoreItem(
-                      imagePath: "assets/icons/icon_support.svg",
-                      title: 'Trang chủ hotel',
-                      disable: true,
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                              const HotelOwnerSystemHome()))),
+                    imagePath: "assets/icons/icon_hotel_owner.svg",
+                    title: 'Trang chủ khách sạn',
+                    disable: false,
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HotelOwnerSystemHome())),
+                  ),
+
+                  // if (userRoles.contains('ROLE_ADMIN'))
+                  //   RemainingMoreItem(
+                  //     imagePath: "assets/icons/icon_admin.svg",
+                  //     title: 'Trang admin',
+                  //     disable: false,
+                  //     onTap: () => Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => const AdminSystemHome())),
+                  //   ),
+                  // if (userRoles.contains('ROLE_HOTEL_OWNER'))
+                  //   RemainingMoreItem(
+                  //     imagePath: "assets/icons/icon_hotel_owner.svg",
+                  //     title: 'Trang chủ khách sạn',
+                  //     disable: false,
+                  //     onTap: () => Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => const HotelOwnerSystemHome())),
+                  //   ),
 
 
-
-
-                  RemainingMoreItem(
-                      imagePath: "assets/icons/icon_support.svg",
-                      title: 'TMP',
-                      disable: true,
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WebSocketPage()))),
                 ],
               ),
               const SizedBox(height: 80),
-              const CustomFilledButton(
+              CustomFilledButton(
                 title: "Đăng xuất",
                 iconPath: "assets/icons/icon_logout.svg",
-                backgroundColor: Color(0xFFB3261E),
+                backgroundColor: const Color(0xFFB3261E),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
+                },
               ),
             ],
           ),
@@ -158,6 +199,7 @@ class MoreContentWidget extends StatelessWidget {
     );
   }
 }
+
 
 class FirstMoreItem extends StatelessWidget {
   final String imagePath;
@@ -256,7 +298,12 @@ class RemainingMoreItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 20,
             children: [
-              SvgPicture.asset(imagePath),
+              SvgPicture.asset(
+                imagePath,
+                width: 26,
+                height: 26,
+              ),
+
               Text(
                 title,
                 style: TextStyle(

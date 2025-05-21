@@ -12,7 +12,7 @@ class HotelOwnerSystemHome extends StatelessWidget {
         children: [
           Stack(
             children: [
-              const Heading(title: 'TRANG CHỦ CHỦ KHÁCH SẠN'),
+              const Heading(title: 'TRANG CHỦ KHÁCH SẠN'),
               Positioned(
                 left: 20,
                 top: 22,

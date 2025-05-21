@@ -9,6 +9,7 @@ Future<UserInfo> fetchUserInfo() async {
   if (token == null) {
     throw Exception('Token không tồn tại');
   }
+
   final response = await http.get(
     Uri.parse('${ApiConstants.baseUrl}/api/user/info'),
     headers: {
@@ -17,7 +18,8 @@ Future<UserInfo> fetchUserInfo() async {
   );
 
   if (response.statusCode == 200) {
-    return UserInfo.fromJson(json.decode(response.body));
+    final decodedBody = json.decode(utf8.decode(response.bodyBytes));
+    return UserInfo.fromJson(decodedBody);
   } else {
     throw Exception('Failed to load user info');
   }
