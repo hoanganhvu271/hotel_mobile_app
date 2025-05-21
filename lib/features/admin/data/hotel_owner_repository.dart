@@ -6,7 +6,6 @@ import 'package:hotel_app/features/admin/model/put_room_request.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../common/hotel_storage_provider.dart';
 import '../../../core/base_response.dart';
-import '../../../models/room.dart';
 import '../model/booking_stats_dto.dart';
 import '../model/booking_status.dart';
 import '../model/create_room_request.dart';
@@ -39,12 +38,12 @@ abstract class HotelRepository {
     String query = "",
   });
 
-  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({
+  Future<BaseResponse<bool>> createRoomWithImages({
     required CreateRoomRequest request,
     required XFile mainImage,
     List<XFile>? extraImages});
 
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+  Future<BaseResponse<bool>> updateRoomWithImages({
     required PutRoomRequest request,
     required XFile? mainImage,
     List<XFile>? extraImages
@@ -63,6 +62,7 @@ abstract class HotelRepository {
   });
 
   Future<BaseResponse<bool>> replyToReview(int reviewId, String reply);
+  Future<BaseResponse<bool>> deleteRoom(int roomId);
 }
 
 class HotelRepositoryImpl implements HotelRepository {
@@ -136,7 +136,7 @@ class HotelRepositoryImpl implements HotelRepository {
   }
 
   @override
-  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({
+  Future<BaseResponse<bool>> createRoomWithImages({
     required CreateRoomRequest request,
     required XFile mainImage,
     List<XFile>? extraImages
@@ -167,7 +167,7 @@ class HotelRepositoryImpl implements HotelRepository {
   }
 
   @override
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+  Future<BaseResponse<bool>> updateRoomWithImages({
     required PutRoomRequest request,
     required XFile? mainImage,
     List<XFile>? extraImages
@@ -224,4 +224,8 @@ class HotelRepositoryImpl implements HotelRepository {
     return await hotelOwnerApi.replyToReview(reviewId, reply);
   }
 
+  @override
+  Future<BaseResponse<bool>> deleteRoom(int roomId) async {
+    return await hotelOwnerApi.deleteRoom(roomId);
+  }
 }

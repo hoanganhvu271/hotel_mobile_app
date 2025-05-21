@@ -7,11 +7,11 @@ import '../../data/hotel_owner_repository.dart';
 import '../../model/put_room_request.dart';
 import '../../model/room_response_dto.dart';
 
-final createRoomViewModel = AutoDisposeNotifierProvider<CreateRoomNotifier, BaseState<RoomResponseDto>>(() => CreateRoomNotifier());
+final createRoomViewModel = AutoDisposeNotifierProvider<CreateRoomNotifier, BaseState<bool>>(() => CreateRoomNotifier());
 
-class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<RoomResponseDto>> {
+class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<bool>> {
   @override
-  BaseState<RoomResponseDto> build() {
+  BaseState<bool> build() {
     state = BaseState.none();
     return state;
   }
@@ -34,7 +34,7 @@ class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<RoomResponseDto>>
       );
 
       if (response.isSuccessful) {
-        final RoomResponseDto data = response.successfulData!;
+        final bool data = response.successfulData!;
         state = BaseState.success(data);
       } else {
         state = BaseState.error(response.errorMessage ?? "");
@@ -58,7 +58,7 @@ class CreateRoomNotifier extends AutoDisposeNotifier<BaseState<RoomResponseDto>>
       );
 
       if (response.isSuccessful) {
-        final RoomResponseDto data = response.successfulData!;
+        final bool data = response.successfulData!;
         state = BaseState.success(data);
       } else {
         state = BaseState.error(response.errorMessage ?? "");

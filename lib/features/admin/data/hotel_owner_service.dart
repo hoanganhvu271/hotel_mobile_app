@@ -152,7 +152,7 @@ class HotelOwnerService {
     }
   }
 
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+  Future<BaseResponse<bool>> updateRoomWithImages({
     required PutRoomRequest request,
     required XFile? mainImage,
     List<XFile>? extraImages,
@@ -183,7 +183,7 @@ class HotelOwnerService {
 
       return BaseResponse(
         isSuccessful: true,
-        successfulData: RoomResponseDto.fromJson(response.data),
+        successfulData: true,
       );
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
@@ -201,7 +201,7 @@ class HotelOwnerService {
   }
 
 
-  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({
+  Future<BaseResponse<bool>> createRoomWithImages({
     required CreateRoomRequest request,
     required XFile mainImage,
     List<XFile>? extraImages,
@@ -227,7 +227,7 @@ class HotelOwnerService {
         data: formData,
       );
 
-      return BaseResponse(isSuccessful: true, successfulData: RoomResponseDto.fromJson(response.data));
+      return BaseResponse(isSuccessful: true, successfulData: true);
 
     } on DioException catch (e) {
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
@@ -386,4 +386,21 @@ class HotelOwnerService {
       return BaseResponse(isSuccessful: false, errorMessage: e.toString());
     }
   }
+
+  Future<BaseResponse<bool>> deleteRoom(int roomId) async {
+    try {
+      await injector<DioClient>().delete("${ApiUrl.hotelOwner}/room/$roomId");
+      return BaseResponse(isSuccessful: true, successfulData: true);
+    } on DioException catch (e) {
+      final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
+      return BaseResponse(
+        isSuccessful: false,
+        errorMessage: errorMessage,
+        errorCode: e.response?.statusCode.toString(),
+      );
+    } catch (e) {
+      return BaseResponse(isSuccessful: false, errorMessage: e.toString());
+    }
+  }
+
 }
