@@ -43,7 +43,9 @@ class AuthorizationInterceptor extends Interceptor {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     final token  = sharedPreferences.get('token');
     // print(token);
-    options.headers['Authorization'] = "Bearer $token";
-    handler.next(options); // continue with the Request
+    if (token != null) {
+      options.headers['Authorization'] = "Bearer $token";
+      handler.next(options); // continue with the Request
+    }
   }
 }

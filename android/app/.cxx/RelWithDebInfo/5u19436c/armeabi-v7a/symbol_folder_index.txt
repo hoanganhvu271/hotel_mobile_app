@@ -1,0 +1,1 @@
+C:\Users\pc\AndroidStudioProjects\hotel_app\build\app\intermediates\cxx\RelWithDebInfo\5u19436c\obj\armeabi-v7a

@@ -71,7 +71,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Navigator.pop(context, updatedData);
       } else {
         final errorData = json.decode(utf8.decode(response.bodyBytes));
-        throw Exception(errorData['message'] ?? 'Câp nhật không thành công');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Cập nhật không thành công')),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

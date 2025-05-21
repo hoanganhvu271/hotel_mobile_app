@@ -1,18 +1,16 @@
-enum TabEnum { home, map, order, noti, more }
+enum TabEnum { home, order, noti, more }
 
 extension TabEnumExtension on TabEnum {
   String get enumToString {
     switch (this) {
       case TabEnum.home:
-        return "Home";
-      case TabEnum.map:
-        return "Map";
+        return "Trang chủ";
       case TabEnum.order:
         return "Order";
       case TabEnum.noti:
-        return "Notification";
+        return "Thông báo";
       case TabEnum.more:
-        return "More";
+        return "Mở rộng";
     }
   }
 }
