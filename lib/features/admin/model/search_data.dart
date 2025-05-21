@@ -9,7 +9,8 @@ class SearchData<T> extends BaseState {
   final int limit;
   final bool canLoadMore;
   final List<T> listData;
-  final int? rating; // Add this for review filtering
+  final int? rating; // Cho filtering đánh giá
+  final String? filterStatus; // Thêm trường filterStatus cho booking
 
   SearchData({
     required super.status,
@@ -21,7 +22,8 @@ class SearchData<T> extends BaseState {
     this.limit = 10,
     this.canLoadMore = true,
     this.listData = const [],
-    this.rating, // Add this parameter
+    this.rating,
+    this.filterStatus, // Khởi tạo filterStatus
   });
 
   SearchData<T> copyWith({
@@ -34,7 +36,8 @@ class SearchData<T> extends BaseState {
     int? limit,
     bool? canLoadMore,
     List<T>? listData,
-    int? rating, // Add this parameter
+    int? rating,
+    String? filterStatus, // Thêm parameter filterStatus
   }) {
     return SearchData<T>(
       status: status ?? this.status,
@@ -46,7 +49,8 @@ class SearchData<T> extends BaseState {
       limit: limit ?? this.limit,
       canLoadMore: canLoadMore ?? this.canLoadMore,
       listData: listData ?? this.listData,
-      rating: rating ?? this.rating, // Add this line
+      rating: rating ?? this.rating,
+      filterStatus: filterStatus, // Có thể là null hoặc giá trị mới
     );
   }
 }

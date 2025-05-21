@@ -368,7 +368,7 @@ class BookingBarChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        TimeUtils.formatDateOnly(bookings[index].date),
+                        TimeUtils.formatDateNone(bookings[index].date),
                         style: const TextStyle(fontSize: 12, color: Color(0xFF667085)),
                       ),
                     );

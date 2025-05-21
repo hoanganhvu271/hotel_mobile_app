@@ -6,7 +6,6 @@ import 'package:hotel_app/features/admin/model/put_room_request.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../common/hotel_storage_provider.dart';
 import '../../../core/base_response.dart';
-import '../../../models/room.dart';
 import '../model/booking_stats_dto.dart';
 import '../model/booking_status.dart';
 import '../model/create_room_request.dart';
@@ -32,19 +31,13 @@ abstract class HotelRepository {
     String order = "desc",
     String query = "",
   });
-  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
-    int offset = 0,
-    int limit = 10,
-    String order = "desc",
-    String query = "",
-  });
 
-  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({
+  Future<BaseResponse<bool>> createRoomWithImages({
     required CreateRoomRequest request,
     required XFile mainImage,
     List<XFile>? extraImages});
 
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+  Future<BaseResponse<bool>> updateRoomWithImages({
     required PutRoomRequest request,
     required XFile? mainImage,
     List<XFile>? extraImages
@@ -63,6 +56,15 @@ abstract class HotelRepository {
   });
 
   Future<BaseResponse<bool>> replyToReview(int reviewId, String reply);
+  Future<BaseResponse<bool>> deleteRoom(int roomId);
+  Future<BaseResponse<bool>> checkRoomHasBookings(int roomId);
+  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    String? status,
+  });
 }
 
 class HotelRepositoryImpl implements HotelRepository {
@@ -119,24 +121,7 @@ class HotelRepositoryImpl implements HotelRepository {
   }
 
   @override
-  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
-    int offset = 0,
-    int limit = 10,
-    String order = "desc",
-    String query = ""
-  }) async {
-    final hotelId = _getCurrentHotelId();
-    return await hotelOwnerApi.getAllBookings(
-      id: hotelId!,
-      offset: offset,
-      limit: limit,
-      order: order,
-      query: query,
-    );
-  }
-
-  @override
-  Future<BaseResponse<RoomResponseDto>> createRoomWithImages({
+  Future<BaseResponse<bool>> createRoomWithImages({
     required CreateRoomRequest request,
     required XFile mainImage,
     List<XFile>? extraImages
@@ -167,7 +152,7 @@ class HotelRepositoryImpl implements HotelRepository {
   }
 
   @override
-  Future<BaseResponse<RoomResponseDto>> updateRoomWithImages({
+  Future<BaseResponse<bool>> updateRoomWithImages({
     required PutRoomRequest request,
     required XFile? mainImage,
     List<XFile>? extraImages
@@ -224,4 +209,33 @@ class HotelRepositoryImpl implements HotelRepository {
     return await hotelOwnerApi.replyToReview(reviewId, reply);
   }
 
+  @override
+  Future<BaseResponse<bool>> deleteRoom(int roomId) async {
+    return await hotelOwnerApi.deleteRoom(roomId);
+  }
+
+  @override
+  Future<BaseResponse<bool>> checkRoomHasBookings(int roomId) async {
+    return await hotelOwnerApi.checkRoomHasBookings(roomId);
+  }
+
+  @override
+  Future<BaseResponse<List<BookingResponseDto>>> getAllBookings({
+    int offset = 0,
+    int limit = 10,
+    String order = "desc",
+    String query = "",
+    String? status
+  }) async {
+    print(status);
+    final hotelId = _getCurrentHotelId();
+    return await hotelOwnerApi.getAllBookings(
+      id: hotelId!,
+      offset: offset,
+      limit: limit,
+      order: order,
+      query: query,
+      status: status,
+    );
+  }
 }

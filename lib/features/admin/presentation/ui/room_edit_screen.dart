@@ -6,6 +6,7 @@ import 'package:hotel_app/features/admin/model/put_room_request.dart';
 import 'package:hotel_app/features/admin/model/room_image_wrapper.dart';
 import 'package:hotel_app/features/admin/model/room_response_dto.dart';
 import 'package:hotel_app/features/admin/presentation/provider/create_room_provider.dart';
+import 'package:hotel_app/features/admin/presentation/provider/delete_room_provider.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/add_more_image_widget.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/room_info_widget.dart';
 import 'package:hotel_app/features/admin/presentation/ui/partials/service_selector_widget.dart';
@@ -98,10 +99,77 @@ class _RoomFormScreenState extends ConsumerState<RoomEditScreen> {
     });
   }
 
+  // Show confirmation dialog for room deletion
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Xác nhận xóa"),
+        content: const Text("Bạn có chắc chắn muốn xóa phòng này không? Hành động này không thể hoàn tác."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Hủy"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+              ref.read(deleteRoomProvider.notifier).deleteRoom(widget.room.id);
+            },
+            child: const Text("Xóa"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final updateRoomState = ref.watch(createRoomViewModel);
+    final deleteRoomState = ref.watch(deleteRoomProvider);
 
+    // Listen for delete room state changes
+    ref.listen(deleteRoomProvider, (previous, current) {
+      if (previous?.status != current.status) {
+        if (current.status.isSuccess && current.success == true) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Xóa phòng thành công")),
+          );
+          Navigator.of(context).pop();
+          Navigator.of(context).pop(); // Pop twice to go back to rooms list
+        } else if (current.status.isError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(current.message ?? "Lỗi xóa phòng"),
+              backgroundColor: Colors.red,
+            ),
+          );
+
+          // Nếu lỗi là do phòng đang được đặt, hiển thị thông báo chi tiết hơn
+          if (current.checkState == CheckRoomState.hasBookings) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text("Không thể xóa phòng"),
+                content: const Text("Phòng này đang có booking liên quan. Bạn cần hủy tất cả các booking của phòng này trước khi xóa."),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Đã hiểu"),
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+      }
+    });
+
+    // Listen for update room state changes
     ref.listen(createRoomViewModel, (previous, current) {
       if (previous?.status != current.status) {
         if (current.status.isSuccess) {
@@ -193,44 +261,60 @@ class _RoomFormScreenState extends ConsumerState<RoomEditScreen> {
                           ),
 
                           const SizedBox(height: 24),
-                          CustomFilledButton(
-                            title: "Cập nhật",
-                            backgroundColor: ColorsLib.primaryColor,
-                            onTap: () {
-                              // Show loading indicator
-                              if (updateRoomState.status.isLoading) return;
+                          Row(
+                            children: [
+                              // Delete button
+                              Expanded(
+                                child: CustomFilledButton(
+                                  title: "Xóa phòng",
+                                  backgroundColor: Colors.red,
+                                  onTap: _showDeleteConfirmation,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              // Update button
+                              Expanded(
+                                child: CustomFilledButton(
+                                  title: "Cập nhật",
+                                  backgroundColor: ColorsLib.primaryColor,
+                                  onTap: () {
+                                    // Show loading indicator
+                                    if (updateRoomState.status.isLoading) return;
 
-                              // Validate inputs
-                              if (!_validateInputs()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Vui lòng điền đầy đủ thông tin"),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                                return;
-                              }
+                                    // Validate inputs
+                                    if (!_validateInputs()) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text("Vui lòng điền đầy đủ thông tin"),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                      return;
+                                    }
 
-                              // Update room
-                              ref.read(createRoomViewModel.notifier).updateRoom(
-                                  PutRoomRequest(
-                                    roomId: widget.room.id,
-                                    roomName: roomNameController.text,
-                                    area: double.parse(areaController.text),
-                                    comboPrice2h: double.parse(comboPriceController.text),
-                                    pricePerNight: double.parse(nightPriceController.text),
-                                    extraHourPrice: double.parse(extraHourPriceController.text),
-                                    standardOccupancy: int.parse(standardOccupancyController.text),
-                                    maxOccupancy: int.parse(maxOccupancyController.text),
-                                    numChildrenFree: int.parse(freeChildrenController.text),
-                                    bedNumber: int.parse(bedNumberController.text),
-                                    extraAdult: double.parse(extraAdultController.text),
-                                    description: descriptionController.text,
-                                    serviceIds: selectedServiceIds, // Add selected service IDs
-                                    editImageIdList: ref.read(uploadImageProvider.notifier).getKeepImageIdList(),
-                                  )
-                              );
-                            },
+                                    // Update room
+                                    ref.read(createRoomViewModel.notifier).updateRoom(
+                                        PutRoomRequest(
+                                          roomId: widget.room.id,
+                                          roomName: roomNameController.text,
+                                          area: double.parse(areaController.text),
+                                          comboPrice2h: double.parse(comboPriceController.text),
+                                          pricePerNight: double.parse(nightPriceController.text),
+                                          extraHourPrice: double.parse(extraHourPriceController.text),
+                                          standardOccupancy: int.parse(standardOccupancyController.text),
+                                          maxOccupancy: int.parse(maxOccupancyController.text),
+                                          numChildrenFree: int.parse(freeChildrenController.text),
+                                          bedNumber: int.parse(bedNumberController.text),
+                                          extraAdult: double.parse(extraAdultController.text),
+                                          description: descriptionController.text,
+                                          serviceIds: selectedServiceIds, // Add selected service IDs
+                                          editImageIdList: ref.read(uploadImageProvider.notifier).getKeepImageIdList(),
+                                        )
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 30), // Extra space at bottom
                         ],
@@ -241,7 +325,7 @@ class _RoomFormScreenState extends ConsumerState<RoomEditScreen> {
               ),
 
               // Loading overlay
-              if (updateRoomState.status.isLoading)
+              if (updateRoomState.status.isLoading || deleteRoomState.status.isLoading)
                 Container(
                   color: Colors.black.withOpacity(0.3),
                   child: const Center(

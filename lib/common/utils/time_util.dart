@@ -11,6 +11,12 @@ class TimeUtils {
     return DateFormat('dd/MM/yyyy').format(dateTime);
   }
 
+  /// Ví dụ: 30/04/2025
+  static String formatDateNone(DateTime dateTime) {
+    return DateFormat('dd/MM').format(dateTime);
+  }
+
+
   /// Ví dụ: 14:30
   static String formatTimeOnly(DateTime dateTime) {
     return DateFormat('HH:mm').format(dateTime);

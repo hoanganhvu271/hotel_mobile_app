@@ -20,4 +20,6 @@ class ServicesRepositoryImpl implements ServicesRepository {
   Future<BaseResponse<List<ServiceModel>>> getAllServices() async {
     return await servicesService.getAllServices();
   }
+
+
 }

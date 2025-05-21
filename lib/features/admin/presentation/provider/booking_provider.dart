@@ -23,16 +23,20 @@ class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>
   }
 
   Future<void> getData() async {
+    print(state.filterStatus);
     try {
       if (state.page == 0) {
-        state = state.copyWith(status: BaseStatus.loading, canLoadMore: true);
+        state = state.copyWith(status: BaseStatus.loading, canLoadMore: true, filterStatus: state.filterStatus);
       }
+
+      print("Fetching bookings with filter status: ${state.filterStatus}");
 
       final response = await ref.read(hotelOwnerRepository).getAllBookings(
         offset: state.page * state.limit,
         limit: state.limit,
         order: state.order,
         query: state.query,
+        status: state.filterStatus,
       );
 
       if (response.isSuccessful) {
@@ -68,14 +72,16 @@ class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>
     int? endDate,
     int? page,
     int? limit,
+    String? filterStatus, // Thêm tham số filterStatus để lọc
   }) async {
     state = state.copyWith(
       query: query ?? state.query,
       order: order ?? state.order,
       startDate: startDate ?? state.startDate,
       endDate: endDate ?? state.endDate,
-      page: page ?? state.page,
+      page: page ?? 0,
       limit: limit ?? state.limit,
+      filterStatus: filterStatus,
     );
     getData();
   }
