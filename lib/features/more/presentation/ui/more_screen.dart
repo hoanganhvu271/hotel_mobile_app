@@ -1,6 +1,9 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hotel_app/features/account/info.dart';
+import 'package:hotel_app/features/admin_system/admin_system_home.dart';
+import 'package:hotel_app/features/login/login_screen.dart';
 
 import '../../../../constants/app_colors.dart';
 import '../../../admin/presentation/ui/hotel_owner_screen.dart';
@@ -13,13 +16,12 @@ class MoreScreen extends StatelessWidget {
     return const Material(
       color: Colors.transparent,
       child: SafeArea(
-        child: Column(
-          children: [
-            AppBarWidget(title: "Booking_N15"),
-            Expanded(child: MoreContentWidget())
-          ],
-        )
-      ),
+          child: Column(
+        children: [
+          AppBarWidget(title: "Booking_N15"),
+          Expanded(child: MoreContentWidget())
+        ],
+      )),
     );
   }
 }
@@ -28,11 +30,10 @@ class AppBarWidget extends StatelessWidget {
   final String title;
   final Color? backgroundColor;
 
-  const AppBarWidget({
-    super.key,
-    required this.title,
-    this.backgroundColor = const Color(0xFF65462D)
-  });
+  const AppBarWidget(
+      {super.key,
+      required this.title,
+      this.backgroundColor = const Color(0xFF65462D)});
 
   @override
   Widget build(BuildContext context) {
@@ -77,17 +78,31 @@ class MoreContentWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 80),
-              const IntrinsicHeight(
+              IntrinsicHeight(
                 child: Row(
                   spacing: 26,
                   children: [
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_profile.svg",
                       title: "Tài khoản",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserInfoScreen()),
+                        );
+                      },
                     ),
                     FirstMoreItem(
                       imagePath: "assets/icons/icon_hotel.svg",
                       title: "Quản lý Khách sạn",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HotelOwnerScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -96,22 +111,36 @@ class MoreContentWidget extends StatelessWidget {
               Column(
                 spacing: 24,
                 children: [
-                  const RemainingMoreItem(imagePath: "assets/icons/icon_setting.svg", title: 'Cài đặt'),
-                  RemainingMoreItem(imagePath: "assets/icons/icon_support.svg", title: 'Hỗ trợ',
-                    onTap: () {
-                      FirebaseCrashlytics.instance.crash();
-                    }
-                  ),
-                  RemainingMoreItem(imagePath: "assets/icons/icon_admin.svg", title: 'Trang Admin', disable: true,
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HotelOwnerScreen()))
-                  ),
+                  const RemainingMoreItem(
+                      imagePath: "assets/icons/icon_setting.svg",
+                      title: 'Cài đặt'),
+                  RemainingMoreItem(
+                      imagePath: "assets/icons/icon_support.svg",
+                      title: 'Hỗ trợ',
+                      onTap: () {
+                        FirebaseCrashlytics.instance.crash();
+                      }),
+                  RemainingMoreItem(
+                      imagePath: "assets/icons/icon_admin.svg",
+                      title: 'Trang Admin',
+                      disable: true,
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HotelOwnerScreen()))),
                 ],
               ),
               const SizedBox(height: 80),
-              const CustomFilledButton(
+              CustomFilledButton(
                 title: "Đăng xuất",
                 iconPath: "assets/icons/icon_logout.svg",
-                backgroundColor: Color(0xFFB3261E),
+                backgroundColor: const Color(0xFFB3261E),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
+                },
               ),
             ],
           ),
@@ -140,7 +169,7 @@ class FirstMoreItem extends StatelessWidget {
         color: const Color(0xFFF2F2F3),
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          onTap: () => {},
+          onTap: onTap,
           borderRadius: BorderRadius.circular(12),
           splashColor: Colors.black.withValues(alpha: 0.2),
           child: Container(
@@ -163,10 +192,9 @@ class FirstMoreItem extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: ColorsLib.primaryBoldColor
-                  ),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.grey),
                 ),
               ],
             ),
@@ -209,11 +237,10 @@ class RemainingMoreItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF000000).withValues(alpha: 0.05),
-                blurRadius: 4,
-                offset: const Offset(0, 4),
-                spreadRadius: 0
-              ),
+                  color: const Color(0xFF000000).withValues(alpha: 0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 0),
             ],
           ),
           child: Row(
@@ -224,10 +251,11 @@ class RemainingMoreItem extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: disable ? const Color(0xFF898181) : ColorsLib.primaryBoldColor
-                ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: disable
+                        ? const Color(0xFF898181)
+                        : ColorsLib.primaryBoldColor),
               ),
             ],
           ),
@@ -272,14 +300,15 @@ class CustomFilledButton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 10,
             children: [
-              iconPath != null ? SvgPicture.asset(iconPath!) : const SizedBox.shrink(),
+              iconPath != null
+                  ? SvgPicture.asset(iconPath!)
+                  : const SizedBox.shrink(),
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: textColor ?? Colors.white
-                ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: textColor ?? Colors.white),
               ),
             ],
           ),

@@ -66,16 +66,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       if (response.statusCode == 200) {
         final updatedData = json.decode(utf8.decode(response.bodyBytes));
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated successfully')),
+          const SnackBar(content: Text('Cập nhật thông tin thành công')),
         );
         Navigator.pop(context, updatedData);
       } else {
-        final errorData = json.decode(response.body);
-        throw Exception(errorData['message'] ?? 'Failed to update profile');
+        final errorData = json.decode(utf8.decode(response.bodyBytes));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Cập nhật không thành công')),
+        );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error updating profile: $e')),
+        SnackBar(content: Text('Lỗi không xác định: $e')),
       );
     } finally {
       setState(() {

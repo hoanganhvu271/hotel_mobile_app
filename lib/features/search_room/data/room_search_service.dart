@@ -15,7 +15,7 @@ class RoomSearchService {
       SearchRequest request) async {
     try {
       Response data = await injector<DioClient>()
-          .post('/room/search', data: request.toJson());
+          .post('/api/room/search', data: request.toJson());
       if (data.statusCode != 200) {
         return BaseResponse(
             isSuccessful: false,
@@ -45,7 +45,7 @@ class RoomSearchService {
 
   Future<BaseResponse<List<String>>> getCities() async {
     try {
-      Response data = await injector<DioClient>().get('/address/city');
+      Response data = await injector<DioClient>().get('/api/address/city');
       if (data.statusCode != 200) {
         return BaseResponse(
             isSuccessful: false,
@@ -75,7 +75,7 @@ class RoomSearchService {
   Future<BaseResponse<List<String>>> getDistricts(String city) async {
     try {
       Response data = await injector<DioClient>()
-          .get('/address/district', queryParameters: {'city': city});
+          .get('/api/address/district', queryParameters: {'city': city});
       if (data.statusCode != 200) {
         return BaseResponse(
             isSuccessful: false,
@@ -104,7 +104,7 @@ class RoomSearchService {
 
   Future<BaseResponse<List<Service>>> getServices() async {
     try {
-      Response data = await injector<DioClient>().get('/service');
+      Response data = await injector<DioClient>().get('/api/service');
 
       if (data.statusCode != 200) {
         return BaseResponse(

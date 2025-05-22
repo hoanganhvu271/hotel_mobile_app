@@ -52,7 +52,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         );
         Navigator.pop(context);
       } else {
-        final errorData = json.decode(response.body);
+        final errorData = jsonDecode(utf8.decode(response.bodyBytes));
         String errorMessage = errorData['message'] ?? 'Lỗi không xác định';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage)),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/common/state/compare_room_state.dart';
 import 'package:hotel_app/common/state/room_id_state.dart';
+import 'package:hotel_app/common/utils/api_constants.dart';
 import 'package:hotel_app/features/search_room/model/room_search_list.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/room_detail_screen.dart';
 
@@ -42,7 +43,7 @@ class RoomCardItem extends ConsumerWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  room.roomImg,
+                  '${ApiConstants.baseUrl}/api/files/${room.roomImg}',
                   width: 150,
                   height: 150,
                   fit: BoxFit.cover,

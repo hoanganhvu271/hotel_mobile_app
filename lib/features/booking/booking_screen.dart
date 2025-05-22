@@ -16,11 +16,8 @@ import '../../common/widgets/heading.dart';
 import '../../common/widgets/range_input_field.dart';
 import '../../common/widgets/service_checkbox_list.dart';
 import '../../common/widgets/static_dropdown.dart';
-import 'package:hotel_app/common/widgets/keep_alive_component.dart';
-import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 
 class BookingScreen extends StatefulWidget {
-  static const String routeName = '/booking';
 
   const BookingScreen({super.key});
 
@@ -117,7 +114,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
 
                     ApiDropdown(
-                      label: 'Khu vực',
+                      label: 'Quận',
                       fetchData: fetchDistricts,
                       onChanged: (value) => _searchModel.district = value,
                     ),

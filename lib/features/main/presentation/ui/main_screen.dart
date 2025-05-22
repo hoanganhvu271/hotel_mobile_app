@@ -76,7 +76,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvid
               TabComponent(
                   tabKey: listKey[TabEnum.order.index], child: OrderScreen()),
               TabComponent(
-                  tabKey: listKey[TabEnum.noti.index], child: NotiScreen()),
+                  tabKey: listKey[TabEnum.noti.index], child: NotificationScreen()),
               TabComponent(tabKey: listKey[TabEnum.more.index],
                   child: MoreScreen()),
             ],

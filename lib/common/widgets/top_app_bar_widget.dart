@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/booking/booking_screen.dart';
+import 'package:hotel_app/features/search_room/presentation/ui/search_room_screen.dart';
 
 class TopAppBarWidget extends StatefulWidget {
   const TopAppBarWidget({super.key});
@@ -51,7 +52,8 @@ class _TopAppBarWidgetState extends State<TopAppBarWidget> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BookingScreen(),
+                          builder: (context) => SearchRoomScreen(isFiltered: 1),
+
                         ),
                       );
                     },
