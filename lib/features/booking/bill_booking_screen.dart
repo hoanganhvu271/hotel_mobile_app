@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hotel_app/common/widgets/heading.dart';
 import 'package:hotel_app/features/booking/model/bill_response_dto.dart';
 import 'package:hotel_app/features/booking/model/booking_response_dto.dart';
+import 'package:hotel_app/features/home/home_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -275,10 +276,10 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                       Center(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            int count = 0;
-                            Navigator.of(context).popUntil((route) {
-                              return count++ == 5;
-                            });
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => const HomeScreen()),
+                                  (route) => false,
+                            );
                           },
                           icon: const Icon(Icons.home, color: Colors.white),
                           label: const Text(
@@ -300,8 +301,6 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                           ),
                         ),
                       ),
-
-
                     ],
 
 

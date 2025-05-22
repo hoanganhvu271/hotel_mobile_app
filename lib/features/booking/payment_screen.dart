@@ -57,29 +57,27 @@ class _PaymentScreenState extends State<PaymentScreen> {
     const duration = Duration(minutes: 1);
     const delayBetweenRequests = Duration(seconds: 2);
     final deadline = DateTime.now().add(duration);
+    final BuildContext paymentScreenContext = context;
 
     try {
       while (DateTime.now().isBefore(deadline)) {
+        if (!mounted) return;
         final response = await http.get(Uri.parse(
           "https://script.google.com/macros/s/AKfycbyYhFH3QLQdam7d84f0Qy5rxBSguA4fZfD2bauX2PGrZKXzi8dgb97Dj2M6gzT35KV5/exec",
         ));
-
+        if (!mounted) return;
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
-
           final moTaValues = data['data']
               .map<String>((item) => item['Mô tả']?.toString() ?? '')
               .toList();
-
           final priceValues = data['data']
               .map<int>((item) {
             final value = item['Giá trị'];
             if (value is int) return value;
             if (value is String && value.isNotEmpty) return int.tryParse(value) ?? 0;
             return 0;
-          })
-              .toList();
-
+          }).toList();
           String qrContent = 'Booking${widget.booking.bookingId}BBB';
 
           for (int i = 0; i < moTaValues.length; i++) {
@@ -91,94 +89,100 @@ class _PaymentScreenState extends State<PaymentScreen> {
               await http.patch(
                 Uri.parse("${ApiConstants.baseUrl}/api/bill/${widget.booking.billId}/status?paidStatus=true"),
               );
-
+              if (!mounted) return;
               await http.put(
                 Uri.parse("${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED"),
               );
-
+              if (!mounted) return;
               showDialog(
-                context: context,
+                context: paymentScreenContext,
                 barrierDismissible: false,
-                builder: (context) => AlertDialog(
-                  title: const Text('Thanh toán thành công'),
-                  content: const Text('Cảm ơn bạn đã thanh toán.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BillBookingScreen(
-                              bookingId: widget.booking.bookingId,
-                              billId: widget.booking.billId ?? 0,
+                builder: (dialogContext) {
+                  return AlertDialog(
+                    title: const Text('Thanh toán thành công'),
+                    content: const Text('Cảm ơn bạn đã thanh toán.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          if (Navigator.canPop(paymentScreenContext)) {
+                          }
+                          Navigator.push(
+                            paymentScreenContext,
+                            MaterialPageRoute(
+                              builder: (context) => BillBookingScreen(
+                                bookingId: widget.booking.bookingId,
+                                billId: widget.booking.billId ?? 0,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ),
+                          );
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  );
+                },
               );
-
               return;
             }
           }
         }
-
+        if (!mounted) return;
         await Future.delayed(delayBetweenRequests);
       }
-
       _countdownTimer?.cancel();
+      if (!mounted) return;
+
       await http.delete(
         Uri.parse("${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}"),
       );
+      if (!mounted) return;
 
       showDialog(
-        context: context,
+        context: paymentScreenContext,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: const Text('Thanh toán thất bại'),
-          content: const Text('Không nhận được thanh toán. Đặt phòng đã bị huỷ.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Thanh toán thất bại'),
+            content: const Text('Không nhận được thanh toán. Đặt phòng đã bị huỷ.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                  if (Navigator.canPop(paymentScreenContext)) {
+                    Navigator.pop(paymentScreenContext);
+                  }
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
       );
+
     } catch (e) {
       _countdownTimer?.cancel();
-
+      if (!mounted) return;
       showDialog(
-        context: context,
+        context: paymentScreenContext,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: const Text('Lỗi'),
-          content: Text('Lỗi: $e'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Lỗi'),
+            content: Text('Đã xảy ra lỗi: $e'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
       );
     }
   }
-
 
   @override
   void dispose() {
@@ -250,38 +254,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ],
               ),
             ),
-
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 20.0),
-            //   child: ElevatedButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => BillBookingScreen(
-            //             bookingId: widget.booking.bookingId,
-            //             billId: widget.booking.billId ?? 0,
-            //           ),
-            //         ),
-            //       );
-            //     },
-            //     child: const Text('Xem Hóa Đơn'),
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Colors.blue,  // Use backgroundColor instead of primary
-            //       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
-            //       textStyle: const TextStyle(
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-
-
             ElevatedButton(
               onPressed: () async {
                 try {
-                  // Cập nhật trạng thái thanh toán
                   final responseBill = await http.patch(
                     Uri.parse(
                       "${ApiConstants.baseUrl}/api/bill/${widget.booking.billId}/status?paidStatus=true",
@@ -292,7 +267,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     throw Exception("Không thể cập nhật trạng thái thanh toán.");
                   }
 
-                  // Cập nhật trạng thái đặt phòng
                   final responseBooking = await http.put(
                     Uri.parse(
                       "${ApiConstants.baseUrl}/api/booking/${widget.booking.bookingId}/status?status=CONFIRMED",
@@ -302,8 +276,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   if (responseBooking.statusCode != 200) {
                     throw Exception("Không thể xác nhận đặt phòng.");
                   }
-
-                  // Điều hướng đến màn hình hóa đơn
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -314,7 +286,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     ),
                   );
                 } catch (e) {
-                  // Hiển thị hộp thoại lỗi
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -330,25 +301,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   );
                 }
               },
-              // style: ElevatedButton.styleFrom(
-              //   backgroundColor: Colors.grey[700],
-              //   padding: const EdgeInsets.symmetric(
-              //     vertical: 12.0,
-              //     horizontal: 30.0,
-              //   ),
-              //   textStyle: const TextStyle(
-              //     fontSize: 16,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              //   foregroundColor: Colors.white,
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(10),
-              //   ),
-              // ),
-              // child: const Text('Xem hóa đơn'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.7), // nền trắng mờ
-                foregroundColor: const Color(0xFF49454F), // màu chữ giống InputChip
+                backgroundColor: Colors.white.withOpacity(0.7),
+                foregroundColor: const Color(0xFF49454F),
                 padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
                 textStyle: const TextStyle(
                   fontSize: 14,
@@ -360,20 +315,52 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                   side: const BorderSide(
-                    color: Color(0xFFCAC4D0), // viền giống InputChip
+                    color: Color(0xFFCAC4D0),
                     width: 1,
                   ),
                 ),
-                elevation: 0, // không đổ bóng để giống chip
+                elevation: 0,
               ),
               child: const Text('Xem hóa đơn'),
 
-            )
+            ),
 
-
-
-
-
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BillBookingScreen(
+                      bookingId: widget.booking.bookingId,
+                      billId: widget.booking.billId ?? 0,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white.withOpacity(0.7),
+                foregroundColor: const Color(0xFF49454F),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
+                textStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.10,
+                  height: 1.43,
+                  fontFamily: 'Roboto',
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: const BorderSide(
+                    color: Color(0xFFCAC4D0),
+                    width: 1,
+                  ),
+                ),
+                elevation: 0,
+              ),
+              child: const Text('Thanh toán trực tiếp'),
+            ),
+            const SizedBox(height: 20),
 
 
           ],
