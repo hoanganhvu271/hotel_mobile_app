@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../features/main/presentation/ui/main_screen.dart';
+import '../security_flatform.dart';
 import 'firebase_messaging_service.dart';
 import 'global.dart';
 
@@ -18,8 +22,13 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkSecurity(context); // context đảm bảo hợp lệ
+    });
     // Initialize Firebase Messaging
     _initializeFirebaseMessaging();
+
   }
 
   Future<void> _initializeFirebaseMessaging() async {
@@ -80,4 +89,36 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
       ),
     );
   }
+
+  Future<void> checkSecurity(BuildContext context) async {
+    bool isRooted = await SecurityPlatform.isRooted();
+    bool isEmulator = await SecurityPlatform.isEmulator();
+    print("Device rooted? $isRooted, Emulator? $isEmulator");
+
+    if (isRooted || isEmulator) {
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      if (context.mounted) {
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Cảnh báo bảo mật"),
+              content: const Text("Thiết bị không được phép sử dụng ứng dụng này."),
+            );
+          },
+        );
+      }
+
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (Platform.isAndroid) {
+        SystemChannels.platform.invokeMethod('SystemNavigator.pop'); // an toàn hơn SystemNavigator.pop()
+      } else {
+        exit(0);
+      }
+    }
+  }
+
 }

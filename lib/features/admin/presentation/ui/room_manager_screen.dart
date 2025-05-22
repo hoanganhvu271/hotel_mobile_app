@@ -177,7 +177,7 @@ class RoomItemWidget extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text("ID: ${room.id}"),
                     const SizedBox(height: 5),
-                    Text("Giá: ${ValueUtils.formatCurrency(room.pricePerNight)} /giờ"),
+                    Text("Giá: ${ValueUtils.formatCurrency(room.pricePerNight)} /đêm"),
                     const SizedBox(height: 5),
                     Text("Diện tích: ${room.area} m2"),
                   ],
