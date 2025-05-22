@@ -90,34 +90,23 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
     );
   }
 
+
   Future<void> checkSecurity(BuildContext context) async {
     bool isRooted = await SecurityPlatform.isRooted();
     bool isEmulator = await SecurityPlatform.isEmulator();
     print("Device rooted? $isRooted, Emulator? $isEmulator");
 
     if (isRooted || isEmulator) {
+      print("Unauthorized device detected. Closing app...");
+
+      // if (Platform.isAndroid) {
+      //   SystemNavigator.pop();
+      // } else {
+      //   exit(0);
+      // }
+
       await Future.delayed(const Duration(milliseconds: 500));
-
-      if (context.mounted) {
-        await showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text("Cảnh báo bảo mật"),
-              content: const Text("Thiết bị không được phép sử dụng ứng dụng này."),
-            );
-          },
-        );
-      }
-
-      await Future.delayed(const Duration(seconds: 2));
-
-      if (Platform.isAndroid) {
-        SystemChannels.platform.invokeMethod('SystemNavigator.pop'); // an toàn hơn SystemNavigator.pop()
-      } else {
-        exit(0);
-      }
+      exit(0);
     }
   }
 
