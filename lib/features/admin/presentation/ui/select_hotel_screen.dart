@@ -40,7 +40,7 @@ class _SelectHotelScreenState extends ConsumerState<SelectHotelScreen> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Select Hotel", style: TextStyle(color: Colors.white)),
+        title: const Text("Chọn khách sạn", style: TextStyle(color: Colors.white)),
         backgroundColor: ColorsLib.primaryBoldColor,
       ),
       body: hotelState.when(
