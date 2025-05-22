@@ -12,7 +12,7 @@ class SearchEntryService {
   Future<BaseResponse<List<SearchEntry>>> getSearchEntries(String query) async {
     try {
       Response data = await injector<DioClient>()
-          .get('/search-suggestions', queryParameters: {'query': query});
+          .get('/api/search-suggestions', queryParameters: {'query': query});
       if (data.statusCode != 200) {
         return BaseResponse(
             isSuccessful: false,

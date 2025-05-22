@@ -12,7 +12,8 @@ class RoomDetailsService {
   Future<BaseResponse<RoomDetails>> getRoomDetails(int roomId) async {
     try {
       String id = roomId.toString();
-      Response data = await injector<DioClient>().get('/room/$id');
+      Response data =
+          await injector<DioClient>().get('/api/room/room-details/$id');
       if (data.statusCode != 200) {
         return BaseResponse(
             isSuccessful: false,
