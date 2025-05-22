@@ -7,6 +7,7 @@ import '../../common/utils/api_constants.dart';
 import 'change_password.dart';
 import 'user_update.dart';
 import 'package:hotel_app/features/more/more_screen.dart';
+import 'dart:typed_data';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({super.key});
@@ -59,6 +60,16 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     });
   }
 
+  Uint8List? _decodeBase64Image(String? base64String) {
+    if (base64String == null || base64String.isEmpty) return null;
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      return null;
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +78,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final avatarBytes = _decodeBase64Image(_userInfo?['avatarUrl']);
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
       appBar: AppBar(
@@ -115,12 +127,17 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               Column(
                 children: [
                   const SizedBox(height: 20),
-                  const Align(
+                  Align(
                     alignment: Alignment.topCenter,
                     child: CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.brown,
-                      child: Icon(Icons.person, size: 60, color: Colors.white),
+                      backgroundImage: avatarBytes != null
+                          ? MemoryImage(avatarBytes)
+                          : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                      child: avatarBytes == null
+                          ? const Icon(Icons.person, size: 30, color: Colors.brown)
+                          : null,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -157,6 +174,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                       fullName: _userInfo?['fullName'] ?? '',
                                       email: _userInfo?['email'] ?? '',
                                       phone: _userInfo?['phone'] ?? '',
+                                      avatarUrl: _userInfo?['avatarUrl'] ?? '',
                                     ),
                                   ),
                                 ).then((updatedData) {
