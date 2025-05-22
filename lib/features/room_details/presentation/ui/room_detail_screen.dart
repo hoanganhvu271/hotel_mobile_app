@@ -13,6 +13,7 @@ import 'package:hotel_app/features/room_details/presentation/provider/room_detai
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/app_bar_custom.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/mini_room_card.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/review_list.dart';
+import 'package:hotel_app/features/search_room/model/search_request.dart';
 import 'package:hotel_app/features/search_room/presentation/state/search_request_state.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/search_list_screen.dart';
 
@@ -121,7 +122,7 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
         body: Center(child: Text('Lỗi: $error')),
       ),
       success: (data) => Scaffold(
-        bottomNavigationBar: BottomBarNavigation(),
+        // bottomNavigationBar: BottomBarNavigation(),
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -155,15 +156,18 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                             // Xử lý khi bấm vào, ví dụ:
                             print(
                                 'Bạn đã bấm vào tên khách sạn: ${data.hotelName}');
-                            ref.resetSearchRequest();
-                            ref.setKeyword(data.hotelName!);
+                            // ref.resetSearchRequest();
+                            // ref.setKeyword(data.hotelName!);
+
+                            SearchRequest searchRequest =
+                                ref.watch(searchRequestState);
+                            searchRequest.keyword = data.hotelName;
 
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SearchListScreen(
-                                        searchRequest:
-                                            ref.watch(searchRequestState))));
+                                        searchRequest: searchRequest)));
                           },
                           child: Text(
                             data.hotelName ?? "",

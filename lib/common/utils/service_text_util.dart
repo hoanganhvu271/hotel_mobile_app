@@ -10,5 +10,5 @@ String serviceTextUtil(String text) {
   if (text == "Du lịch địa phương") return "travel";
   if (text == "Dịch vụ phòng") return "service";
 
-  return "";
+  return "service";
 }

@@ -5,10 +5,14 @@ import 'package:hotel_app/common/state/compare_room_state.dart';
 import 'package:hotel_app/common/state/room_id_state.dart';
 import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
 import 'package:hotel_app/features/room_details/presentation/ui/widgets/mini_room_card.dart';
+import 'package:hotel_app/features/search_room/presentation/state/sort_rating_state.dart';
+import 'package:hotel_app/features/search_room/presentation/state/sort_review_count_state.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/custom_appbar.dart';
 import 'package:hotel_app/features/search_room/presentation/ui/widgets/room_cart_item.dart';
 import 'package:hotel_app/features/search_room/presentation/provider/room_search_provider.dart';
 import 'package:hotel_app/features/search_room/model/search_request.dart';
+import 'package:hotel_app/features/search_room/presentation/ui/widgets/sort_rating_button.dart';
+import 'package:hotel_app/features/search_room/presentation/ui/widgets/sort_review_count_button.dart';
 
 class SearchListScreen extends ConsumerStatefulWidget {
   final SearchRequest searchRequest;
@@ -55,14 +59,44 @@ class _SearchListScreenState extends ConsumerState<SearchListScreen> {
           roomState.when(
             none: () => const Center(child: Text('Please search for rooms.')),
             loading: () => const Center(child: CircularProgressIndicator()),
-            success: (roomList) => roomList.isEmpty
-                ? const Center(child: Text('No rooms found.'))
-                : ListView.builder(
-                    itemCount: roomList.length,
-                    itemBuilder: (context, index) {
-                      return RoomCardItem(room: roomList[index]);
-                    },
-                  ),
+            success: (roomList) {
+              final ratingSort = ref.watch(sortRatingState);
+              final reviewSort = ref.watch(sortReviewCountState);
+
+              // Clone danh sách gốc
+              final sortedList = [...roomList];
+
+              // Ưu tiên sắp xếp theo review trước nếu != 0, sau đó đến rating
+              if (reviewSort != 0) {
+                sortedList.sort((a, b) => reviewSort == 1
+                        ? b.reviewCount.compareTo(a.reviewCount) // Giảm dần
+                        : a.reviewCount.compareTo(b.reviewCount) // Tăng dần
+                    );
+              } else if (ratingSort != 0) {
+                sortedList.sort((a, b) => ratingSort == 1
+                    ? b.rating.compareTo(a.rating)
+                    : a.rating.compareTo(b.rating));
+              }
+
+              return sortedList.isEmpty
+                  ? const Center(child: Text('No rooms found.'))
+                  : ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: [
+                        Row(
+                          children: const [
+                            SortRatingButton(),
+                            SizedBox(width: 8),
+                            SortReviewCountButton(),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        ...sortedList
+                            .map((room) => RoomCardItem(room: room))
+                            .toList(),
+                      ],
+                    );
+            },
             error: (msg) => Center(child: Text('Error: $msg')),
             orElse: () => const Center(
               child: Text('Something went wrong. Please try again.'),
