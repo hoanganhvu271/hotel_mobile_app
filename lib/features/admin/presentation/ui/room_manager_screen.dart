@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/common/utils/value_utils.dart';
 import 'package:hotel_app/constants/api_url.dart';
 import 'package:hotel_app/features/admin/model/room_response_dto.dart';
 import 'package:hotel_app/features/admin/presentation/provider/room_provider.dart';
@@ -176,7 +177,7 @@ class RoomItemWidget extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text("ID: ${room.id}"),
                     const SizedBox(height: 5),
-                    Text("Giá: ${room.pricePerNight} đ/giờ"),
+                    Text("Giá: ${ValueUtils.formatCurrency(room.pricePerNight)} /giờ"),
                     const SizedBox(height: 5),
                     Text("Diện tích: ${room.area} m2"),
                   ],

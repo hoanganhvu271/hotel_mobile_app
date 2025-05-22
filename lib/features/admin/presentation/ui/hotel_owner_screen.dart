@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/common/utils/time_util.dart';
+import 'package:hotel_app/common/utils/value_utils.dart';
 import 'package:hotel_app/features/admin/model/booking_stats_dto.dart';
 import 'package:hotel_app/features/admin/model/chart_data.dart';
 import 'package:hotel_app/features/admin/presentation/provider/hotel_info_provider.dart';
@@ -531,7 +532,8 @@ class RatingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String formattedPercent = percent > 0 ? "Tăng +$percent %" : "Giảm $percent %";
+    double roundedPercent = ValueUtils.roundDouble(percent);
+    String formattedPercent = percent > 0 ? "Tăng +$roundedPercent %" : "Giảm $roundedPercent %";
     return Container(
       padding: const EdgeInsets.only(left: 12, right: 40),
       decoration: BoxDecoration(
@@ -564,7 +566,7 @@ class RatingItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "$value",
+                "${ValueUtils.roundDouble(value)}",
                 style: const TextStyle(
                   fontSize: 24,
                   height: 1.33,
