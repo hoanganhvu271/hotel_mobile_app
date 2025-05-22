@@ -25,6 +25,7 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
   int _isFiltered = 0;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  int isReseted = 0;
 
   @override
   void initState() {
@@ -46,7 +47,11 @@ class _SearchRoomScreenState extends ConsumerState<SearchRoomScreen> {
       ref.read(compareRoomIdProvider.notifier).state = 0;
       // _searchController.text =
       //     ref.read(searchRequestState.notifier).state.keyword.toString();
-      ref.resetSearchRequest();
+      // ref.resetSearchRequest();
+      if (isReseted == 0) {
+        ref.resetSearchRequest();
+        isReseted = 1;
+      }
     });
 
     List<Search> list = [];

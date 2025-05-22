@@ -27,7 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> fetchTopRatedRooms() async {
-    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/room/top-rated'));
+    final response =
+        await http.get(Uri.parse('${ApiConstants.baseUrl}/api/room/top-rated'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -81,13 +82,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: rooms.map((room) {
-                            final imageUrl = '${ApiConstants.baseUrl}/api/files/${room['roomImg']}';
+                            final imageUrl =
+                                '${ApiConstants.baseUrl}/api/files/${room['roomImg']}';
                             final city = room['hotelDto']['address']['city'];
-                            final district = room['hotelDto']['address']['district'];
+                            final district =
+                                room['hotelDto']['address']['district'];
 
                             return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
                               child: HotelCard(
+                                id: room['roomId'],
                                 name: room['roomName'],
                                 imageUrl: imageUrl,
                                 city: city,
@@ -98,12 +103,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     if (!isLoading && rooms.isEmpty)
-                      const Center(child: Text('Không có phòng nào để hiển thị')),
+                      const Center(
+                          child: Text('Không có phòng nào để hiển thị')),
                   ],
                 ),
               ),
             ),
-
             Transform.translate(
               offset: const Offset(0, -95),
               child: const BookingBtn(
