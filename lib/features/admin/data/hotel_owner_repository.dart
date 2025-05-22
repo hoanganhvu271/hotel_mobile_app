@@ -110,6 +110,9 @@ class HotelRepositoryImpl implements HotelRepository {
     String order = "desc",
     String query = "",
   }) async {
+    print(
+      "Get all rooms with offset: $offset, limit: $limit, order: $order, query: $query"
+    );
     final hotelId = _getCurrentHotelId();
     return await hotelOwnerApi.getAllRooms(
       id: hotelId!,
@@ -194,6 +197,9 @@ class HotelRepositoryImpl implements HotelRepository {
     String query = "",
     int? rating,
   }) async {
+    print(
+      "Get all reviews with offset: $offset, limit: $limit, order: $order, query: $query"
+    );
     final hotelId = _getCurrentHotelId();
     return await hotelOwnerApi.getAllReviews(
       id: hotelId!,

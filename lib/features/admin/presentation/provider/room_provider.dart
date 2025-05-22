@@ -30,7 +30,7 @@ class RoomProvider extends AutoDisposeNotifier<SearchData<RoomResponseDto>> {
       }
 
       final response = await ref.read(hotelOwnerRepository).getAllRooms(
-        offset: state.page * state.limit,
+        offset: state.page,
         limit: state.limit,
         order: state.order,
         query: state.query,
@@ -39,7 +39,9 @@ class RoomProvider extends AutoDisposeNotifier<SearchData<RoomResponseDto>> {
       if (response.isSuccessful) {
         final List<RoomResponseDto> rooms = response.successfulData!;
 
+        print("Rooms: ${rooms.length}");
         if (rooms.length < state.limit) {
+          print("Less than limit");
           state = state.copyWith(canLoadMore: false);
         }
 
@@ -51,6 +53,8 @@ class RoomProvider extends AutoDisposeNotifier<SearchData<RoomResponseDto>> {
           listData: resultList,
           page: state.page + 1,
         );
+
+        print("Page: ${state.page}${state.limit}${state.canLoadMore}");
 
       } else {
         state = state.copyWith(status: BaseStatus.error);
@@ -82,6 +86,7 @@ class RoomProvider extends AutoDisposeNotifier<SearchData<RoomResponseDto>> {
   }
 
   Future<void> loadMore() async {
+    print('Load more called');
     if (state.canLoadMore) {
       await getData();
     }

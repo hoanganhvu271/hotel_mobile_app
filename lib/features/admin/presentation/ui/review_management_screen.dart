@@ -17,6 +17,7 @@ class ReviewManagementScreen extends ConsumerStatefulWidget {
 class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen> {
   final ScrollController _scrollController = ScrollController();
   String _selectedFilter = 'all'; // all, 5, 4, 3, 2, 1
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -25,17 +26,24 @@ class _ReviewManagementScreenState extends ConsumerState<ReviewManagementScreen>
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 100) {
-      ref.read(reviewManagementProvider.notifier).loadMore();
-    }
-  }
+    final viewModel = ref.read(reviewManagementProvider);
 
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
+    final isNearBottom = _scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100;
+
+    final canLoad = !_isLoadingMore && viewModel.canLoadMore;
+
+    if (isNearBottom && canLoad) {
+      _isLoadingMore = true;
+      print('Load more reviews...');
+
+      ref.read(reviewManagementProvider.notifier).loadMore().then((_) {
+        _isLoadingMore = false;
+      }).catchError((error) {
+        print('Failed to load more reviews: $error');
+        _isLoadingMore = false;
+      });
+    }
   }
 
   @override

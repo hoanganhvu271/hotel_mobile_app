@@ -32,7 +32,7 @@ class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>
       print("Fetching bookings with filter status: ${state.filterStatus}");
 
       final response = await ref.read(hotelOwnerRepository).getAllBookings(
-        offset: state.page * state.limit,
+        offset: state.page,
         limit: state.limit,
         order: state.order,
         query: state.query,
