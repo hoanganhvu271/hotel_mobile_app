@@ -9,7 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../common/hotel_storage_provider.dart';
 import '../../../../constants/app_colors.dart';
+import '../../../../core/app.dart';
 import '../../../../core/firebase_messaging_service.dart';
+import '../../../../core/global.dart';
 import '../../../admin/presentation/ui/hotel_owner_screen.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -131,7 +133,7 @@ class MoreContentWidget extends ConsumerWidget {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HotelOwnerScreen()
+                              builder: (context) => const AdminSystemHome()
                           )
                       )
                   ),
@@ -144,38 +146,30 @@ class MoreContentWidget extends ConsumerWidget {
                 backgroundColor: const Color(0xFFB3261E),
 
                 onTap: () async {
-                  try {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.remove('jwt_token');
-                    await prefs.remove('user_id');
-
-                    await ref.read(hotelStorageProvider).clearHotelId();
-
-                    // Hủy đăng ký device token cho push notification
-                    // try {
-                    //   await ref.read(firebaseMessagingServiceProvider).unregisterDeviceToken();
-                    // } catch (e) {
-                    //   print('Error unregistering device token: $e');
-                    // }
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
-                          (Route<dynamic> route) => false,
-                    );
-                  } catch(e) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            (Route<dynamic> route) => false,
-                      );
-                    }
-                  }
+                  _handleLogout(ref);
+                }
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _handleLogout(WidgetRef ref) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('jwt_token');
+      await prefs.remove('user_id');
+      await ref.read(hotelStorageProvider).clearHotelId();
+
+      globalNavigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+            (route) => false,
+      );
+    } catch (e) {
+      print('Logout error: $e');
+    }
   }
 }
 

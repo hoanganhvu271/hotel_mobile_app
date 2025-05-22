@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (roles.contains('ROLE_ADMIN')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const AdminSystemHome()),
+            MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         } else if (roles.contains('ROLE_CUSTOMER')) {
           Navigator.pushReplacement(

@@ -4,6 +4,7 @@ import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../features/main/presentation/ui/main_screen.dart';
 import 'firebase_messaging_service.dart';
+import 'global.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -13,6 +14,7 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMixin {
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +47,7 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: globalNavigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -61,7 +64,6 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
               }
 
               if (snapshot.hasError) {
-                print('Login check error: ${snapshot.error}');
                 return const LoginScreen();
               }
 
