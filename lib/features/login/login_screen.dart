@@ -9,6 +9,7 @@ import 'package:hotel_app/features/more/more_screen.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
 
 import '../../common/utils/api_constants.dart';
+import '../main/presentation/ui/main_screen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -60,12 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (roles.contains('ROLE_CUSTOMER')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         } else if (roles.contains('ROLE_HOTEL_OWNER')) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const MainScreen()),
           );
         } else {
           setState(() {

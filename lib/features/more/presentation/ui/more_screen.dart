@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/account/info.dart';
 import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../constants/app_colors.dart';
 import '../../../admin/presentation/ui/hotel_owner_screen.dart';
@@ -127,7 +128,10 @@ class MoreContentWidget extends StatelessWidget {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HotelOwnerScreen()))),
+                              builder: (context) => const HotelOwnerScreen()
+                          )
+                      )
+                  ),
                 ],
               ),
               const SizedBox(height: 80),
@@ -135,10 +139,16 @@ class MoreContentWidget extends StatelessWidget {
                 title: "Đăng xuất",
                 iconPath: "assets/icons/icon_logout.svg",
                 backgroundColor: const Color(0xFFB3261E),
-                onTap: () {
-                  Navigator.pushReplacement(
+
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('jwt_token');
+                  await prefs.remove('user_id');
+
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        (Route<dynamic> route) => false,
                   );
                 },
               ),
