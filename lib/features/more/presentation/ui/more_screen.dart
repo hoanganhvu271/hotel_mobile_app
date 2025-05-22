@@ -127,7 +127,7 @@ class MoreContentWidget extends StatelessWidget {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HotelOwnerScreen()))),
+                              builder: (context) => const AdminSystemHome()))),
                 ],
               ),
               const SizedBox(height: 80),
