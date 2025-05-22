@@ -1,12 +1,15 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/features/account/info.dart';
 import 'package:hotel_app/features/admin_system/admin_system_home.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../common/hotel_storage_provider.dart';
 import '../../../../constants/app_colors.dart';
+import '../../../../core/firebase_messaging_service.dart';
 import '../../../admin/presentation/ui/hotel_owner_screen.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -65,11 +68,11 @@ class AppBarWidget extends StatelessWidget {
   }
 }
 
-class MoreContentWidget extends StatelessWidget {
+class MoreContentWidget extends ConsumerWidget {
   const MoreContentWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ColoredBox(
       color: Colors.white,
       child: SingleChildScrollView(
@@ -141,16 +144,32 @@ class MoreContentWidget extends StatelessWidget {
                 backgroundColor: const Color(0xFFB3261E),
 
                 onTap: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.remove('jwt_token');
-                  await prefs.remove('user_id');
+                  try {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.remove('jwt_token');
+                    await prefs.remove('user_id');
 
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                        (Route<dynamic> route) => false,
-                  );
-                },
+                    await ref.read(hotelStorageProvider).clearHotelId();
+
+                    // Hủy đăng ký device token cho push notification
+                    // try {
+                    //   await ref.read(firebaseMessagingServiceProvider).unregisterDeviceToken();
+                    // } catch (e) {
+                    //   print('Error unregistering device token: $e');
+                    // }
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          (Route<dynamic> route) => false,
+                    );
+                  } catch(e) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            (Route<dynamic> route) => false,
+                      );
+                    }
+                  }
               ),
             ],
           ),

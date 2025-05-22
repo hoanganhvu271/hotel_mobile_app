@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hotel_app/common/widgets/keep_alive_component.dart';
-import 'package:hotel_app/features/home/home_screen.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
-import 'package:hotel_app/features/main/presentation/provider/tab_provider.dart';
-import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
-import 'package:hotel_app/features/main/presentation/ui/tab_component.dart';
-import 'package:hotel_app/features/order/orderscreen.dart';
-import '../features/main/presentation/model/tab_model.dart';
-import '../features/more/presentation/ui/more_screen.dart';
-import '../features/noti/noti_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../features/main/presentation/ui/main_screen.dart';
 import 'firebase_messaging_service.dart';
 
 class MyApp extends ConsumerStatefulWidget {
@@ -36,9 +29,21 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
     }
   }
 
+  Future<bool> _checkLoginStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('jwt_token');
+      int? userId = prefs.getInt('user_id');
+
+      return token != null && token.isNotEmpty && userId != null;
+    } catch (e) {
+      print('Error checking login status: $e');
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -46,10 +51,30 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const SafeArea(
+      home: SafeArea(
         child: Scaffold(
-          body: LoginScreen()
-        )
+          body: FutureBuilder<bool>(
+            future: _checkLoginStatus(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                print('Login check error: ${snapshot.error}');
+                return const LoginScreen();
+              }
+
+              final isLoggedIn = snapshot.data ?? false;
+
+              if (isLoggedIn) {
+                return const MainScreen();
+              } else {
+                return const LoginScreen();
+              }
+            },
+          ),
+        ),
       ),
     );
   }
