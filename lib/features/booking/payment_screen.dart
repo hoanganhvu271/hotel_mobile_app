@@ -321,7 +321,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
                 elevation: 0,
               ),
-              child: const Text('Xem hóa đơn'),
+              child: const Text('Đã thanh toán'),
 
             ),
 

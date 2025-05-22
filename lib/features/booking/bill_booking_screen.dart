@@ -303,10 +303,6 @@ class _BillBookingScreenState extends State<BillBookingScreen> {
                       ),
                     ],
 
-
-
-
-
                   ),
                 );
               } else {
