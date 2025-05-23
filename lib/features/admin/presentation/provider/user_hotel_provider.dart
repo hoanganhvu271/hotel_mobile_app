@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/core/base_state.dart';
 import 'package:hotel_app/features/admin/data/hotel_owner_service.dart';
 import 'package:hotel_app/features/admin/model/hotel_dto.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final userHotelsProvider = AutoDisposeNotifierProvider<UserHotelsNotifier, BaseState<List<HotelDto>>>(
         () => UserHotelsNotifier()
@@ -17,8 +18,9 @@ class UserHotelsNotifier extends AutoDisposeNotifier<BaseState<List<HotelDto>>> 
   Future<void> getUserHotels() async {
     state = BaseState.loading();
     try {
-      // Gọi API thật với userID = 3
-      const int userId = 3;
+      final prefs = await SharedPreferences.getInstance();
+      int userId = prefs.getInt('user_id') ?? 3;
+
       final response = await ref.read(hotelOwnerService).getHotelsByUser(userId);
 
       if (response.isSuccessful) {

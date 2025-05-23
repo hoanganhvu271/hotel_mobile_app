@@ -20,11 +20,26 @@ class ReservationManagerScreen extends ConsumerStatefulWidget {
 class _ReservationManagerScreenState extends ConsumerState<ReservationManagerScreen> {
   final ScrollController _scrollController = ScrollController();
   String _currentStatusFilter = "ALL"; // Mặc định hiển thị tất cả
+  bool _isLoadingMore = false;
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 100) {
-      ref.read(bookingViewModel.notifier).loadMore();
+    final viewModel = ref.read(bookingViewModel);
+
+    final isNearBottom = _scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100;
+
+    final canLoad = !_isLoadingMore && viewModel.canLoadMore;
+
+    if (isNearBottom && canLoad) {
+      _isLoadingMore = true;
+      print('Loading more reservations...');
+
+      ref.read(bookingViewModel.notifier).loadMore().then((_) {
+        _isLoadingMore = false;
+      }).catchError((error) {
+        print('Failed to load reservations: $error');
+        _isLoadingMore = false;
+      });
     }
   }
 

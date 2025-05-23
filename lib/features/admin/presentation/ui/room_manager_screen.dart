@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hotel_app/common/utils/value_utils.dart';
 import 'package:hotel_app/constants/api_url.dart';
 import 'package:hotel_app/features/admin/model/room_response_dto.dart';
 import 'package:hotel_app/features/admin/presentation/provider/room_provider.dart';
@@ -18,18 +19,38 @@ class RoomManagerScreen extends ConsumerStatefulWidget {
 
 class _RoomManagerScreenState extends ConsumerState<RoomManagerScreen> {
   final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
 
   void _onScroll() {
+    final viewModel = ref.read(roomViewModel);
+
+    // Kiểm tra có thể load thêm và không đang loading
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 100) {
-      ref.read(roomViewModel.notifier).loadMore();
+        _scrollController.position.maxScrollExtent - 100 &&
+        !_isLoadingMore &&
+        viewModel.canLoadMore) {
+      _isLoadingMore = true; // đánh dấu đang loading
+      print('Load more data');
+
+      ref.read(roomViewModel.notifier).loadMore().then((_) {
+        _isLoadingMore = false; // reset sau khi xong
+      }).catchError((e) {
+        _isLoadingMore = false; // reset nếu có lỗi
+      });
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -73,6 +94,7 @@ class _RoomManagerScreenState extends ConsumerState<RoomManagerScreen> {
                       },
                       success: (rooms) {
                         return ListView.separated(
+                          controller: _scrollController,
                           itemBuilder: (_, index) {
                             if (index == viewModel.listData.length) {
                               return viewModel.canLoadMore ? const Center(
@@ -176,7 +198,7 @@ class RoomItemWidget extends StatelessWidget {
                     const SizedBox(height: 5),
                     Text("ID: ${room.id}"),
                     const SizedBox(height: 5),
-                    Text("Giá: ${room.pricePerNight} đ/giờ"),
+                    Text("Giá: ${ValueUtils.formatCurrency(room.pricePerNight)} /đêm"),
                     const SizedBox(height: 5),
                     Text("Diện tích: ${room.area} m2"),
                   ],

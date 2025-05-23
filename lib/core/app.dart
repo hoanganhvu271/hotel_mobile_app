@@ -1,15 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hotel_app/common/widgets/keep_alive_component.dart';
-import 'package:hotel_app/features/home/home_screen.dart';
-import 'package:hotel_app/features/main/presentation/provider/tab_provider.dart';
-import 'package:hotel_app/features/main/presentation/ui/bottom_bar_navigation.dart';
-import 'package:hotel_app/features/main/presentation/ui/tab_component.dart';
-import 'package:hotel_app/features/order/orderscreen.dart';
-import '../features/main/presentation/model/tab_model.dart';
-import '../features/more/presentation/ui/more_screen.dart';
-import '../features/noti/noti_screen.dart';
+import 'package:hotel_app/features/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../features/main/presentation/ui/main_screen.dart';
+import '../security_flatform.dart';
 import 'firebase_messaging_service.dart';
+import 'global.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
@@ -19,17 +18,17 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  final List<GlobalKey<NavigatorState>> listKey =
-  List.generate(TabEnum.values.length, (index) => GlobalKey<NavigatorState>());
-
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: TabEnum.values.length, vsync: this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkSecurity(context); // context đảm bảo hợp lệ
+    });
     // Initialize Firebase Messaging
     _initializeFirebaseMessaging();
+
   }
 
   Future<void> _initializeFirebaseMessaging() async {
@@ -41,56 +40,74 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
     }
   }
 
-  DateTime? _lastBackPressed;
+  Future<bool> _checkLoginStatus() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('jwt_token');
+      int? userId = prefs.getInt('user_id');
+
+      return token != null && token.isNotEmpty && userId != null;
+    } catch (e) {
+      print('Error checking login status: $e');
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(
-        tabProvider, (pre, next) => _tabController.animateTo(next.index));
+    return MaterialApp(
+      navigatorKey: globalNavigatorKey,
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
+        useMaterial3: true,
+      ),
+      home: SafeArea(
+        child: Scaffold(
+          body: FutureBuilder<bool>(
+            future: _checkLoginStatus(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-    return WillPopScope(
-      onWillPop: () async {
-        final currentTime = DateTime.now();
-        if (_lastBackPressed == null ||
-            currentTime.difference(_lastBackPressed!) > Duration(seconds: 2)) {
-          _lastBackPressed = currentTime;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Nhấn lần nữa để thoát'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-          return false;
-        }
-        return true; // cho phép thoát
-      },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-          useMaterial3: true,
-        ),
-        home: SafeArea(
-          child: Scaffold(
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                TabComponent(
-                    tabKey: listKey[TabEnum.home.index], child: HomeScreen()),
-                TabComponent(
-                    tabKey: listKey[TabEnum.order.index], child: OrderScreen()),
-                TabComponent(
-                    tabKey: listKey[TabEnum.noti.index], child: NotificationScreen()),
-                TabComponent(tabKey: listKey[TabEnum.more.index],
-                    child: MoreScreen()),
-              ],
-            ),
-            bottomNavigationBar: const KeepAliveComponent(
-                child: BottomBarNavigation()),
+              if (snapshot.hasError) {
+                return const LoginScreen();
+              }
+
+              final isLoggedIn = snapshot.data ?? false;
+
+              if (isLoggedIn) {
+                return const MainScreen();
+              } else {
+                return const LoginScreen();
+              }
+            },
           ),
         ),
       ),
     );
   }
+
+
+  Future<void> checkSecurity(BuildContext context) async {
+    bool isRooted = await SecurityPlatform.isRooted();
+    bool isEmulator = await SecurityPlatform.isEmulator();
+    print("Device rooted? $isRooted, Emulator? $isEmulator");
+
+    if (isRooted || isEmulator) {
+      print("Unauthorized device detected. Closing app...");
+
+      // if (Platform.isAndroid) {
+      //   SystemNavigator.pop();
+      // } else {
+      //   exit(0);
+      // }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+      exit(0);
+    }
+  }
+
 }

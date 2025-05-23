@@ -5,6 +5,7 @@ import 'package:hotel_app/constants/app_colors.dart';
 import 'package:hotel_app/core/base_state.dart';
 import 'package:hotel_app/features/admin/model/booking_status.dart';
 import 'package:hotel_app/features/admin/presentation/provider/update_booking_status.dart';
+import '../../../../common/utils/value_utils.dart';
 import '../provider/booking_details_provider.dart';
 
 class BookingDetailsScreen extends ConsumerStatefulWidget {
@@ -316,7 +317,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> {
                     _buildInfoRow("Phòng:", data.roomName),
                     _buildInfoRow("Nhận phòng:", TimeUtils.formatDateTime(data.checkIn)),
                     _buildInfoRow("Trả phòng:", TimeUtils.formatDateTime(data.checkOut)),
-                    _buildInfoRow("Giá:", "\$${data.price.toStringAsFixed(2)}"),
+                    _buildInfoRow("Giá:", "${ValueUtils.formatCurrency(data.price)}"),
                   ],
                 ),
 
@@ -336,7 +337,7 @@ class _BookingDetailsScreenState extends ConsumerState<BookingDetailsScreen> {
                   [
                     if (data.bill != null) ...[
                       _buildInfoRow("Mã hóa đơn:", "#${data.bill?.billId}"),
-                      _buildInfoRow("Tổng tiền:", "\$${data.bill?.totalPrice.toStringAsFixed(2)}"),
+                      _buildInfoRow("Tổng tiền:", "${ValueUtils.formatCurrency(data.bill?.totalPrice ?? 0)}"),
                       _buildInfoRow(
                         "Thanh toán:",
                         data.bill!.paidStatus ? "Đã thanh toán" : "Chưa thanh toán",

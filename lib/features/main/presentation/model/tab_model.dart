@@ -6,7 +6,7 @@ extension TabEnumExtension on TabEnum {
       case TabEnum.home:
         return "Trang chủ";
       case TabEnum.order:
-        return "Order";
+        return "Đơn đặt";
       case TabEnum.noti:
         return "Thông báo";
       case TabEnum.more:

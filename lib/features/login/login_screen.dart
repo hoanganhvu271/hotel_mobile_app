@@ -9,6 +9,7 @@ import 'package:hotel_app/features/more/more_screen.dart';
 import 'package:hotel_app/features/map/map_screen.dart';
 
 import '../../common/utils/api_constants.dart';
+import '../main/presentation/ui/main_screen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -53,25 +54,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Navigate based on roles
         if (roles.contains('ROLE_ADMIN')) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AdminSystemHome()),
-          );
+          await prefs.setBool('is_admin', true);
         } else if (roles.contains('ROLE_CUSTOMER')) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
-        } else if (roles.contains('ROLE_HOTEL_OWNER')) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-          );
+
+        }
+
+        if (roles.contains('ROLE_HOTEL_OWNER')) {
+          await prefs.setBool('is_owner', true);
         } else {
           setState(() {
             _errorMessage = 'Vai trò không hợp lệ';
           });
         }
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
       } else {
         setState(() {
           _errorMessage = 'Sai tài khoản hoặc mật khẩu';
