@@ -71,7 +71,6 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -175,14 +174,6 @@ class _BookingScreenState extends State<BookingScreen> {
                           selected.map((e) => e.toString()).toList(),
                     ),
                     const SizedBox(height: 20),
-                    // BookingBtn(
-                    //   label: 'TÌM PHÒNG TRỐNG',
-                    //   screen: const SizedBox.shrink(),
-                    //   onTap: () async {
-                    //     await submitBookingSearch();
-                    //   },
-                    // ),
-                    // const Center(child: Text('Home Screen')),
                   ],
                 ),
               ),

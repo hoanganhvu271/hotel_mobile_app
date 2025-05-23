@@ -51,7 +51,7 @@ class _AdminSystemHotelsState extends State<AdminSystemHotels> {
     } else {
       newlyFiltered = _allUsers.where((user) {
         return user.id.toString().contains(lowerCaseQuery) ||
-            user.fullName.toLowerCase().contains(lowerCaseQuery) ||
+            (user.fullName ?? '').toLowerCase().contains(lowerCaseQuery) ||
             user.username.toLowerCase().contains(lowerCaseQuery) ||
             user.phone.contains(query) ||
             user.email.toLowerCase().contains(lowerCaseQuery);

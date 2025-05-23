@@ -172,7 +172,6 @@ class _AdminSystemHomeState extends State<AdminSystemHome> {
                           final day = data[index].date.split('-').last;
                           final formattedRevenue = NumberFormat("#,###", "vi_VN").format(spot.y);
                           return LineTooltipItem(
-                            // 'Ngày $day\n${spot.y.toStringAsFixed(0)} VNĐ',
                             'Ngày $day\n$formattedRevenue',
                             const TextStyle(
                                 color: Colors.white, fontWeight: FontWeight.bold),

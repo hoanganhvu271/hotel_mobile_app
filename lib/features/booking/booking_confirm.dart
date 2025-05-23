@@ -86,7 +86,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                         left: 20,
                         top: 22,
                         child: IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon:
+                              const Icon(Icons.arrow_back, color: Colors.white),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ),
@@ -106,10 +107,12 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                       FutureBuilder<UserInfo>(
                         future: fetchUserInfo(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
-                            return Text('Lỗi tải thông tin người dùng: ${snapshot.error}');
+                            return Text(
+                                'Lỗi tải thông tin người dùng: ${snapshot.error}');
                           } else if (snapshot.hasData) {
                             UserInfo user = snapshot.data!;
                             return Align(
@@ -119,7 +122,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                                 children: [
                                   _buildInfoRow('Khách hàng', user.fullName),
                                   _buildInfoRow('Số điện thoại', user.phone),
-                                  _buildInfoRow('Điểm tích lũy', user.score.toString()),
+                                  _buildInfoRow(
+                                      'Điểm tích lũy', user.score.toString()),
                                   const SizedBox(height: 10),
                                   ElevatedButton(
                                     onPressed: () {
@@ -127,7 +131,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                                         _useScore = !_useScore;
 
                                         int discount = user.score;
-                                        finalPrice = widget.room.price - discount;
+                                        finalPrice =
+                                            widget.room.price - discount;
                                         if (finalPrice < 0) finalPrice = 0;
                                       });
                                     },
@@ -154,14 +159,20 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            _buildInfoRow('Ngày nhận phòng', widget.room.checkIn),
-                            _buildInfoRow('Ngày trả phòng', widget.room.checkOut),
-                            _buildInfoRow('Số giường', widget.room.bedNumber.toString()),
-                            _buildInfoRow('Số người lớn', widget.room.adults.toString()),
-                            _buildInfoRow('Số trẻ em', widget.room.children.toString()),
+                            _buildInfoRow(
+                                'Ngày nhận phòng', widget.room.checkIn),
+                            _buildInfoRow(
+                                'Ngày trả phòng', widget.room.checkOut),
+                            _buildInfoRow(
+                                'Số giường', widget.room.bedNumber.toString()),
+                            _buildInfoRow(
+                                'Số người lớn', widget.room.adults.toString()),
+                            _buildInfoRow(
+                                'Số trẻ em', widget.room.children.toString()),
                             _buildInfoRow(
                               'Tổng tiền phòng',
-                              NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ')
+                              NumberFormat.currency(
+                                      locale: 'vi_VN', symbol: 'VNĐ')
                                   .format(widget.room.price),
                             ),
                             if (_useScore) ...[
@@ -171,7 +182,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                               ),
                               _buildInfoRow(
                                 'Tổng',
-                                NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ')
+                                NumberFormat.currency(
+                                        locale: 'vi_VN', symbol: 'VNĐ')
                                     .format(finalPrice),
                               ),
                             ],
@@ -195,7 +207,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       ),
     );
   }
-
 
   Widget _buildInfoRow(String title, String value) {
     return Container(

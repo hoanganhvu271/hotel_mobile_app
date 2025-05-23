@@ -71,7 +71,6 @@ class _StaticDropdownState extends State<StaticDropdown> {
               child: DropdownButton<String>(
                 value: selectedLabel,
                 isExpanded: true,
-                underline: const SizedBox(),
                 items: options.keys.map((String label) {
                   return DropdownMenuItem<String>(
                     value: label,

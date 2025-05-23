@@ -1,15 +1,4 @@
 import 'package:flutter/material.dart';
-
-// class OrderScreen extends StatelessWidget {
-//   const OrderScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Text('Order Screen');
-//   }
-// }
-
-
 import 'package:flutter/material.dart';
 import 'package:hotel_app/common/local/shared_prefs/get_user_login.dart';
 import 'package:hotel_app/common/widgets/heading.dart';
@@ -40,7 +29,6 @@ class _OrderScreenState extends State<OrderScreen> {
   Future<List<BookingWithRoomInfo>>? _bookingsFuture;
   List<BookingWithRoomInfo> _allBookings = [];
   List<BookingWithRoomInfo> _displayedBookings = [];
-
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -121,12 +109,13 @@ class _OrderScreenState extends State<OrderScreen> {
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
       filteredList = filteredList.where((item) {
-        final bookingIdMatch = item.booking.bookingId.toString().contains(query);
-        final roomNameMatch = item.roomDetail.roomName.toLowerCase().contains(query);
+        final bookingIdMatch =
+            item.booking.bookingId.toString().contains(query);
+        final roomNameMatch =
+            item.roomDetail.roomName.toLowerCase().contains(query);
         return bookingIdMatch || roomNameMatch;
       }).toList();
     } else {
-
       filteredList = List.from(_allBookings);
     }
 
@@ -159,7 +148,6 @@ class _OrderScreenState extends State<OrderScreen> {
         comparison = 0;
       }
 
-
       if (_selectedSortOption == SortOption.createdAtDesc ||
           _selectedSortOption == SortOption.checkInDesc) {
         return -comparison;
@@ -169,8 +157,7 @@ class _OrderScreenState extends State<OrderScreen> {
     _displayedBookings = filteredList;
   }
 
-  Future<void> _submitReview(
-      String content, int rating, int bookingId) async {
+  Future<void> _submitReview(String content, int rating, int bookingId) async {
     if (content.isEmpty || rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Vui lòng nhập đánh giá và chọn số sao.'),
@@ -245,7 +232,8 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                       const SizedBox(height: 16),
                       const Text('Chất lượng dịch vụ:',
-                          style: TextStyle(fontSize: 14, color: _lightTextColor)),
+                          style:
+                              TextStyle(fontSize: 14, color: _lightTextColor)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(5, (index) {
@@ -267,7 +255,8 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                       const SizedBox(height: 16),
                       const Text('Nhận xét của bạn:',
-                          style: TextStyle(fontSize: 14, color: _lightTextColor)),
+                          style:
+                              TextStyle(fontSize: 14, color: _lightTextColor)),
                       const SizedBox(height: 8),
                       TextField(
                         controller: reviewController,
@@ -292,7 +281,8 @@ class _OrderScreenState extends State<OrderScreen> {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Hủy', style: TextStyle(color: _lightTextColor)),
+                            child: const Text('Hủy',
+                                style: TextStyle(color: _lightTextColor)),
                           ),
                           const SizedBox(width: 12),
                           ElevatedButton(
@@ -307,7 +297,8 @@ class _OrderScreenState extends State<OrderScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: _buttonBorderRadius,
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
                             ),
                             child: const Text('Gửi đánh giá'),
                           ),
@@ -333,53 +324,63 @@ class _OrderScreenState extends State<OrderScreen> {
           title: const Text(
             'Đánh giá của bạn',
             style: TextStyle(
-                color: _primaryColor, fontSize: 20, fontWeight: FontWeight.bold),
+                color: _primaryColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
           ),
           content: SizedBox(
             width: double.maxFinite,
             child: reviews.isEmpty
                 ? const Center(child: Text("Chưa có đánh giá nào."))
                 : ListView.separated(
-              shrinkWrap: true,
-              itemCount: reviews.length,
-              itemBuilder: (context, index) {
-                final review = reviews[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            'Đánh giá: ',
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                          Row(
-                            children: List.generate(5, (starIndex) {
-                              return Icon(
-                                starIndex < review.rating
-                                    ? Icons.star_rounded
-                                    : Icons.star_border_rounded,
-                                color: Colors.amber,
-                                size: 18,
-                              );
-                            }),
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        review.content.isNotEmpty ? review.content : '(Không có nhận xét)',
-                        style: TextStyle(color: review.content.isNotEmpty ? Colors.black87 : _lightTextColor, fontStyle: review.content.isNotEmpty ? FontStyle.normal : FontStyle.italic),
-                      ),
-                    ],
+                    shrinkWrap: true,
+                    itemCount: reviews.length,
+                    itemBuilder: (context, index) {
+                      final review = reviews[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'Đánh giá: ',
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
+                                Row(
+                                  children: List.generate(5, (starIndex) {
+                                    return Icon(
+                                      starIndex < review.rating
+                                          ? Icons.star_rounded
+                                          : Icons.star_border_rounded,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    );
+                                  }),
+                                ),
+                                const Spacer(),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              review.content.isNotEmpty
+                                  ? review.content
+                                  : '(Không có nhận xét)',
+                              style: TextStyle(
+                                  color: review.content.isNotEmpty
+                                      ? Colors.black87
+                                      : _lightTextColor,
+                                  fontStyle: review.content.isNotEmpty
+                                      ? FontStyle.normal
+                                      : FontStyle.italic),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
                   ),
-                );
-              },
-              separatorBuilder: (context, index) => const Divider(),
-            ),
           ),
           actions: [
             TextButton(
@@ -402,7 +403,6 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-
         preferredSize: const Size.fromHeight(100.0),
         child: Stack(
           children: [
@@ -418,7 +418,6 @@ class _OrderScreenState extends State<OrderScreen> {
           ],
         ),
       ),
-
       body: SafeArea(
         child: Transform.translate(
           offset: const Offset(0, -5),
@@ -429,8 +428,11 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: FutureBuilder<List<BookingWithRoomInfo>>(
                   future: _bookingsFuture,
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting && _allBookings.isEmpty) {
-                      return const Center(child: CircularProgressIndicator(color: _primaryColor));
+                    if (snapshot.connectionState == ConnectionState.waiting &&
+                        _allBookings.isEmpty) {
+                      return const Center(
+                          child:
+                              CircularProgressIndicator(color: _primaryColor));
                     } else if (snapshot.hasError && _allBookings.isEmpty) {
                       print("Error in FutureBuilder: ${snapshot.error}");
                       return Center(
@@ -439,7 +441,8 @@ class _OrderScreenState extends State<OrderScreen> {
                           child: Text(
                             'Không thể tải danh sách đặt phòng.\nLỗi: ${snapshot.error}',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(color: _errorColor, fontSize: 16),
+                            style: const TextStyle(
+                                color: _errorColor, fontSize: 16),
                           ),
                         ),
                       );
@@ -447,19 +450,23 @@ class _OrderScreenState extends State<OrderScreen> {
                       return const Center(
                         child: Text(
                           'Bạn chưa có đặt phòng nào.',
-                          style: TextStyle(fontSize: 16, color: _lightTextColor),
+                          style:
+                              TextStyle(fontSize: 16, color: _lightTextColor),
                         ),
                       );
-                    } else if (_displayedBookings.isEmpty && _searchQuery.isNotEmpty) {
+                    } else if (_displayedBookings.isEmpty &&
+                        _searchQuery.isNotEmpty) {
                       return const Center(
                         child: Text(
                           'Không tìm thấy đặt phòng phù hợp.',
-                          style: TextStyle(fontSize: 16, color: _lightTextColor),
+                          style:
+                              TextStyle(fontSize: 16, color: _lightTextColor),
                         ),
                       );
                     } else {
                       return ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 10.0),
                         itemCount: _displayedBookings.length,
                         itemBuilder: (context, index) {
                           final item = _displayedBookings[index];
@@ -468,25 +475,44 @@ class _OrderScreenState extends State<OrderScreen> {
                           final reviewIds = item.booking.reviewIdList ?? [];
                           bool hasReviews = reviewIds.isNotEmpty;
 
-                          final DateFormat displayDateFormat = DateFormat('dd/MM/yyyy HH:mm');
-                          final DateFormat displayCreatedFormat = DateFormat('dd/MM/yyyy HH:mm:ss');
-                          final String checkInDate = displayDateFormat.format(DateTime.parse(booking.checkIn).toLocal());
-                          final String checkOutDate = displayDateFormat.format(DateTime.parse(booking.checkOut).toLocal());
-                          final String createdAtDate = displayCreatedFormat.format(DateTime.parse(booking.createdAt).toLocal());
-                          final priceFormatted = NumberFormat("#,###", "vi_VN").format(booking.price);
+                          final DateFormat displayDateFormat =
+                              DateFormat('dd/MM/yyyy HH:mm');
+                          final DateFormat displayCreatedFormat =
+                              DateFormat('dd/MM/yyyy HH:mm:ss');
+                          final String checkInDate = displayDateFormat.format(
+                              DateTime.parse(booking.checkIn).toLocal());
+                          final String checkOutDate = displayDateFormat.format(
+                              DateTime.parse(booking.checkOut).toLocal());
+                          final String createdAtDate =
+                              displayCreatedFormat.format(
+                                  DateTime.parse(booking.createdAt).toLocal());
+                          final priceFormatted = NumberFormat("#,###", "vi_VN")
+                              .format(booking.price);
 
                           Color statusColor;
                           String statusText;
                           switch (booking.status) {
-                            case 'PENDING': statusColor = _pendingColor; statusText = 'Đang chờ'; break;
-                            case 'CONFIRMED': statusColor = _successColor; statusText = 'Đã xác nhận'; break;
-                            case 'CANCELLED': statusColor = _errorColor; statusText = 'Đã hủy'; break;
-                            default: statusColor = Colors.grey; statusText = 'Không rõ';
+                            case 'PENDING':
+                              statusColor = _pendingColor;
+                              statusText = 'Đang chờ';
+                              break;
+                            case 'CONFIRMED':
+                              statusColor = _successColor;
+                              statusText = 'Đã xác nhận';
+                              break;
+                            case 'CANCELLED':
+                              statusColor = _errorColor;
+                              statusText = 'Đã hủy';
+                              break;
+                            default:
+                              statusColor = Colors.grey;
+                              statusText = 'Không rõ';
                           }
 
                           return Card(
                             elevation: _cardElevation,
-                            shape: RoundedRectangleBorder(borderRadius: _cardBorderRadius),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: _cardBorderRadius),
                             margin: const EdgeInsets.only(bottom: 16.0),
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
@@ -494,45 +520,34 @@ class _OrderScreenState extends State<OrderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                         child: Image.network(
                                           '${ApiConstants.baseUrl}/api/files/${room.roomImg}',
                                           width: 90,
                                           height: 75,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => Container(
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
                                             width: 90,
                                             height: 75,
                                             color: Colors.grey[300],
-                                            child: const Icon(Icons.broken_image, color: Colors.grey),
+                                            child: const Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey),
                                           ),
-                                          loadingBuilder: (context, child, loadingProgress) {
-                                            if (loadingProgress == null) return child;
-                                            return Container(
-                                              width: 90,
-                                              height: 75,
-                                              color: Colors.grey[200],
-                                              child: Center(
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2.0,
-                                                  valueColor: const AlwaysStoppedAnimation<Color>(_primaryColor),
-                                                  value: loadingProgress.expectedTotalBytes != null
-                                                      ? loadingProgress.cumulativeBytesLoaded /
-                                                      loadingProgress.expectedTotalBytes!
-                                                      : null,
-                                                ),
-                                              ),
-                                            );
-                                          },
                                         ),
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               '#${booking.bookingId} - ${room.roomName}',
@@ -546,17 +561,26 @@ class _OrderScreenState extends State<OrderScreen> {
                                             const SizedBox(height: 4),
                                             Text(
                                               room.hotelName,
-                                              style: const TextStyle(fontSize: 13, color: _lightTextColor),
+                                              style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: _lightTextColor),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 6),
                                             Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 3),
                                               decoration: BoxDecoration(
-                                                color: statusColor.withOpacity(0.15),
-                                                borderRadius: BorderRadius.circular(50),
-                                                border: Border.all(color: statusColor, width: 0.5),
+                                                color: statusColor
+                                                    .withOpacity(0.15),
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                                border: Border.all(
+                                                    color: statusColor,
+                                                    width: 0.5),
                                               ),
                                               child: Text(
                                                 statusText,
@@ -571,7 +595,8 @@ class _OrderScreenState extends State<OrderScreen> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 2.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 2.0),
                                         child: Text(
                                           '$priceFormatted VND',
                                           style: const TextStyle(
@@ -584,10 +609,14 @@ class _OrderScreenState extends State<OrderScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 12),
-                                  _buildDetailRow(Icons.location_on_outlined, room.specificAddress),
-                                  _buildDetailRow(Icons.calendar_today_outlined, 'Đặt ngày: $createdAtDate'),
-                                  _buildDetailRow(Icons.login_outlined, 'Nhận phòng: $checkInDate'),
-                                  _buildDetailRow(Icons.logout_outlined, 'Trả phòng: $checkOutDate'),
+                                  _buildDetailRow(Icons.location_on_outlined,
+                                      room.specificAddress),
+                                  _buildDetailRow(Icons.calendar_today_outlined,
+                                      'Đặt ngày: $createdAtDate'),
+                                  _buildDetailRow(Icons.login_outlined,
+                                      'Nhận phòng: $checkInDate'),
+                                  _buildDetailRow(Icons.logout_outlined,
+                                      'Trả phòng: $checkOutDate'),
                                   const Divider(height: 20, thickness: 0.5),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -602,21 +631,31 @@ class _OrderScreenState extends State<OrderScreen> {
                                                   context: context,
                                                   barrierDismissible: false,
                                                   builder: (context) => const Center(
-                                                      child: CircularProgressIndicator(color: _primaryColor)),
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                              color:
+                                                                  _primaryColor)),
                                                 );
-                                                List<ReviewResponseDto> reviews = await getReviews(reviewIds);
+                                                List<ReviewResponseDto>
+                                                    reviews =
+                                                    await getReviews(reviewIds);
                                                 Navigator.pop(context);
                                                 _showReviewListDialog(reviews);
                                               } catch (e) {
                                                 Navigator.pop(context);
-                                                print('Lỗi khi lấy đánh giá: $e');
-                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                  content: Text('Không thể tải danh sách đánh giá.'),
+                                                print(
+                                                    'Lỗi khi lấy đánh giá: $e');
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                        const SnackBar(
+                                                  content: Text(
+                                                      'Không thể tải danh sách đánh giá.'),
                                                   backgroundColor: _errorColor,
                                                 ));
                                               }
                                             } else {
-                                              _showReviewDialog(booking.bookingId);
+                                              _showReviewDialog(
+                                                  booking.bookingId);
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -624,19 +663,24 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 ? _accentColor.withOpacity(0.8)
                                                 : _primaryColor,
                                             foregroundColor: Colors.white,
-                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 8),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: _buttonBorderRadius,
                                             ),
                                             elevation: 2,
                                           ),
                                           icon: Icon(
-                                            hasReviews ? Icons.rate_review_outlined : Icons.edit_note_outlined,
+                                            hasReviews
+                                                ? Icons.rate_review_outlined
+                                                : Icons.edit_note_outlined,
                                             size: 16,
                                             color: Colors.white,
                                           ),
                                           label: Text(
-                                            hasReviews ? 'Xem đánh giá' : 'Viết đánh giá',
+                                            hasReviews
+                                                ? 'Xem đánh giá'
+                                                : 'Viết đánh giá',
                                             style: const TextStyle(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
@@ -662,8 +706,6 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-
-
   Widget _buildFilterSortControls() {
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -676,14 +718,15 @@ class _OrderScreenState extends State<OrderScreen> {
               prefixIcon: const Icon(Icons.search, color: _lightTextColor),
               suffixIcon: _searchQuery.isNotEmpty
                   ? IconButton(
-                icon: const Icon(Icons.clear, color: _lightTextColor),
-                onPressed: () {
-                  _searchController.clear();
-                },
-              )
+                      icon: const Icon(Icons.clear, color: _lightTextColor),
+                      onPressed: () {
+                        _searchController.clear();
+                      },
+                    )
                   : null,
               isDense: true,
-              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 borderSide: const BorderSide(color: Colors.grey),
@@ -697,15 +740,15 @@ class _OrderScreenState extends State<OrderScreen> {
           const SizedBox(height: 10),
           Row(
             children: [
-              const Text("Sắp xếp theo:", style: TextStyle(color: _lightTextColor)),
+              const Text("Sắp xếp theo:",
+                  style: TextStyle(color: _lightTextColor)),
               const SizedBox(width: 10),
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
-                      border: Border.all(color: Colors.grey)
-                  ),
+                      border: Border.all(color: Colors.grey)),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<SortOption>(
                       value: _selectedSortOption,
@@ -714,19 +757,23 @@ class _OrderScreenState extends State<OrderScreen> {
                       items: const [
                         DropdownMenuItem(
                           value: SortOption.createdAtDesc,
-                          child: Text("Ngày tạo (Mới nhất)", style: TextStyle(fontSize: 14)),
+                          child: Text("Ngày tạo (Mới nhất)",
+                              style: TextStyle(fontSize: 14)),
                         ),
                         DropdownMenuItem(
                           value: SortOption.createdAtAsc,
-                          child: Text("Ngày tạo (Cũ nhất)", style: TextStyle(fontSize: 14)),
+                          child: Text("Ngày tạo (Cũ nhất)",
+                              style: TextStyle(fontSize: 14)),
                         ),
                         DropdownMenuItem(
                           value: SortOption.checkInAsc,
-                          child: Text("Ngày nhận phòng (Gần nhất)", style: TextStyle(fontSize: 14)),
+                          child: Text("Ngày nhận phòng (Gần nhất)",
+                              style: TextStyle(fontSize: 14)),
                         ),
                         DropdownMenuItem(
                           value: SortOption.checkInDesc,
-                          child: Text("Ngày nhận phòng (Xa nhất)", style: TextStyle(fontSize: 14)),
+                          child: Text("Ngày nhận phòng (Xa nhất)",
+                              style: TextStyle(fontSize: 14)),
                         ),
                       ],
                       onChanged: (SortOption? newValue) {
@@ -756,7 +803,7 @@ class _OrderScreenState extends State<OrderScreen> {
         children: [
           Icon(icon, size: 15, color: _lightTextColor),
           const SizedBox(width: 8),
-          Expanded( // Allows text to wrap
+          Expanded(
             child: Text(
               text,
               style: const TextStyle(fontSize: 12.5, color: _lightTextColor),

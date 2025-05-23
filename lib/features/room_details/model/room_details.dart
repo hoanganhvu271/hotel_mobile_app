@@ -60,15 +60,14 @@ class RoomDetails {
         'reviews': reviews?.map((review) => review.toJson()).toList(),
       };
 
-  // Create from JSON
   factory RoomDetails.fromJson(Map<String, dynamic> json) {
     return RoomDetails(
       roomId: json['roomId'] as int?,
       roomName: json['roomName'] as String?,
-      area: json['area'] as double?,
-      comboPrice2h: json['comboPrice2h'] as double?,
-      pricePerNight: json['pricePerNight'] as double?,
-      extraHourPrice: json['extraHourPrice'] as double?,
+      area: (json['area'] as num?)?.toDouble(),
+      comboPrice2h: (json['comboPrice2h'] as num?)?.toDouble(),
+      pricePerNight: (json['pricePerNight'] as num?)?.toDouble(),
+      extraHourPrice: (json['extraHourPrice'] as num?)?.toDouble(),
       standardOccupancy: json['standardOccupancy'] as int?,
       maxOccupancy: json['maxOccupancy'] as int?,
       numChildrenFree: json['numChildrenFree'] as int?,
@@ -76,7 +75,7 @@ class RoomDetails {
           ? List<String>.from(json['roomImgs'] as List)
           : null,
       bedNumber: json['bedNumber'] as int?,
-      extraAdult: json['extraAdult'] as double?,
+      extraAdult: (json['extraAdult'] as num?)?.toDouble(),
       description: json['description'] as String?,
       hotelName: json['hotelName'] as String?,
       address: json['address'] as String?,
@@ -85,8 +84,8 @@ class RoomDetails {
           : null,
       reviews: json['reviews'] != null
           ? (json['reviews'] as List)
-              .map((review) => Review.fromJson(review as Map<String, dynamic>))
-              .toList()
+          .map((review) => Review.fromJson(review as Map<String, dynamic>))
+          .toList()
           : null,
     );
   }

@@ -32,8 +32,11 @@ class ReviewCard extends StatelessWidget {
                   color: Colors.grey[200],
                 ),
                 child: ClipOval(
-                  child: SvgPicture.asset('images/avatar-default.svg',
-                      color: Colors.brown, fit: BoxFit.cover),
+                  child: SvgPicture.asset(
+                    'images/avatar-default.svg',
+                    color: Colors.brown,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -68,6 +71,22 @@ class ReviewCard extends StatelessWidget {
               color: Colors.brown,
             ),
           ),
+          if (review.ownerReply != null && review.ownerReply!.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.brown.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                'Phản hồi: ${review.ownerReply}',
+                style: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.brown,
+                ),
+              ),
+            ),
         ],
       ),
     );

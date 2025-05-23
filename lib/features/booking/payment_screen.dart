@@ -55,7 +55,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> checkPaid() async {
     const duration = Duration(minutes: 1);
-    const delayBetweenRequests = Duration(seconds: 2);
+    const delayBetweenRequests = Duration(seconds: 1);
     final deadline = DateTime.now().add(duration);
     final BuildContext paymentScreenContext = context;
 
@@ -361,8 +361,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: const Text('Thanh toán trực tiếp'),
             ),
             const SizedBox(height: 20),
-
-
           ],
         ),
       ),
