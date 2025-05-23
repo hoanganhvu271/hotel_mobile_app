@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_app/common/state/compare_room_state.dart';
+import 'package:hotel_app/common/utils/api_constants.dart';
 import 'package:hotel_app/common/utils/service_text_util.dart';
 import 'package:hotel_app/common/utils/text_util.dart';
 import 'package:hotel_app/features/booking/booking_screen.dart';
@@ -138,7 +139,8 @@ class _RoomDetailsScreenState extends ConsumerState<RoomDetailsScreen> {
                           itemCount: data.roomImgs?.length ?? 0,
                           itemBuilder: (context, index) {
                             return Image.network(
-                              data.roomImgs![index],
+                              // data.roomImgs![index],
+                              '${ApiConstants.baseUrl}/api/files/${data.roomImgs![index]}',
                               fit: BoxFit.cover,
                             );
                           },

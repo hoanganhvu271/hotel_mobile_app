@@ -90,6 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                               child: HotelCard(
+                                id: room['roomId'],
                                 name: room['roomName'],
                                 imageUrl: imageUrl,
                                 city: city,
@@ -103,6 +104,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Center(child: Text('Không có phòng nào để hiển thị')),
                   ],
                 ),
+              ),
+            ),
+
+            Transform.translate(
+              offset: const Offset(0, -95),
+              child: const BookingBtn(
+                label: 'More',
+                screen: MoreUserSrceen(),
               ),
             ),
           ],
