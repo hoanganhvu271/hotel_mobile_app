@@ -324,17 +324,16 @@ class BookingBarChart extends StatelessWidget {
       );
     }
 
-    // Find maximum value safely
     final double maxY = bookings.isNotEmpty
         ? bookings.map((b) => b.count.toDouble()).reduce((a, b) => a > b ? a : b)
-        : 10.0; // Default value if list is empty
+        : 10.0;
 
     return AspectRatio(
       aspectRatio: 1.7,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceBetween,
-          maxY: maxY > 0 ? maxY : 10.0, // Make sure maxY is at least 1.0
+          maxY: maxY > 0 ? maxY : 10.0,
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(

@@ -237,17 +237,11 @@ class _RoomFormScreenState extends ConsumerState<RoomEditScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Expanded(child: CustomTextArea(controller: roomCountController, maxLine: 1, label: "Số lượng phòng", keyboardType: TextInputType.number)),
-                                      const SizedBox(width: 16),
-                                      Expanded(child: CustomTextArea(controller: bedNumberController, maxLine: 1, label: "Số giường", keyboardType: TextInputType.number)),
-                                    ],
-                                  ),
+                        CustomTextArea(controller: bedNumberController, maxLine: 1, label: "Số giường", keyboardType: TextInputType.number),
                                   const SizedBox(height: 10),
                                   CustomTextArea(controller: standardOccupancyController, maxLine: 1, label: "SL Tiêu chuẩn", keyboardType: TextInputType.number),
                                   const SizedBox(height: 10),
-                                  CustomTextArea(controller: extraAdultController, maxLine: 1, label: "SL Người lớn thêm", keyboardType: TextInputType.number),
+                                  CustomTextArea(controller: extraAdultController, maxLine: 1, label: "Chi phí thêm người lớn", keyboardType: TextInputType.number),
                                 ],
                               )
                             ],

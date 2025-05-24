@@ -6,7 +6,6 @@ import '../../model/booking_dto.dart';
 import '../../model/booking_stats_dto.dart';
 import '../../model/search_data.dart';
 
-
 final bookingViewModel = AutoDisposeNotifierProvider<BookingProvider, SearchData<BookingResponseDto>>(() => BookingProvider());
 
 class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>> {
@@ -15,6 +14,7 @@ class BookingProvider extends AutoDisposeNotifier<SearchData<BookingResponseDto>
     state = SearchData(status: BaseStatus.none);
     getData();
     return state;
+
   }
 
   Future<void> refresh() async {

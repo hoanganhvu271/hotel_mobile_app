@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/features/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -105,8 +104,8 @@ class _MyAppState extends ConsumerState<MyApp> with SingleTickerProviderStateMix
       //   exit(0);
       // }
 
-      await Future.delayed(const Duration(milliseconds: 500));
-      exit(0);
+      // await Future.delayed(const Duration(milliseconds: 500));
+      // exit(0);
     }
   }
 
