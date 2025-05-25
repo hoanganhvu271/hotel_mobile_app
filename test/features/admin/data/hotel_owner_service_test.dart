@@ -5,6 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:hotel_app/common/network/dio_client.dart';
 import 'package:hotel_app/features/admin/data/hotel_owner_service.dart';
 import 'package:hotel_app/features/admin/model/booking_status.dart';
+import 'package:hotel_app/di/injector.dart';
 
 import 'hotel_owner_service_test.mocks.dart';
 
@@ -17,6 +18,19 @@ void main() {
     setUp(() {
       mockDioClient = MockDioClient();
       service = HotelOwnerService();
+
+      // Reset and register mock DioClient in GetIt for testing
+      if (injector.isRegistered<DioClient>()) {
+        injector.unregister<DioClient>();
+      }
+      injector.registerSingleton<DioClient>(mockDioClient);
+    });
+
+    tearDown(() {
+      // Clean up after each test
+      if (injector.isRegistered<DioClient>()) {
+        injector.unregister<DioClient>();
+      }
     });
 
     test('should return success response when API call succeeds', () async {

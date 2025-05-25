@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/mockito.dart';
@@ -30,13 +31,16 @@ void main() {
     });
 
     test('initial state should be none', () {
-      final notifier = container.read(updateBookingStatusViewModel.notifier);
+      // Act
       final state = container.read(updateBookingStatusViewModel);
 
+      // Assert
       expect(state.status, BaseStatus.none);
+      expect(state.data, isNull);
+      expect(state.message, isNull);
     });
 
-    test('update should change state to loading then success when repository succeeds', () async {
+    test('should update booking status successfully', () async {
       // Arrange
       const bookingId = 1;
       const status = BookingStatus.CONFIRMED;
@@ -48,29 +52,35 @@ void main() {
       when(mockRepository.updateBookingStatus(bookingId, status))
           .thenAnswer((_) async => successResponse);
 
+      // Keep provider alive by listening to it
+      final subscription = container.listen(
+        updateBookingStatusViewModel,
+            (previous, next) {},
+      );
+
       final notifier = container.read(updateBookingStatusViewModel.notifier);
 
       // Act
-      final future = notifier.update(bookingId, status);
+      notifier.update(bookingId, status);
 
-      // Assert loading state
-      expect(container.read(updateBookingStatusViewModel).status, BaseStatus.loading);
+      // Wait for the async operation to complete
+      await Future.delayed(Duration(milliseconds: 100));
 
-      await future;
-
-      // Assert success state
-      final finalState = container.read(updateBookingStatusViewModel);
-      expect(finalState.status, BaseStatus.success);
-      expect(finalState.data, true);
-
+      // Assert
+      final state = container.read(updateBookingStatusViewModel);
+      expect(state.status, BaseStatus.success);
+      expect(state.data, true);
       verify(mockRepository.updateBookingStatus(bookingId, status)).called(1);
+
+      // Cleanup
+      subscription.close();
     });
 
-    test('update should change state to error when repository fails', () async {
+    test('should handle update error', () async {
       // Arrange
       const bookingId = 1;
       const status = BookingStatus.CONFIRMED;
-      const errorMessage = "Network error";
+      const errorMessage = "Update failed";
       final errorResponse = BaseResponse<bool>(
         isSuccessful: false,
         errorMessage: errorMessage,
@@ -79,73 +89,65 @@ void main() {
       when(mockRepository.updateBookingStatus(bookingId, status))
           .thenAnswer((_) async => errorResponse);
 
+      // Keep provider alive
+      final subscription = container.listen(
+        updateBookingStatusViewModel,
+            (previous, next) {},
+      );
+
       final notifier = container.read(updateBookingStatusViewModel.notifier);
 
       // Act
-      await notifier.update(bookingId, status);
+      notifier.update(bookingId, status);
+
+      // Wait for the async operation to complete
+      await Future.delayed(Duration(milliseconds: 100));
 
       // Assert
       final state = container.read(updateBookingStatusViewModel);
       expect(state.status, BaseStatus.error);
       expect(state.message, errorMessage);
-
       verify(mockRepository.updateBookingStatus(bookingId, status)).called(1);
+
+      // Cleanup
+      subscription.close();
     });
 
-    test('update should handle exception and set error state', () async {
+    test('should handle exception', () async {
       // Arrange
       const bookingId = 1;
       const status = BookingStatus.CONFIRMED;
-      const exceptionMessage = "Connection timeout";
 
       when(mockRepository.updateBookingStatus(bookingId, status))
-          .thenThrow(Exception(exceptionMessage));
+          .thenThrow(Exception('Network error'));
+
+      // Keep provider alive
+      final subscription = container.listen(
+        updateBookingStatusViewModel,
+            (previous, next) {},
+      );
 
       final notifier = container.read(updateBookingStatusViewModel.notifier);
 
       // Act
-      await notifier.update(bookingId, status);
+      notifier.update(bookingId, status);
+
+      // Wait for the async operation to complete
+      await Future.delayed(Duration(milliseconds: 100));
 
       // Assert
       final state = container.read(updateBookingStatusViewModel);
       expect(state.status, BaseStatus.error);
-      expect(state.message, contains(exceptionMessage));
-
+      expect(state.message, contains('Network error'));
       verify(mockRepository.updateBookingStatus(bookingId, status)).called(1);
+
+      // Cleanup
+      subscription.close();
     });
 
-    test('update should work with CANCELLED status', () async {
+    test('should work with different booking statuses', () async {
       // Arrange
-      const bookingId = 2;
-      const status = BookingStatus.CANCELLED;
-      final successResponse = BaseResponse<bool>(
-        isSuccessful: true,
-        successfulData: true,
-      );
-
-      when(mockRepository.updateBookingStatus(bookingId, status))
-          .thenAnswer((_) async => successResponse);
-
-      final notifier = container.read(updateBookingStatusViewModel.notifier);
-
-      // Act
-      await notifier.update(bookingId, status);
-
-      // Assert
-      final state = container.read(updateBookingStatusViewModel);
-      expect(state.status, BaseStatus.success);
-      expect(state.data, true);
-
-      verify(mockRepository.updateBookingStatus(bookingId, status)).called(1);
-    });
-
-    test('multiple updates should work correctly', () async {
-      // Arrange
-      const bookingId1 = 1;
-      const bookingId2 = 2;
-      const status1 = BookingStatus.CONFIRMED;
-      const status2 = BookingStatus.CANCELLED;
-
+      const bookingId = 1;
       final successResponse = BaseResponse<bool>(
         isSuccessful: true,
         successfulData: true,
@@ -154,19 +156,124 @@ void main() {
       when(mockRepository.updateBookingStatus(any, any))
           .thenAnswer((_) async => successResponse);
 
+      // Keep provider alive
+      final subscription = container.listen(
+        updateBookingStatusViewModel,
+            (previous, next) {},
+      );
+
       final notifier = container.read(updateBookingStatusViewModel.notifier);
 
-      // Act
-      await notifier.update(bookingId1, status1);
-      await notifier.update(bookingId2, status2);
+      // Test CONFIRMED status
+      notifier.update(bookingId, BookingStatus.CONFIRMED);
+      await Future.delayed(Duration(milliseconds: 100));
 
-      // Assert
-      final state = container.read(updateBookingStatusViewModel);
+      var state = container.read(updateBookingStatusViewModel);
       expect(state.status, BaseStatus.success);
       expect(state.data, true);
 
-      verify(mockRepository.updateBookingStatus(bookingId1, status1)).called(1);
-      verify(mockRepository.updateBookingStatus(bookingId2, status2)).called(1);
+      // Test CANCELLED status
+      notifier.update(bookingId, BookingStatus.CANCELLED);
+      await Future.delayed(Duration(milliseconds: 100));
+
+      state = container.read(updateBookingStatusViewModel);
+      expect(state.status, BaseStatus.success);
+      expect(state.data, true);
+
+      verify(mockRepository.updateBookingStatus(bookingId, any)).called(2);
+
+      // Cleanup
+      subscription.close();
+    });
+
+    test('should show loading state during update', () async {
+      // Arrange
+      const bookingId = 1;
+      const status = BookingStatus.CONFIRMED;
+      final completer = Completer<BaseResponse<bool>>();
+
+      when(mockRepository.updateBookingStatus(bookingId, status))
+          .thenAnswer((_) => completer.future);
+
+      // Keep provider alive
+      final subscription = container.listen(
+        updateBookingStatusViewModel,
+            (previous, next) {},
+      );
+
+      final notifier = container.read(updateBookingStatusViewModel.notifier);
+
+      // Assert initial state
+      expect(container.read(updateBookingStatusViewModel).status, BaseStatus.none);
+
+      // Act
+      notifier.update(bookingId, status);
+
+      // Wait a bit for loading state
+      await Future.delayed(Duration(milliseconds: 10));
+
+      // Assert loading state
+      var state = container.read(updateBookingStatusViewModel);
+      expect(state.status, BaseStatus.loading);
+
+      // Complete the future
+      completer.complete(BaseResponse<bool>(
+        isSuccessful: true,
+        successfulData: true,
+      ));
+
+      // Wait for completion
+      await Future.delayed(Duration(milliseconds: 50));
+
+      // Assert final state
+      state = container.read(updateBookingStatusViewModel);
+      expect(state.status, BaseStatus.success);
+      expect(state.data, true);
+
+      // Cleanup
+      subscription.close();
+    });
+
+    test('should transition from loading to error', () async {
+      // Arrange
+      const bookingId = 1;
+      const status = BookingStatus.CONFIRMED;
+      const errorMessage = "Update failed";
+      final completer = Completer<BaseResponse<bool>>();
+
+      when(mockRepository.updateBookingStatus(bookingId, status))
+          .thenAnswer((_) => completer.future);
+
+      // Keep provider alive
+      final subscription = container.listen(
+        updateBookingStatusViewModel,
+            (previous, next) {},
+      );
+
+      final notifier = container.read(updateBookingStatusViewModel.notifier);
+
+      // Act
+      notifier.update(bookingId, status);
+      await Future.delayed(Duration(milliseconds: 10));
+
+      // Assert loading state
+      expect(container.read(updateBookingStatusViewModel).status, BaseStatus.loading);
+
+      // Complete with error
+      completer.complete(BaseResponse<bool>(
+        isSuccessful: false,
+        errorMessage: errorMessage,
+      ));
+
+      await Future.delayed(Duration(milliseconds: 50));
+
+      // Assert error state
+      final state = container.read(updateBookingStatusViewModel);
+      expect(state.status, BaseStatus.error);
+      expect(state.message, errorMessage);
+
+      // Cleanup
+      subscription.close();
     });
   });
 }
