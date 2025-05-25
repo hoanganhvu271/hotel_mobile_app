@@ -42,6 +42,11 @@ class RoomCardItem extends ConsumerWidget {
               // Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
+                // child: Image.network(
+                //   room.roomImg,
+                //   width: 150,
+                //   height: 150,
+                //   fit: BoxFit.cover,
                 child: Image.network(
                   '${ApiConstants.baseUrl}/api/files/${room.roomImg}',
                   width: 150,

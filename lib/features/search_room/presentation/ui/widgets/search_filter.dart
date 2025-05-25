@@ -32,6 +32,8 @@ class _SearchFilterState extends ConsumerState<SearchFilter> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(cityViewModel.notifier).getCities();
         ref.read(serviceViewModel.notifier).getServices();
+        ref.setCity("");
+        ref.setDistrict("");
       });
       hasCityFetched = true;
     }
