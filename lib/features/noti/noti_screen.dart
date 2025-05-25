@@ -114,7 +114,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 margin: const EdgeInsets.symmetric(vertical: 8),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isEven ? Colors.white : Colors.brown[100],
+                  color: isEven ? Colors.white : Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
