@@ -284,7 +284,7 @@ class ReviewItemWidget extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: ColorsLib.primaryColor.withOpacity(0.2),
                   child: Text(
-                    review.guestName.substring(0, 1).toUpperCase(),
+                    review.guestName!.substring(0, 1).toUpperCase(),
                     style: TextStyle(
                       color: ColorsLib.primaryBoldColor,
                       fontWeight: FontWeight.bold,
@@ -297,7 +297,7 @@ class ReviewItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        review.guestName,
+                        review.guestName!,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

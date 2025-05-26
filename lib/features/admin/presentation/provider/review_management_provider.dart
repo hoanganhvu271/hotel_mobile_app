@@ -22,7 +22,7 @@ class ReviewManagementNotifier extends AutoDisposeNotifier<SearchData<ReviewResp
   Future<void> getData() async {
     try {
       if (state.page == 0) {
-        state = state.copyWith(status: BaseStatus.loading, canLoadMore: true);
+        state = state.copyWith(status: BaseStatus.loading, canLoadMore: true, filterStatus: state.filterStatus);
       }
 
       int? rating = state.rating;

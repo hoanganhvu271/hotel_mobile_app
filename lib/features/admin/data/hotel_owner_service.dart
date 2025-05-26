@@ -366,15 +366,19 @@ class HotelOwnerService {
       Response data = await injector<DioClient>().get(url);
       List<dynamic> reviewsData = data.data;
 
+      // print(data.data);
+
       final List<ReviewResponseDto> reviews = reviewsData
           .map((json) => ReviewResponseDto.fromJson(json))
           .toList();
 
       return BaseResponse(isSuccessful: true, successfulData: reviews);
     } on DioException catch (e) {
+      // print(e);
       final errorMessage = e.response?.data['message'] ?? "Lỗi không xác định";
       return BaseResponse(isSuccessful: false, errorMessage: errorMessage, errorCode: e.response?.statusCode.toString());
     } catch (e) {
+      // print(e);
       return BaseResponse(isSuccessful: false, errorMessage: e.toString());
     }
   }

@@ -2,7 +2,7 @@ class ReviewResponseDto {
   final int reviewId;
   final String content;
   final int rating;
-  final String guestName;
+  final String? guestName;
   final String roomName;
   final DateTime createdAt;
   final String? ownerReply;
@@ -11,7 +11,7 @@ class ReviewResponseDto {
     required this.reviewId,
     required this.content,
     required this.rating,
-    required this.guestName,
+    this.guestName = "Guest",
     required this.roomName,
     required this.createdAt,
     this.ownerReply,
@@ -22,7 +22,7 @@ class ReviewResponseDto {
       reviewId: json['reviewId'],
       content: json['content'],
       rating: json['rating'],
-      guestName: json['guestName'],
+      guestName: json['guestName'] as String? ?? "Guest",
       roomName: json['roomName'],
       createdAt: DateTime.parse(json['createdAt']),
       ownerReply: json['ownerReply'],
