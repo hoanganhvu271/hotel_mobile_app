@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotel_app/security_flatform.dart';
@@ -15,7 +17,6 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNo
 
 Future<void> runMain() async {
   WidgetsFlutterBinding.ensureInitialized();
-  checkSecurity();
 
   await initSingletons();
 
@@ -48,12 +49,6 @@ Future<void> runMain() async {
     ],
     child: MyApp(),
   ));
-}
-
-void checkSecurity() async {
-  bool isRooted = await SecurityPlatform.isRooted();
-  bool isEmulator = await SecurityPlatform.isEmulator();
-  print("Device rooted? $isRooted, Emulator? $isEmulator");
 }
 
 void main() {

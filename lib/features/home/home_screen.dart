@@ -107,13 +107,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            Transform.translate(
-              offset: const Offset(0, -95),
-              child: const BookingBtn(
-                label: 'More',
-                screen: MoreUserSrceen(),
-              ),
-            ),
+            // Transform.translate(
+            //   offset: const Offset(0, -95),
+            //   child: const BookingBtn(
+            //     label: 'More',
+            //     screen: MoreUserSrceen(),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -31,7 +31,7 @@ class ReviewManagementNotifier extends AutoDisposeNotifier<SearchData<ReviewResp
       }
 
       final response = await ref.read(hotelOwnerRepository).getAllReviews(
-        offset: state.page * state.limit,
+        offset: state.page,
         limit: state.limit,
         order: state.order,
         query: state.query,

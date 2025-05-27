@@ -54,25 +54,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Navigate based on roles
         if (roles.contains('ROLE_ADMIN')) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
+          await prefs.setBool('is_admin', true);
         } else if (roles.contains('ROLE_CUSTOMER')) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
-        } else if (roles.contains('ROLE_HOTEL_OWNER')) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
+
+        }
+
+        if (roles.contains('ROLE_HOTEL_OWNER')) {
+          await prefs.setBool('is_owner', true);
         } else {
           setState(() {
             _errorMessage = 'Vai trò không hợp lệ';
           });
         }
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
       } else {
         setState(() {
           _errorMessage = 'Sai tài khoản hoặc mật khẩu';

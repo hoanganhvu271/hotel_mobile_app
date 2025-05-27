@@ -2,19 +2,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import '../../common/utils/api_constants.dart';
+import 'dart:typed_data';
 
 class EditProfileScreen extends StatefulWidget {
   final String fullName;
   final String email;
+  final String avatarUrl;
   final String phone;
+
 
   const EditProfileScreen({
     Key? key,
     required this.fullName,
     required this.email,
     required this.phone,
+    required this.avatarUrl,
   }) : super(key: key);
 
   @override
@@ -26,7 +31,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late final TextEditingController _fullNameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
+  late final String avatarUrl = widget.avatarUrl;
   bool _isLoading = false;
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -41,6 +49,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return prefs.getString('jwt_token');
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Uint8List? _decodeBase64Image(String? base64String) {
+    if (base64String == null || base64String.isEmpty) return null;
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<void> _updateProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -50,6 +77,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     try {
       final token = await _getToken();
+
+      String? base64Image;
+      if (_selectedImage != null) {
+        final bytes = await _selectedImage!.readAsBytes();
+        base64Image = base64Encode(bytes);
+      }
+
+      print('Failed to fetch notifications: ${base64Image}');
+
       final response = await http.put(
         Uri.parse('${ApiConstants.baseUrl}/api/user/update'),
         headers: {
@@ -60,6 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           'fullName': _fullNameController.text,
           'email': _emailController.text,
           'phone': _phoneController.text,
+          'avatarUrl': base64Image, // Add base64 image string here
         }),
       );
 
@@ -88,6 +125,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Uint8List? avatarBytes = _decodeBase64Image(avatarUrl); // avatarUrl là chuỗi base64
     return Scaffold(
       backgroundColor: Colors.lightBlue[50],
       appBar: AppBar(
@@ -130,10 +168,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               key: _formKey,
               child: Column(
                 children: [
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.brown.shade100,
+                      backgroundImage: _selectedImage != null
+                          ? FileImage(_selectedImage!)
+                          : avatarBytes != null
+                          ? MemoryImage(avatarBytes)
+                          : const AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                      child: _selectedImage == null && avatarBytes == null
+                          ? const Icon(Icons.camera_alt, size: 30, color: Colors.brown)
+                          : null,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Chọn ảnh đại diện',
+                    style: TextStyle(fontSize: 16, color: Colors.brown),
+                  ),
+                  const SizedBox(height: 20),
                   _buildTextField('Họ và Tên', _fullNameController),
                   _buildTextField('Email', _emailController),
                   _buildTextField('Số điện thoại', _phoneController),
-                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _updateProfile,
                     style: ElevatedButton.styleFrom(

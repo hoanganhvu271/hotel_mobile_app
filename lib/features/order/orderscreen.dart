@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:hotel_app/common/local/shared_prefs/get_user_login.dart';
 import 'package:hotel_app/common/widgets/heading.dart';
 import 'package:hotel_app/features/order/model/booking_with_room_info.dart';
@@ -34,6 +33,11 @@ class _OrderScreenState extends State<OrderScreen> {
   String _searchQuery = '';
   SortOption _selectedSortOption = SortOption.createdAtDesc;
 
+  final Set<int> _expandedBookingIds = {};
+  final Map<int, List<ReviewResponseDto>> _cachedReviews = {};
+  final Map<int, bool> _isLoadingReviews = {};
+  final Map<int, String?> _reviewFetchErrors = {};
+
   static const Color _primaryColor = Color(0xFF65462D);
   static const Color _accentColor = Color(0xFFA68367);
   static const Color _lightTextColor = Colors.black54;
@@ -61,62 +65,80 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   void _onSearchChanged() {
-    setState(() {
-      _searchQuery = _searchController.text;
-      _applyFiltersAndSort();
-    });
+    if (mounted) {
+      setState(() {
+        _searchQuery = _searchController.text;
+        _applyFiltersAndSort();
+      });
+    }
   }
 
   Future<void> _loadBookings() async {
     int? userId = await getUserId();
     if (userId != null) {
-      _bookingsFuture = fetchBookingsWithRoomDetails(userId);
-      setState(() {});
-      _bookingsFuture!.then((data) {
+      if (mounted) {
         setState(() {
-          _allBookings = data;
-          _applyFiltersAndSort();
+          _bookingsFuture = null;
+          _allBookings = [];
+          _displayedBookings = [];
+          _expandedBookingIds.clear();
+          _cachedReviews.clear();
+          _isLoadingReviews.clear();
+          _reviewFetchErrors.clear();
         });
+      }
+      _bookingsFuture = fetchBookingsWithRoomDetails(userId);
+      if (mounted) setState(() {});
+
+      _bookingsFuture!.then((data) {
+        if (mounted) {
+          setState(() {
+            _allBookings = data;
+            _applyFiltersAndSort();
+          });
+        }
       }).catchError((error) {
+        if (mounted) {
+          setState(() {
+            _allBookings = [];
+            _displayedBookings = [];
+          });
+          print("Error loading bookings: $error");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Lỗi tải danh sách đặt phòng: $error'),
+              backgroundColor: _errorColor,
+            ),
+          );
+        }
+      });
+    } else {
+      if (mounted) {
         setState(() {
           _allBookings = [];
           _displayedBookings = [];
         });
-        print("Error loading bookings: $error");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Lỗi tải danh sách đặt phòng: $error'),
+          const SnackBar(
+            content: Text('Lỗi: Không thể tải thông tin người dùng.'),
             backgroundColor: _errorColor,
           ),
         );
-      });
-    } else {
-      setState(() {
-        _allBookings = [];
-        _displayedBookings = [];
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lỗi: Không thể tải thông tin người dùng.'),
-          backgroundColor: _errorColor,
-        ),
-      );
+      }
     }
   }
 
   void _applyFiltersAndSort() {
-    List<BookingWithRoomInfo> filteredList = _allBookings;
+    List<BookingWithRoomInfo> filteredList = List.from(_allBookings);
     if (_searchQuery.isNotEmpty) {
       final query = _searchQuery.toLowerCase();
       filteredList = filteredList.where((item) {
         final bookingIdMatch =
-            item.booking.bookingId.toString().contains(query);
+        item.booking.bookingId.toString().contains(query);
         final roomNameMatch =
-            item.roomDetail.roomName.toLowerCase().contains(query);
+        item.roomDetail.roomName.toLowerCase().contains(query);
         return bookingIdMatch || roomNameMatch;
       }).toList();
-    } else {
-      filteredList = List.from(_allBookings);
     }
 
     filteredList.sort((a, b) {
@@ -154,15 +176,21 @@ class _OrderScreenState extends State<OrderScreen> {
       }
       return comparison;
     });
-    _displayedBookings = filteredList;
+    if (mounted) {
+      setState(() {
+        _displayedBookings = filteredList;
+      });
+    }
   }
 
   Future<void> _submitReview(String content, int rating, int bookingId) async {
     if (content.isEmpty || rating == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Vui lòng nhập đánh giá và chọn số sao.'),
-        backgroundColor: _errorColor,
-      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Vui lòng nhập đánh giá và chọn số sao.'),
+          backgroundColor: _errorColor,
+        ));
+      }
       return;
     }
 
@@ -179,28 +207,41 @@ class _OrderScreenState extends State<OrderScreen> {
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Đánh giá đã được gửi thành công!'),
-          backgroundColor: _successColor,
-        ));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Đánh giá đã được gửi thành công!'),
+            backgroundColor: _successColor,
+          ));
+        }
+        _cachedReviews.remove(bookingId);
+        if (mounted) {
+          setState(() {
+            _expandedBookingIds.remove(bookingId);
+          });
+        }
         _loadBookings();
       } else {
         print(
             'Failed to submit review. Status: ${response.statusCode}, Body: ${response.body}');
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.'),
-          backgroundColor: _errorColor,
-        ));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.'),
+            backgroundColor: _errorColor,
+          ));
+        }
       }
     } catch (e) {
       print('Error submitting review: $e');
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Lỗi kết nối khi gửi đánh giá.'),
-        backgroundColor: _errorColor,
-      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Lỗi kết nối khi gửi đánh giá.'),
+          backgroundColor: _errorColor,
+        ));
+      }
     }
   }
 
+  // Dialog để viết đánh giá mới
   void _showReviewDialog(int bookingId) {
     TextEditingController reviewController = TextEditingController();
     int localSelectedStars = 0;
@@ -233,7 +274,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       const SizedBox(height: 16),
                       const Text('Chất lượng dịch vụ:',
                           style:
-                              TextStyle(fontSize: 14, color: _lightTextColor)),
+                          TextStyle(fontSize: 14, color: _lightTextColor)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(5, (index) {
@@ -256,7 +297,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       const SizedBox(height: 16),
                       const Text('Nhận xét của bạn:',
                           style:
-                              TextStyle(fontSize: 14, color: _lightTextColor)),
+                          TextStyle(fontSize: 14, color: _lightTextColor)),
                       const SizedBox(height: 8),
                       TextField(
                         controller: reviewController,
@@ -315,88 +356,171 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  void _showReviewListDialog(List<ReviewResponseDto> reviews) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: _cardBorderRadius),
-          title: const Text(
-            'Đánh giá của bạn',
-            style: TextStyle(
-                color: _primaryColor,
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: reviews.isEmpty
-                ? const Center(child: Text("Chưa có đánh giá nào."))
-                : ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: reviews.length,
-                    itemBuilder: (context, index) {
-                      final review = reviews[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  'Đánh giá: ',
-                                  style: TextStyle(fontWeight: FontWeight.w500),
-                                ),
-                                Row(
-                                  children: List.generate(5, (starIndex) {
-                                    return Icon(
-                                      starIndex < review.rating
-                                          ? Icons.star_rounded
-                                          : Icons.star_border_rounded,
-                                      color: Colors.amber,
-                                      size: 18,
-                                    );
-                                  }),
-                                ),
-                                const Spacer(),
-                              ],
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              review.content.isNotEmpty
-                                  ? review.content
-                                  : '(Không có nhận xét)',
-                              style: TextStyle(
-                                  color: review.content.isNotEmpty
-                                      ? Colors.black87
-                                      : _lightTextColor,
-                                  fontStyle: review.content.isNotEmpty
-                                      ? FontStyle.normal
-                                      : FontStyle.italic),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(),
-                  ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Đóng',
-                style: TextStyle(
-                    color: _primaryColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+  Future<void> _toggleReviewDisplay(int bookingId, List<int> reviewIds) async {
+    if (mounted) {
+      setState(() {
+        if (_expandedBookingIds.contains(bookingId)) {
+          _expandedBookingIds.remove(bookingId);
+        } else {
+          _expandedBookingIds.add(bookingId);
+          if (!_cachedReviews.containsKey(bookingId) &&
+              !(_isLoadingReviews[bookingId] ?? false)) {
+            _fetchAndCacheReviews(bookingId, reviewIds);
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> _fetchAndCacheReviews(int bookingId, List<int> reviewIds) async {
+    if (reviewIds.isEmpty) {
+      if (mounted) {
+        setState(() {
+          _cachedReviews[bookingId] = [];
+          _isLoadingReviews[bookingId] = false;
+        });
+      }
+      return;
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoadingReviews[bookingId] = true;
+        _reviewFetchErrors.remove(bookingId);
+      });
+    }
+
+    try {
+      final reviews = await getReviews(reviewIds);
+      if (mounted) {
+        setState(() {
+          _cachedReviews[bookingId] = reviews;
+          _isLoadingReviews[bookingId] = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching reviews for booking $bookingId: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingReviews[bookingId] = false;
+          _reviewFetchErrors[bookingId] = 'Không thể tải đánh giá.';
+        });
+      }
+    }
+  }
+
+  Widget _buildReviewSection(int bookingId) {
+    if (_isLoadingReviews[bookingId] == true) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Center(child: CircularProgressIndicator(color: _primaryColor)),
+      );
+    }
+
+    final error = _reviewFetchErrors[bookingId];
+    if (error != null) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+            child: Text(error, style: const TextStyle(color: _errorColor))),
+      );
+    }
+
+    final reviews = _cachedReviews[bookingId];
+    if (reviews == null || reviews.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Center(
+            child: Text("Không tìm thấy đánh giá nào.",
+                style: TextStyle(color: _lightTextColor))),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0, left: 8.0, right: 8.0, bottom: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: reviews.map((review) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (reviews.indexOf(review) > 0)
+                const Divider(height: 20, thickness: 0.5, color: Colors.grey),
+
+              const Text("Đánh giá của bạn:",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: _primaryColor)),
+              const SizedBox(height: 4),
+
+              // Hiển thị số sao
+              Row(
+                children: List.generate(5, (starIndex) {
+                  return Icon(
+                    starIndex < review.rating
+                        ? Icons.star_rounded
+                        : Icons.star_border_rounded,
+                    color: Colors.amber,
+                    size: 20,
+                  );
+                }),
               ),
-            ),
-          ],
-        );
-      },
+              const SizedBox(height: 6),
+
+              // Nội dung đánh giá
+              Text(
+                review.content.isNotEmpty
+                    ? review.content
+                    : '(Không có nội dung nhận xét)',
+                style: TextStyle(
+                  color: review.content.isNotEmpty
+                      ? Colors.black87
+                      : _lightTextColor,
+                  fontStyle: review.content.isNotEmpty
+                      ? FontStyle.normal
+                      : FontStyle.italic,
+                  fontSize: 13.5,
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  color: _accentColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(
+                      color: _accentColor.withOpacity(0.3), width: 0.5),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.storefront,
+                        color: _primaryColor.withOpacity(0.8), size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        (review.ownerReply != null && review.ownerReply!.trim().isNotEmpty)
+                            ? review.ownerReply!
+                            : 'Chưa có phản hồi từ chủ khách sạn',
+                        style: TextStyle(
+                          color: (review.ownerReply != null && review.ownerReply!.trim().isNotEmpty)
+                              ? _primaryColor
+                              : Colors.grey,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+      ),
     );
+
   }
 
   @override
@@ -432,7 +556,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         _allBookings.isEmpty) {
                       return const Center(
                           child:
-                              CircularProgressIndicator(color: _primaryColor));
+                          CircularProgressIndicator(color: _primaryColor));
                     } else if (snapshot.hasError && _allBookings.isEmpty) {
                       print("Error in FutureBuilder: ${snapshot.error}");
                       return Center(
@@ -446,12 +570,14 @@ class _OrderScreenState extends State<OrderScreen> {
                           ),
                         ),
                       );
-                    } else if (_allBookings.isEmpty && !snapshot.hasData) {
+                    } else if (_allBookings.isEmpty &&
+                        !(snapshot.connectionState == ConnectionState.waiting && _bookingsFuture != null)) {
+                      // Sửa điều kiện này để xử lý trường hợp _bookingsFuture là null (khi chưa load)
                       return const Center(
                         child: Text(
                           'Bạn chưa có đặt phòng nào.',
                           style:
-                              TextStyle(fontSize: 16, color: _lightTextColor),
+                          TextStyle(fontSize: 16, color: _lightTextColor),
                         ),
                       );
                     } else if (_displayedBookings.isEmpty &&
@@ -460,7 +586,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         child: Text(
                           'Không tìm thấy đặt phòng phù hợp.',
                           style:
-                              TextStyle(fontSize: 16, color: _lightTextColor),
+                          TextStyle(fontSize: 16, color: _lightTextColor),
                         ),
                       );
                     } else {
@@ -474,18 +600,20 @@ class _OrderScreenState extends State<OrderScreen> {
                           final room = item.roomDetail;
                           final reviewIds = item.booking.reviewIdList ?? [];
                           bool hasReviews = reviewIds.isNotEmpty;
+                          bool isExpanded =
+                          _expandedBookingIds.contains(booking.bookingId);
 
                           final DateFormat displayDateFormat =
-                              DateFormat('dd/MM/yyyy HH:mm');
+                          DateFormat('dd/MM/yyyy HH:mm');
                           final DateFormat displayCreatedFormat =
-                              DateFormat('dd/MM/yyyy HH:mm:ss');
+                          DateFormat('dd/MM/yyyy HH:mm:ss');
                           final String checkInDate = displayDateFormat.format(
                               DateTime.parse(booking.checkIn).toLocal());
                           final String checkOutDate = displayDateFormat.format(
                               DateTime.parse(booking.checkOut).toLocal());
                           final String createdAtDate =
-                              displayCreatedFormat.format(
-                                  DateTime.parse(booking.createdAt).toLocal());
+                          displayCreatedFormat.format(
+                              DateTime.parse(booking.createdAt).toLocal());
                           final priceFormatted = NumberFormat("#,###", "vi_VN")
                               .format(booking.price);
 
@@ -521,11 +649,11 @@ class _OrderScreenState extends State<OrderScreen> {
                                 children: [
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       ClipRRect(
                                         borderRadius:
-                                            BorderRadius.circular(8.0),
+                                        BorderRadius.circular(8.0),
                                         child: Image.network(
                                           '${ApiConstants.baseUrl}/api/files/${room.roomImg}',
                                           width: 90,
@@ -533,21 +661,39 @@ class _OrderScreenState extends State<OrderScreen> {
                                           fit: BoxFit.cover,
                                           errorBuilder:
                                               (context, error, stackTrace) =>
-                                                  Container(
-                                            width: 90,
-                                            height: 75,
-                                            color: Colors.grey[300],
-                                            child: const Icon(
-                                                Icons.broken_image,
-                                                color: Colors.grey),
-                                          ),
+                                              Container(
+                                                width: 90,
+                                                height: 75,
+                                                color: Colors.grey[300],
+                                                child: const Icon(
+                                                    Icons.broken_image,
+                                                    color: Colors.grey),
+                                              ),
+                                          loadingBuilder: (context, child, loadingProgress) {
+                                            if (loadingProgress == null) return child;
+                                            return Container(
+                                              width: 90,
+                                              height: 75,
+                                              color: Colors.grey[200],
+                                              child: Center(
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2.0,
+                                                  valueColor: const AlwaysStoppedAnimation<Color>(_primaryColor),
+                                                  value: loadingProgress.expectedTotalBytes != null
+                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                      loadingProgress.expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               '#${booking.bookingId} - ${room.roomName}',
@@ -570,14 +716,14 @@ class _OrderScreenState extends State<OrderScreen> {
                                             const SizedBox(height: 6),
                                             Container(
                                               padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 3),
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 3),
                                               decoration: BoxDecoration(
                                                 color: statusColor
                                                     .withOpacity(0.15),
                                                 borderRadius:
-                                                    BorderRadius.circular(50),
+                                                BorderRadius.circular(50),
                                                 border: Border.all(
                                                     color: statusColor,
                                                     width: 0.5),
@@ -596,7 +742,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                       ),
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(top: 2.0),
+                                        const EdgeInsets.only(top: 2.0),
                                         child: Text(
                                           '$priceFormatted VND',
                                           style: const TextStyle(
@@ -621,47 +767,21 @@ class _OrderScreenState extends State<OrderScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      const SizedBox(width: 10),
                                       if (booking.status == 'CONFIRMED')
                                         ElevatedButton.icon(
-                                          onPressed: () async {
+                                          onPressed: () {
                                             if (hasReviews) {
-                                              try {
-                                                showDialog(
-                                                  context: context,
-                                                  barrierDismissible: false,
-                                                  builder: (context) => const Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                              color:
-                                                                  _primaryColor)),
-                                                );
-                                                List<ReviewResponseDto>
-                                                    reviews =
-                                                    await getReviews(reviewIds);
-                                                Navigator.pop(context);
-                                                _showReviewListDialog(reviews);
-                                              } catch (e) {
-                                                Navigator.pop(context);
-                                                print(
-                                                    'Lỗi khi lấy đánh giá: $e');
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                        const SnackBar(
-                                                  content: Text(
-                                                      'Không thể tải danh sách đánh giá.'),
-                                                  backgroundColor: _errorColor,
-                                                ));
-                                              }
+                                              _toggleReviewDisplay(
+                                                  booking.bookingId, reviewIds);
                                             } else {
                                               _showReviewDialog(
                                                   booking.bookingId);
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: hasReviews
-                                                ? _accentColor.withOpacity(0.8)
-                                                : _primaryColor,
+                                            backgroundColor: (hasReviews && isExpanded)
+                                                ? _accentColor
+                                                : (hasReviews ? _accentColor.withOpacity(0.8) : _primaryColor),
                                             foregroundColor: Colors.white,
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 12, vertical: 8),
@@ -672,14 +792,14 @@ class _OrderScreenState extends State<OrderScreen> {
                                           ),
                                           icon: Icon(
                                             hasReviews
-                                                ? Icons.rate_review_outlined
+                                                ? (isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.rate_review_outlined)
                                                 : Icons.edit_note_outlined,
-                                            size: 16,
+                                            size: 18, // Tăng kích thước icon một chút
                                             color: Colors.white,
                                           ),
                                           label: Text(
                                             hasReviews
-                                                ? 'Xem đánh giá'
+                                                ? (isExpanded ? 'Ẩn đánh giá' : 'Xem đánh giá')
                                                 : 'Viết đánh giá',
                                             style: const TextStyle(
                                               fontSize: 12,
@@ -689,6 +809,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                         ),
                                     ],
                                   ),
+                                  // Phần hiển thị review inline
+                                  if (isExpanded && hasReviews)
+                                    _buildReviewSection(booking.bookingId),
                                 ],
                               ),
                             ),
@@ -718,15 +841,16 @@ class _OrderScreenState extends State<OrderScreen> {
               prefixIcon: const Icon(Icons.search, color: _lightTextColor),
               suffixIcon: _searchQuery.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear, color: _lightTextColor),
-                      onPressed: () {
-                        _searchController.clear();
-                      },
-                    )
+                icon: const Icon(Icons.clear, color: _lightTextColor),
+                onPressed: () {
+                  _searchController.clear();
+                  // _onSearchChanged sẽ được gọi bởi listener
+                },
+              )
                   : null,
               isDense: true,
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.0),
                 borderSide: const BorderSide(color: Colors.grey),
@@ -778,10 +902,12 @@ class _OrderScreenState extends State<OrderScreen> {
                       ],
                       onChanged: (SortOption? newValue) {
                         if (newValue != null) {
-                          setState(() {
-                            _selectedSortOption = newValue;
-                            _applyFiltersAndSort();
-                          });
+                          if (mounted) {
+                            setState(() {
+                              _selectedSortOption = newValue;
+                              _applyFiltersAndSort();
+                            });
+                          }
                         }
                       },
                     ),

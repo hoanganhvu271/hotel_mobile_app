@@ -69,6 +69,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvid
       child: SafeArea(
         child: Scaffold(
           body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: [
               TabComponent(
